@@ -1,0 +1,86 @@
+.dashboard-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background: #f4f6f9;
+    min-height: 100vh;
+}
+
+/* Left Section: Widgets */
+.left-section {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+/* Right Section: Statistics Graph */
+.right-section {
+    flex: 1;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.stat-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Simple CSS Bar Chart */
+.bar-chart {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    height: 200px;
+    border-left: 2px solid #333;
+    border-bottom: 2px solid #333;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.bar {
+    width: 40px;
+    background: linear-gradient(135deg, #007bff, #00c3ff);
+    transition: 0.3s;
+}
+
+.bar:hover {
+    transform: scaleY(1.1);
+}
+
+/* Dummy bar heights */
+.bar:nth-child(1) { height: 50px; }
+.bar:nth-child(2) { height: 120px; }
+.bar:nth-child(3) { height: 80px; }
+.bar:nth-child(4) { height: 160px; }
+.bar:nth-child(5) { height: 100px; }
+.bar:nth-child(6) { height: 140px; }
+
+/* Existing Widget Styles */
+.dashboard-widget {
+    background: linear-gradient(135deg, #007bff, #00c3ff);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+    
+}
+
+.dashboard-widget:hover {
+    transform: scale(1.05);
+}
+
+.dashboard-widget h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.dashboard-widget p {
+    font-size: 16px;
+    font-weight: bold;
+}
