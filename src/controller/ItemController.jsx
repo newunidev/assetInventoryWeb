@@ -46,9 +46,34 @@ export const getItemByItemCode = async(item_code)=>{
     }
 }
 
+export const getTotalItemsbyBranch = async(branch)=>{
+    try{
+        const response = await apiClient.get(`itemsatotalbybranch?branch=${branch}`);
+        console.log('Total Item Count Scan Response:',response.data);
+        return response.data;
+
+    }catch(error){
+        console.error('Error fetching item count :', error.message);
+        throw error;
+    }
+}
+
+export const getTotalItemsCount = async()=>{
+    try{
+        const response = await apiClient.get(`noofitems`);
+        console.log('Total Item total Count  Response:',response.data);
+        return response.data;
+
+    }catch(error){
+        console.error('Error fetching total item count :', error.message);
+        throw error;
+    }
+}
 
 export default {
     getItemsByBranchCategory,
     getItemScans,
-    getItemByItemCode
+    getItemByItemCode,
+    getTotalItemsbyBranch,
+    getTotalItemsCount
 };

@@ -97,4 +97,29 @@
   .available-row {
     background-color: white !important;
     color: green;
+
+    
+  }
+
+  .count-cards {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+  }
+  
+  .count-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    width: 45%;
+    text-align: center;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .factory-machine {
+    border-left: 5px solid green;
+  }
+  
+  .other-factory-machine {
+    border-left: 5px solid red;
   }
