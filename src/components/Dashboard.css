@@ -20,7 +20,7 @@
   
   /* Sidebar */
   .sidebar {
-    background-color: #2c3e50;
+    background-color: #000000;
     color: white;
     width: 220px;
     padding: 20px;
@@ -39,15 +39,16 @@
   
   .sidebar li {
     display: flex;
-    align-items: center;
+    align-items: left;
     gap: 10px;
     padding: 10px;
     cursor: pointer;
     transition: 0.3s;
+    border-radius: 8px; /* Adjust the value as needed */
   }
   
   .sidebar li:hover {
-    background-color: #34495e;
+    background-color: #ff6229;
   }
   
   .logout {
@@ -73,6 +74,7 @@
     overflow-y: auto;
     color: #333; /* Set dark text color */
     font-weight: bold;
+    
   }
   
    
@@ -108,33 +110,85 @@
   }
   
   .link:hover {
-    background-color: #34495e;
+    background-color: #ff6229;
   }
   
-  .reports {
-    cursor: pointer;
-    padding: 10px;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 16px;
-    font-weight: bold;
-  }
-  
-  .reports:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
+   /*start for cehck sub menu */
+/* Parent List Item */
+.reports {
+  position: relative;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 10px;
+  transition: background 0.3s ease-in-out;
+}
 
+.reports:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+/* Updated Submenu Styling */
+.sub-menu {
+  position: absolute;
+  left: 0;  /* Align to left (under Reports) */
+  top: 100%; /* Show below the Reports list */
+  background: #2a2a3d;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);  /* Start slightly above */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  width: 180px; /* Adjust width if needed */
+}
+
+/* Show submenu on hover */
+.reports:hover .sub-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0); /* Move to position */
+}
+
+/* Submenu Items */
+.sub-menu li {
+  padding: 8px 12px;
+  transition: background 0.3s;
+  border-radius: 5px;
+  white-space: nowrap; /* Prevents text wrapping */
+}
+
+.sub-menu li:hover {
+  background: #3b3b50;
+}
+
+/* Submenu Links */
+.sub-menu .link {
+  color: #fff;
+  text-decoration: none;
+  display: block;
+  font-size: 14px;
+}
+
+.sub-menu .link:hover {
+  color: #f4a261;
+}
+
+   
+   
+   
+   /*end*/
   
   .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #1e1e2f;
+    background: #222269;
     color: white;
     padding: 10px 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px; /* Adjust the value as needed */
   }
   
   .user-info {
@@ -175,3 +229,22 @@
   .profile-btn:hover {
     background: #3367d6;
   }
+
+
+  .logout-btn {
+    background-color: #e2002d; /* Red color */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between icon and text */
+    transition: background 0.3s ease-in-out;
+}
+
+.logout-btn:hover {
+    background-color: #de7773; /* Darker red on hover */
+}

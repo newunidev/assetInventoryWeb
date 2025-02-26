@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaBars, FaChevronDown } from "react-icons/fa";
 import { Link ,useNavigate} from "react-router-dom";
+import { FiLogOut } from "react-icons/fi";
 
 import "./Dashboard.css"; // Import the CSS file
 
@@ -40,9 +41,9 @@ const Dashboard = ({ children }) => {
       
 
       <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
-        <button onClick={() => setIsOpen(!isOpen)} className="menu-btn">
+        {/* <button onClick={() => setIsOpen(!isOpen)} className="menu-btn">
           <FaBars />
-        </button>
+        </button> */}
         <ul>
           <li>
             <Link to="/dashboardcontent" className="link">Dashboard</Link>
@@ -53,24 +54,26 @@ const Dashboard = ({ children }) => {
           <li>
             <Link to="/scans" className="link">Scan Options</Link>
           </li>
-          <li className="reports" onClick={() => setIsReportsOpen(!isReportsOpen)}>
+          <li className="reports" onMouseEnter={() => setIsReportsOpen(true)} onMouseLeave={() => setIsReportsOpen(false)}>
             Reports <FaChevronDown className={isReportsOpen ? "rotate" : ""} />
             {isReportsOpen && (
               <ul className="sub-menu">
                 <li>
-                  <Link to="/reports/inventoryreport" className="link">Inventory Reports</Link>
+                  <Link to="/reports/inventoryreport" className="link">📊 Inventory Reports</Link>
                 </li>
                 <li>
-                  <Link to="/reports/inventorycountreport" className="link">Count Scan Report</Link>
+                  <Link to="/reports/inventorycountreport" className="link">📋 Count Scan Report</Link>
                 </li>
                 <li>
-                  <Link to="/reports/idle" className="link">Idle Report</Link>
+                  <Link to="/reports/idle" className="link">📌 Idle Report</Link>
                 </li>
               </ul>
             )}
           </li>
           <li>
-            <button onClick={handleLogout} className="logout-btn">Log Out</button>
+          <button onClick={handleLogout} className="logout-btn">
+            <FiLogOut size={20} /> {/* Adjust size as needed */}
+          </button>
           </li>
         </ul>
       </div>
