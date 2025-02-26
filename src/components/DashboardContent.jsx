@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./DashboardContent.css";
-import { getTotalItemsbyBranch, getTotalItemsCount } from "../controller/ItemController";
+import { getTotalItemsbyBranch, getTotalItemsCount} from "../controller/ItemController";
+import { getMachines } from '../utility/api';
 
 const DashboardContent = () => {
   const [factoryData, setFactoryData] = useState([]);
@@ -8,6 +9,29 @@ const DashboardContent = () => {
   const [selectedMachineCount, setSelectedMachineCount] = useState(0);
   const [categoryData, setCategoryData] = useState([]);
   const [showModal, setShowModal] = useState(false);
+
+  const [machines, setMachines] = useState([]); // ✅ Added missing state
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Fetch Machines from API
+  useEffect(() => {
+    const fetchMachines = async () => {
+      try {
+        const data = await getMachines();
+        if (Array.isArray(data)) {
+          setMachines(data);
+        } else if (data.items && Array.isArray(data.items)) {
+          setMachines(data.items);
+        } else {
+          console.error("Unexpected API response format:", data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch machines:", error);
+      }
+    };
+
+    fetchMachines();
+  }, []);
 
   // Fetch factory data from API
   useEffect(() => {
@@ -28,6 +52,15 @@ const DashboardContent = () => {
     fetchFactoryData();
   }, []);
 
+  // Filter Machines based on Search Query
+  const filteredMachines = searchQuery
+  ? machines.filter(machine => 
+      (machine.item_code && machine.item_code.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (machine.serial_no && machine.serial_no.toLowerCase().includes(searchQuery.toLowerCase()))
+    )
+  : [];
+
+  // Handle Factory Card Click
   const handleCardClick = async (factory) => {
     setSelectedFactory(factory.name);
     setSelectedMachineCount(factory.count);
@@ -47,25 +80,69 @@ const DashboardContent = () => {
       {/* Left Section: Factory & Machine Count Widgets */}
       <div className="left-section">
         {factoryData.map((factory, index) => (
-          <div
-            key={index}
-            className="dashboard-widget"
-            onClick={() => handleCardClick(factory)}
-          >
+          <div key={index} className="dashboard-widget">
             <h3>{factory.name}</h3>
             <p>Items: {factory.count}</p>
+
+            {/* "See More" Button */}
+            <button 
+              className="see-more-btn" 
+              onClick={() => handleCardClick(factory)}
+            >
+              See More
+            </button>
           </div>
         ))}
       </div>
 
-      {/* Right Section: Statistics Graph */}
+      {/* Right Section: Search & Machine List */}
       <div className="right-section">
-        <h2 className="stat-title">Idle Machine Stat.</h2>
-        <div className="bar-chart">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="bar"></div>
-          ))}
+        <h2 className="stat-title">Machine Details</h2>
+
+        {/* Search Bar */}
+        <input 
+          type="text" 
+          className="search-bar" 
+          placeholder="Search item..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+
+        {/* Machine List */}
+        <div className="machine-list">
+          {filteredMachines.length > 0 ? (
+            filteredMachines.map((machine, index) => (
+              <div key={index} className="machine-card">
+                <h4>{machine.name}</h4>
+                <div className="machine-details">
+                  {/* Left Column */}
+                  <div className="machine-column">
+                    <p>✅ <strong>Item Code:</strong> {machine.item_code}</p>
+                    <p>🏢 <strong>Branch:</strong> {machine.branch}</p>
+                    <p>🛠️ <strong>Model:</strong> {machine.model_no}</p>
+                    <p>🔢 <strong>Serial No:</strong> {machine.serial_no}</p>
+                    <p>📦 <strong>Box No:</strong> {machine.box_no}</p>
+                  </div>
+
+                  <div className="machine-column">
+                    <p>⚙️ <strong>Motor No:</strong> {machine.motor_no}</p>
+                    <p>🏷️ <strong>Brand:</strong> {machine.brand}</p>
+                    <p>🚛 <strong>Supplier:</strong> {machine.supplier}</p>
+                    <p>📋 <strong>Condition:</strong> {machine.condition}</p>
+                    <p>📁 <strong>Category:</strong> {machine.Category?.cat_name || "N/A"}</p>
+                  </div>
+                </div>
+
+                {/* Full Width Details */}
+                <p>📝 <strong>Description:</strong> {machine.description}</p>
+                 
+              </div>
+            ))
+          ) : (
+            <p className="no-data">No machines found.</p>
+          )}
         </div>
+
       </div>
 
       {/* Modal Popup */}

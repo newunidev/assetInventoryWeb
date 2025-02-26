@@ -15,11 +15,23 @@ const Dashboard = ({ children }) => {
 
   //get the local storage values
   // Retrieve user details from sessionStorage
-  const userEmail = sessionStorage.getItem("userEmail");
-  const userBranch = sessionStorage.getItem("userBranch");
+//  const userEmail = sessionStorage.getItem("userEmail");
+  //const userBranch = sessionStorage.getItem("userBranch");
+
+
+  const userEmail = localStorage.getItem("userEmail");
+  const userBranch = localStorage.getItem("userBranch");
 
   const handleLogout = () => {
-    navigate("/login"); // Redirects directly to login
+    localStorage.removeItem("token"); // ✅ Remove the stored token
+    localStorage.clear(); // ✅ Ensure full session clearance
+
+    console.log("Token after removal:", localStorage.getItem("token")); // Should log `null`
+    console.log("Session Storage after clearing:", localStorage); // Should be empty
+
+    setTimeout(() => {
+        window.location.href = "/login"; // ✅ Force redirect to login
+    }, 2000); // ✅ Delay redirect to see logs in the console
   };
 
   return (

@@ -10,26 +10,48 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false); // ✅ Loading state
   const navigate = useNavigate(); // Hook for navigation
 
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+  //   setError(null);
+  //   setLoading(true); // ✅ Show loading indicator
+
+  //   try {
+  //     const data = await loginUser(email, password);
+  //     if (data.success) {
+  //       sessionStorage.setItem("token", data.token);
+  //       sessionStorage.setItem("userEmail", data.user.email);
+  //       sessionStorage.setItem("userBranch", data.user.branch);
+
+  //       navigate("/dashboardcontent"); // ✅ Redirect to dashboard
+  //     } else {
+  //       setError(data.message || "Login failed!");
+  //     }
+  //   } catch (error) {
+  //     setError("Invalid credentials or server error!");
+  //   } finally {
+  //     setLoading(false); // ✅ Hide loading indicator after API call
+  //   }
+  // };
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(null);
-    setLoading(true); // ✅ Show loading indicator
-
+    setLoading(true);
+  
     try {
       const data = await loginUser(email, password);
       if (data.success) {
-        sessionStorage.setItem("token", data.token);
-        sessionStorage.setItem("userEmail", data.user.email);
-        sessionStorage.setItem("userBranch", data.user.branch);
-
-        navigate("/dashboardcontent"); // ✅ Redirect to dashboard
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("userEmail", data.user.email);
+        localStorage.setItem("userBranch", data.user.branch);
+  
+        navigate("/dashboardcontent");
       } else {
         setError(data.message || "Login failed!");
       }
     } catch (error) {
       setError("Invalid credentials or server error!");
     } finally {
-      setLoading(false); // ✅ Hide loading indicator after API call
+      setLoading(false);
     }
   };
 
