@@ -98,3 +98,119 @@
     background-color: green !important;
     color: white;
   }
+
+  /*popup for last scan fetch style*/
+  /* Popup Container */
+.assetinventoryreport-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Dark overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Popup Content Box */
+/* Popup Overlay (Background Dim) */
+.assetinventoryreport-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Dark overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Popup Content Box */
+.assetinventoryreport-popup-content {
+  background: #ffffff; /* Clean white background */
+  width: 420px;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
+  animation: fadeIn 0.3s ease-in-out;
+  color: #222222; /* Dark black text for readability */
+  font-family: "Arial", sans-serif;
+}
+
+/* Close Button */
+.assetinventoryreport-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #333333; /* Dark grey for visibility */
+  transition: color 0.2s ease-in-out;
+}
+
+.assetinventoryreport-close-btn:hover {
+  color: #ff3333; /* Red for hover effect */
+}
+
+/* Popup Title */
+.assetinventoryreport-popup-title {
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 15px;
+  color: #222222; /* Dark text */
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+}
+
+/* Item Details */
+.assetinventoryreport-item-details {
+  font-size: 16px;
+  padding: 15px;
+  border-radius: 5px;
+  background: #f8f8f8; /* Light gray for subtle contrast */
+  color: #222222; /* Dark text */
+  margin-top: 10px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.assetinventoryreport-item-details p {
+  margin: 8px 0;
+}
+
+.assetinventoryreport-item-details strong {
+  color: #333333; /* Dark text for emphasis */
+}
+
+/* Loading Text */
+.assetinventoryreport-loading {
+  text-align: center;
+  font-weight: bold;
+  color: #555555; /* Medium grey */
+}
+
+/* Error Message */
+.assetinventoryreport-error {
+  text-align: center;
+  color: #ff3333; /* Red for errors */
+  font-weight: bold;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

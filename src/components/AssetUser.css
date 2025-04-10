@@ -1,0 +1,129 @@
+.search-panel {
+    display: flex;
+    align-items: center; /* Align items vertically in the center */
+    gap: 15px;
+    margin-bottom: 20px;
+    background: #a7ccf1;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 15px rgba(204, 179, 179, 0.1);
+    flex-wrap: wrap; /* Ensures responsiveness */
+  }
+  
+  /* Container for Dropdown & Search */
+  .search-panel .dropdown-container,
+  .search-panel .search-container {
+    display: flex;
+    flex-direction: column;
+    width: 200px; /* Ensure same width for both */
+  }
+  
+  /* Ensure all elements inside dropdown and search-container take full width */
+  .search-panel .dropdown-container select,
+  .search-panel .search-container input {
+    padding: 8px 12px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background-color: white;
+    cursor: pointer;
+    color: rgb(28, 0, 61);
+    transition: all 0.3s ease-in-out;
+    width: 100%; /* Ensures it takes full container width */
+    height: 38px; /* Ensures same height as buttons */
+  }
+  
+  /* Labels should be slightly smaller */
+  .search-panel .dropdown-container label,
+  .search-panel .search-container label {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 4px; /* Ensure spacing between label and input */
+  }
+  
+  /* Download PDF Button */
+  .search-panel .download-btn {
+    background-color: red;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    height: 40px; /* Same height as inputs */
+    margin-left: auto; /* Pushes it to the right */
+  }
+  
+  .search-panel .download-btn:hover {
+    background-color: green;
+  }
+  
+
+  /*table user styles*/
+  .table-container {
+    width: 100%;
+    min-height: 300px; /* ✅ Minimum height */
+    max-height: 500px; /* ✅ Maximum height with scrolling */
+    overflow-y: auto; /* ✅ Enables vertical scrolling if needed */
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Table Styling */
+  .user-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  /* Table Header */
+  .user-table thead {
+    background-color: #4a90e2;
+    color: white;
+  }
+  
+  .user-table th {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
+  }
+  
+  /* Table Rows */
+  .user-table tbody tr {
+    border-bottom: 1px solid #ddd;
+    transition: background 0.3s;
+  }
+  
+  .user-table td {
+    padding: 12px;
+  }
+  
+  /* Hover Effect */
+   
+  
+  .user-table tbody tr:hover {
+    background-color: rgb(237, 11, 11); /* Change background to green */
+    color: rgb(0, 222, 238); /* Change text color to white */
+    cursor: pointer; /* Optional: Change cursor to pointer */
+  }
+
+  /* Responsive Table */
+  @media (max-width: 768px) {
+    .table-container {
+      padding: 10px;
+    }
+  
+    .user-table {
+      font-size: 14px;
+    }
+  
+    .user-table th, 
+    .user-table td {
+      padding: 10px;
+    }
+  }
+  

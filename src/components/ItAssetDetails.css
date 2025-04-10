@@ -1,0 +1,419 @@
+
+.itassetreport-search-panel {
+  display: flex;
+  justify-content: space-between; /* Align left & right elements */
+  align-items: center;
+  background: #694cea;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap; /* Ensures responsiveness */
+}
+
+/* Left section (Search + Category) */
+.itassetreport-search-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Right section (Download + Add Asset) */
+.itassetreport-search-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Search Input */
+.itassetreport-search-panel input {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 200px;
+}
+
+/* Category Dropdown */
+.itassetreport-search-panel select {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Download Dropdown */
+.itassetreport-download-container {
+  position: relative;
+}
+
+.itassetreport-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.itassetreport-dropdown-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.itassetreport-dropdown-content {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  background-color: white;
+  min-width: 180px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.itassetreport-dropdown-content button {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.itassetreport-dropdown:hover .itassetreport-dropdown-content {
+  display: block;
+}
+
+/* Add Asset Button */
+.itassetreport-addasset-btn {
+  background-color: #28a745;
+  color: white;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+/* Table Container */
+.table-container {
+  width: 100%;
+  min-height: 300px;
+  max-height: 500px;
+  overflow-y: auto; /* ✅ Enables vertical scrolling */
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Styling */
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Table Header */
+.user-table thead {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.user-table th {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+}
+
+/* Table Rows */
+.user-table tbody tr {
+  border-bottom: 1px solid #ddd;
+  transition: background 0.3s;
+}
+
+.user-table td {
+  padding: 12px;
+}
+
+/* Hover Effect */
+.user-table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .table-container {
+      padding: 10px;
+  }
+
+  .user-table {
+      font-size: 14px;
+  }
+
+  .user-table th, 
+  .user-table td {
+      padding: 10px;
+  }
+
+  .search-panel {
+      flex-direction: column;
+      align-items: stretch;
+  }
+
+  .search-panel .dropdown-container,
+  .search-panel .search-container {
+      width: 100%;
+  }
+
+  .search-panel .download-btn,
+  .search-panel .add-btn {
+      width: 100%;
+  }
+}
+
+
+/*css styling for the popup asset details adding*/
+/* Modal Background Overlay */
+.addassetpopup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Modal Content */
+.addassetpopup-modal {
+  background: white;
+  width: 500px;
+  max-width: 90%;
+  padding: 20px;
+  border-radius: 15px; /* ✅ More rounded corners */
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-height: 95vh; /* ✅ Reduce height to 80% of viewport */
+  overflow-y: auto; /* ✅ Enable scrolling if content exceeds height */
+}
+
+/* Title */
+.addassetpopup-title {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* Form Fields Layout */
+.addassetpopup-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+/* Full Width for Textarea */
+.addassetpopup-textarea {
+  grid-column: span 2;
+}
+
+/* Label Styling */
+.addassetpopup-field label {
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Input and Select Fields */
+.addassetpopup-field input,
+.addassetpopup-field select,
+.addassetpopup-field textarea {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  background-color: white;
+  color: #333;
+  transition: border 0.3s ease-in-out;
+}
+
+/* Input and Select Focus Effect */
+.addassetpopup-field input:focus,
+.addassetpopup-field select:focus,
+.addassetpopup-field textarea:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Textarea Styling */
+.addassetpopup-field textarea {
+  height: 60px;
+  resize: none;
+}
+
+/* Modal Buttons */
+.addassetpopup-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* Save Button */
+.addassetpopup-save-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 48%;
+  transition: background 0.3s ease-in-out;
+}
+
+.addassetpopup-save-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Cancel Button */
+.addassetpopup-cancel-btn {
+  background-color: red;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 48%;
+  transition: background 0.3s ease-in-out;
+}
+
+.addassetpopup-cancel-btn:hover {
+  background-color: darkred;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .addassetpopup-form {
+      grid-template-columns: 1fr;
+  }
+
+  .addassetpopup-modal {
+      width: 90%;
+      max-width: 400px;
+  }
+
+  .addassetpopup-save-btn,
+  .addassetpopup-cancel-btn {
+      width: 100%;
+  }
+}
+
+
+/*messages css*/
+/* Success Message */
+.addassetpopup-success-message {
+  color: #155724;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Error Message */
+.addassetpopup-error-message {
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+
+/* Download Container Styles */
+.itassetreportpdfexceldownload-container {
+  position: relative;
+  display: inline-block;
+  z-index: 1000;
+  background-color: rgb(255, 255, 255); /* Ensure it's above other elements */
+}
+
+.itassetreportpdfexceldownload-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.itassetreportpdfexceldownload-btn {
+  background-color: #040c14;
+  color: white;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.itassetreportpdfexceldownload-btn:hover {
+  background-color: #0056b3;
+}
+
+.itassetreportpdfexceldownload-content {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 100%; /* Ensure it drops down below the button */
+  background-color: rgb(18, 26, 29);
+  min-width: 180px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  z-index: 1000; /* Ensure it's above the table */
+  overflow: hidden;
+}
+
+.itassetreportpdfexceldownload-content button {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: none;
+  background: none;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.itassetreportpdfexceldownload-content button:hover {
+  background-color: #f1f1f1;
+  color: black;
+}
+
+.itassetreportpdfexceldownload-dropdown:hover 
+.itassetreportpdfexceldownload-content {
+  display: block;
+}
+

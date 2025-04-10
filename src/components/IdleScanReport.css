@@ -1,0 +1,90 @@
+/* Center the header and animation horizontally */
+.idleScanReport-header-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px; /* Add margin for spacing */
+  }
+  
+  .idleScanReport-sleeping-animal-animation {
+    font-size: 50px;
+    margin-right: 10px;
+    color: #fb1928;
+  }
+  
+  /* Style for the heading */
+  .idleScanReport-heading {
+    font-size: 36px; /* Keep the heading size */
+    text-align: center; /* Center the text */
+    font-weight: bold; /* Keep the font bold */
+      /* Gradient color */
+      /* Clip the background to the text */
+    color: goldenrod; /* Make the text transparent so the gradient is visible */
+  }
+  /* Table container with fixed height and scroll */
+  .idleScanReport-table-container {
+    max-height: 500px; /* Set the max height for the table container */
+    overflow-y: auto;  /* Enable vertical scrolling */
+    margin-top: 20px;
+  }
+  
+  /* Table styling */
+  .idleScanReport-scan-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .idleScanReport-scan-table th,
+  .idleScanReport-scan-table td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+  }
+  
+  .idleScanReport-scan-table th {
+    background-color: #480167;
+    font-weight: bold;
+  }
+  
+
+  /* Dropdown styling */
+#idlescanreport-categoryFilter {
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 2px solid #4CAF50; /* Green border */
+  border-radius: 8px;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+  appearance: none; /* Hide default arrow */
+  position: relative;
+}
+
+/* Add custom dropdown arrow */
+#idlescanreport-categoryFilter::after {
+  content: "▼"; /* Custom dropdown icon */
+  position: absolute;
+  right: 15px;
+  font-size: 14px;
+  color: #4CAF50;
+}
+
+/* Hover effect */
+#idlescanreport-categoryFilter:hover {
+  border-color: #388E3C; /* Darker green */
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.4);
+}
+
+/* Focus effect */
+#idlescanreport-categoryFilter:focus {
+  border-color: #2E7D32; /* Even darker green */
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.6);
+}
+
+/* Dropdown options */
+#idlescanreport-categoryFilter option {
+  font-size: 16px;
+  padding: 5px;
+}

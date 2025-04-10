@@ -70,10 +70,80 @@ export const getTotalItemsCount = async()=>{
     }
 }
 
+export const getItemCountLastScannedLocation = async(item_code)=>{
+    try{
+        const response = await apiClient.get(`itemcountscanbyserailno?item_code=${item_code}`);
+        console.log('Total Item Last Location CountScan  Response:',response.data);
+        return response.data;
+
+    }catch(error){
+        console.error('Error fetching Item Last Location CountSca :', error.message);
+        throw error;
+    }
+}
+
+export const getAllItemCountLastScannedLocation = async()=>{
+    try{
+        const response = await apiClient.get(`itemcountscanslatest`);
+        console.log('All Last Location CountScan  Response:',response.data);
+        return response.data;
+
+    }catch(error){
+        console.error('Error fetching All  Item Last Location CountSca :', error.message);
+        throw error;
+    }
+}
+
+
+//methods for get Unique cateory Idle machine count
+export const getAllIdleScanCountbyCateogryLast3Days = async()=>{
+    try{
+        const response = await apiClient.get(`idlescancountbycategorylast3days`);
+        console.log('All Last Location CountScan  Response:',response.data);
+        return response.data;
+
+    }catch(error){
+        console.error('Error fetching All  Item Last Location CountSca :', error.message);
+        throw error;
+    }
+}
+
+//method for get unique category idele machine count
+export const getAllIdleScanCountbyCateogryTodaysDate = async()=>{
+    try{
+        const response = await apiClient.get(`idlescancountbycategoryTodaysDate`);
+        console.log('All Last Location CountScan  Response:',response.data);
+        return response.data;
+
+    }catch(error){
+        console.error('Error fetching All  Item Last Location CountSca :', error.message);
+        throw error;
+    }
+}
+
+//method for get unique category idele machine count
+export const getAllIdleScanCountbyCateogryFactory = async(branch,cat_id)=>{
+    try{
+        const response = await apiClient.get(`idlescancountbycategoryBranch?category_id=${cat_id}&current_branch=${branch}`);
+        console.log('All Last Location CountScan  Response:',response.data);
+        return response.data;
+
+    }catch(error){
+        console.error('Error fetching All  Item Last Location CountSca :', error.message);
+        throw error;
+    }
+}
+
+
 export default {
     getItemsByBranchCategory,
     getItemScans,
     getItemByItemCode,
     getTotalItemsbyBranch,
-    getTotalItemsCount
+    getTotalItemsCount,
+    getItemCountLastScannedLocation,
+    getAllItemCountLastScannedLocation,
+    getAllIdleScanCountbyCateogryLast3Days,
+    getAllIdleScanCountbyCateogryTodaysDate,
+    getAllIdleScanCountbyCateogryFactory
 };

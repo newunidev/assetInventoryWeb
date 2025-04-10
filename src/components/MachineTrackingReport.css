@@ -1,0 +1,147 @@
+/* General Container */
+.machintrackingreport-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading */
+.machintrackingreport-heading {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Search Panel */
+.machintrackingreport-search-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    flex-wrap: wrap; /* Ensure responsiveness */
+    gap: 15px;
+}
+
+/* Form Field Container */
+.machintrackingreport-field-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 150px; /* Ensure elements don't get too small */
+}
+
+/* Dropdown Styling */
+.machintrackingreport-field-container select {
+    background-color: white;
+    color: black;
+    font-size: 16px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+/* Search Box */
+.machintrackingreport-search-box {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.machintrackingreport-search-box input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 220px;
+    font-size: 16px;
+}
+
+.machintrackingreport-search-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.machintrackingreport-search-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Download Button */
+.machintrackingreport-download-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.machintrackingreport-download-btn:hover {
+    background-color: #218838;
+}
+
+/* Table Container */
+.machintrackingreport-table-container {
+    max-height: 400px;
+    overflow-y: auto; /* Ensures only the table scrolls */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Styling */
+.machintrackingreport-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.machintrackingreport-table thead {
+    background-color: #007bff;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.machintrackingreport-table th,
+.machintrackingreport-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.machintrackingreport-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Repairing Row Highlight */
+.machintrackingreport-repairing {
+    background-color: #ffc107 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .machintrackingreport-search-panel {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .machintrackingreport-search-box input {
+        width: 100%;
+    }
+}

@@ -40,6 +40,13 @@ import InventoryReport from "./components/InventoryReport";
 import InventoryCountReport from "./components/InventoryCountReport";
 import DashboardContent from "./components/DashboardContent";
 import PrivateRoute from "./components/PrivateRoute"; // ✅ Import PrivateRoute
+import AssetUser  from "./components/AssetUser";
+import ItAssetDetails from "./components/ItAssetDetails";
+import AssetAssignment from "./components/AssetAssignment";
+import MachineTrackingReport from "./components/MachineTrackingReport";
+import MachineDetailDisplay from "./pages/MachineDetailsDisplay";
+import IdleScanReport from "./components/IdleScanReport";
+import IdleMachineDetails from "./pages/IdleMachineDetails";
 
 function App() {
   return (
@@ -55,7 +62,15 @@ function App() {
         <Route path="/scans" element={<PrivateRoute><Dashboard><ScanDashboard /></Dashboard></PrivateRoute>} />
         <Route path="/reports/inventoryreport" element={<PrivateRoute><Dashboard><InventoryReport /></Dashboard></PrivateRoute>} />
         <Route path="/reports/inventorycountreport" element={<PrivateRoute><Dashboard><InventoryCountReport /></Dashboard></PrivateRoute>} />
+        {/* <Route path="/reports/idle" element={<PrivateRoute><Dashboard><IdleScanReport /></Dashboard></PrivateRoute>} /> */}
+        <Route path="/reports/machinetrackingreport" element={<PrivateRoute><Dashboard><MachineTrackingReport /></Dashboard></PrivateRoute>} />
         <Route path="/dashboardcontent" element={<PrivateRoute><Dashboard><DashboardContent /></Dashboard></PrivateRoute>} />
+        <Route path="/itassets/assetuser" element={<PrivateRoute><Dashboard><AssetUser /></Dashboard></PrivateRoute>} />
+        <Route path="/itassets/itassets" element={<PrivateRoute><Dashboard><ItAssetDetails /></Dashboard></PrivateRoute>} />
+        <Route path="/itassets/assetassignment" element={<PrivateRoute><Dashboard><AssetAssignment /></Dashboard></PrivateRoute>} />
+        <Route path="/machine-details" element={<PrivateRoute><Dashboard><MachineDetailDisplay /></Dashboard></PrivateRoute>} />
+        {/* <Route path="/idlemachinedetails" element={<PrivateRoute><Dashboard><IdleMachineDetails /></Dashboard></PrivateRoute>} /> */}
+
       </Routes>
     </Router>
   );

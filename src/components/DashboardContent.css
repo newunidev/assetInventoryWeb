@@ -4,24 +4,83 @@
   display: flex;
   gap: 20px;
   padding: 20px;
-  align-items: flex-start; /* Align widgets at the top */
+  align-items: flex-start;
+  overflow-y: auto;
+   /* Align widgets at the top */
 }
 
 /* Left Section - Fixed Width */
+
+
+/*left section test starts*/
+
 .left-section {
   width: 60%; /* Adjust as needed */
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Force 3 widgets per row */
-  gap: 15px;
+  display: flex;
+  flex-direction: column; /* Arrange child elements in a column */
+  gap: 20px; /* Space between the two rows */
   flex-shrink: 0; /* Prevent resizing */
+  
+  border: 3px solid #73e83d; /* Green border */
+  border-radius: 10px; /* Rounded corners */
+  
+  padding: 20px; /* Adds space inside the border */
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
 }
+
+/* First Row: Grid Layout */
+.factory-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 widgets per row */
+  gap: 15px;
+}
+
+/* Second Row: IT Asset Section as a Flex Container */
+/* IT Asset Summary as a Flex Container */
+.it-asset-row {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center content horizontally */
+  gap: 15px;
+  padding: 20px; /* Increased padding for better spacing */
+  border-top: 2px solid #ccc; /* Add a separator */
+  width: 100%; /* Ensure full width */
+  background-color: #f0f8ff; /* Light blue background */
+  border-radius: 8px; /* Optional: Add rounded corners */
+}
+
+
+/* IT Asset Summary Grid */
+.it-asset-summary {
+  display: flex;
+  gap: 20px;
+  justify-content: center; /* Align items at the center */
+  flex-wrap: wrap; /* Allow wrapping for responsiveness */
+}
+
+/* IT Asset Card */
+.it-asset-card {
+  background: #0dcfff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+  width: 200px;
+  text-align: center;
+}
+
+
+
+/*end*/
+
 
 /* Right Section - Takes Remaining Space */
 .right-section {
   flex-grow: 1;
   background: #f8f9fa;
   padding: 20px;
-  border-radius: 10px;
+  border: 3px solid #007bff; /* Blue border */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
   text-align: center;
   min-width: 300px; /* Set a minimum width to avoid shrinking too much */
 }
@@ -343,4 +402,29 @@
     min-height: 120px; /* Reduce widget height */
     padding: 15px;
   }
+}
+
+/*styles for new it asset content*/
+.it-asset-section {
+  background-color: #f4f4f4;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 10px;
+}
+
+.it-asset-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 10px;
+}
+
+.it-asset-card {
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.it-asset-card h4 {
+  margin-bottom: 5px;
 }

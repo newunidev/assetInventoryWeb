@@ -86,3 +86,11 @@
     gap: 8px;
   }
   
+
+  .user-profile-img {
+    width:80px; /* Adjust size as needed */
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+  }

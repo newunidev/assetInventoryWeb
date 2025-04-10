@@ -449,10 +449,12 @@ import {
   getItemScans,
   getItemCountScans,
   getItemByItemCode,
+  getItemCountLastScannedLocation, // ✅ Fetch last scan details
 } from "../controller/ItemController";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import "./InventoryCountReport.css";
+import ReactDOM from "react-dom"; // ✅ Required for the popup
 
 const InventoryCountReport = () => {
   const [branch, setBranch] = useState("");
@@ -463,6 +465,13 @@ const InventoryCountReport = () => {
   const [items, setItems] = useState([]);
   const [factoryMachineCount, setFactoryMachineCount] = useState(0);
   const [otherFactoryMachineCount, setOtherFactoryMachineCount] = useState(0);
+
+
+  // ✅ Popup state
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const branches = [
     "Hettipola",
@@ -599,9 +608,38 @@ const InventoryCountReport = () => {
     doc.save("Inventory_Count_Report.pdf");
   };
 
+
+
+  // ✅ Open Popup and Fetch Last Scan Details
+  const openPopup = async (itemCode) => {
+    setShowPopup(true);
+    setLoading(true);
+    setError("");
+    setSelectedItem(null);
+
+    try {
+      const response = await getItemCountLastScannedLocation(itemCode);
+      if (response.success && response.latestItemCount) {
+        setSelectedItem(response.latestItemCount);
+      } else {
+        setError("No scan data available for this item.");
+      }
+    } catch (error) {
+      setError("Failed to fetch scan details.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Close Popup
+  const closePopup = () => {
+    setShowPopup(false);
+    setSelectedItem(null);
+  };
+
   return (
     <div className="inventory-report-container">
-      <h2 className="report-heading">📊 Current Machine Report</h2>
+      <h2 className="report-heading">📊 LIVE Machine Report</h2>
 
       <div className="search-panel">
         <select value={branch} onChange={(e) => setBranch(e.target.value)}>
@@ -680,6 +718,7 @@ const InventoryCountReport = () => {
                 <tr
                   key={item.item_code}
                   className={item.availability === "Available" ? "available" : ""}
+                  onClick={() => openPopup(item.item_code)} // ✅ Open popup on click
                 >
                   <td>{item.item_code}</td>
                   <td>{item.serial_no}</td>
@@ -697,6 +736,38 @@ const InventoryCountReport = () => {
           </tbody>
         </table>
       </div>
+
+      {/* ✅ Popup Component */}
+{showPopup &&
+  ReactDOM.createPortal(
+    <div className="assetinventorycount-popup-overlay">
+      <div className="assetinventorycount-popup-container">
+        <button className="assetinventorycount-close-btn" onClick={closePopup}>
+          ✖
+        </button>
+        <h3 className="assetinventorycount-popup-title">MACHINE TRACKER</h3>
+
+        {loading && <p className="assetinventorycount-loading">Loading...</p>}
+        {error && <p className="assetinventorycount-error">{error}</p>}
+
+        {selectedItem && (
+          <div className="assetinventorycount-item-details">
+            <p>🔹 <strong>Name:</strong> {selectedItem.Item.name}</p>
+            <p>🔢 <strong>Serial No:</strong> {selectedItem.Item.serial_no}</p>
+            <p>📂 <strong>Category:</strong> {selectedItem.Category.cat_name}</p>
+            <p>📅 <strong>Last Scanned Date:</strong> {selectedItem.scanned_date}</p>
+            <p>🏢 <strong>Last Scanned Branch:</strong> {selectedItem.current_branch}</p>
+            <p>📍 <strong>Owner Branch:</strong> {selectedItem.branch}</p>
+          </div>
+        )}
+      </div>
+    </div>,
+    document.body
+  )}
+
+
+
+
     </div>
   );
 };
