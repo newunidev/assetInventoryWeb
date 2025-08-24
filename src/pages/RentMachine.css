@@ -1,0 +1,233 @@
+/* Main container */
+.rentmachine-container {
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f7fa;
+  min-height: 90vh;
+}
+
+.rentmachine-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 28px;
+  color: #013b47;
+}
+
+/* Grid layout */
+.rentmachine-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.pdf-button {
+  display: flex;
+  align-items: center;
+  background-color: #e2002d;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  gap: 8px;
+}
+.excel-button {
+  display: flex;
+  align-items: center;
+  background-color: #1d6f42;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  gap: 8px;
+}
+/* Left form card */
+.rentmachine-form-card {
+  flex: 1;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+  min-width: 500px;
+  height: 85vh;
+}
+
+/* Right table card */
+/* Right table card */
+.rentmachine-table-card {
+  flex: 2;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  overflow-x: auto; /* Keep this for horizontal scrolling if needed */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+  /* min-height: 80vH;  Remove or change this */
+  max-height: 80vh; /* Set a maximum height */
+  overflow: auto; /* Add vertical scrolling when content exceeds max-height */
+  /* ✅ Hide scrollbars */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+
+/* Form layout */
+.rentmachine-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: space-between;
+}
+
+.form-row label {
+  width: calc(33.33% - 10px); /* 3 fields per row */
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+  padding: 8px 10px;
+  font-size: 14px;
+  margin-top: 5px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  color: #003366; /* Dark blue font */
+}
+
+/* Full-width text area */
+label.full-width {
+  width: 100%;
+}
+
+/* Buttons */
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.form-buttons button {
+  background-color: #013b47;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form-buttons button:hover {
+  background-color: #026f88;
+}
+
+/* Table styles */
+.rentmachine-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.rentmachine-table th,
+.rentmachine-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  font-size: 11px; /* This sets the font size for both th and td */
+  text-align: center;
+}
+
+.rentmachine-table th {
+  background-color: #013b47;
+  color: white;
+}
+
+.rentmachine-table td button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.search-container {
+  flex-grow: 1;
+}
+
+.rentmachine-search {
+  width: 100%;
+  max-width: 250px;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #013b47;
+  margin-right: 15px;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+}
+ 
+.branch-select {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1.5px solid #013b47; /* dark teal */
+  border-radius: 6px;
+  background-color: #fff;
+  color: #013b47;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.25s ease;
+  width: 180px;
+}
+
+.branch-select:hover {
+  border-color: #026f88; /* lighter teal on hover */
+}
+
+.branch-select:focus {
+  border-color: #026f88;
+  box-shadow: 0 0 4px rgba(2, 111, 136, 0.5);
+}
+
+.branch-select:disabled {
+  background-color: #f0f0f0;
+  color: #999;
+  cursor: not-allowed;
+  border-color: #ccc;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .rentmachine-grid {
+    flex-direction: column;
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
+
+  .form-buttons {
+    justify-content: center;
+  }
+}

@@ -1,0 +1,307 @@
+/* Root wrapper */
+.purchase-order-view-wrapper {
+  padding: 20px 30px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9faff;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==================== TOP SECTION ==================== */
+.purchase-order-view-top-section {
+  background-color: #ffffff;
+  padding: 16px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Left: Radio filter box */
+.purchase-order-view-radio-wrapper {
+  border: 1.5px solid #cbd5e0;
+  background-color: #f7f9fc;
+  padding: 5px 10px;
+  border-radius: 10px;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+}
+
+.purchase-order-view-radio-group input[type="radio"] {
+  width: 18px;       /* or 20px */
+  height: 18px;
+  cursor: pointer;
+  accent-color: #007bff; /* optional: changes the selected color */
+  margin-right: 6px;  /* spacing between radio and label */
+}
+.purchase-order-view-radio-wrapper legend {
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 8px;
+}
+
+.purchase-order-view-radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.purchase-order-view-radio-group label {
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+ .purchase-order-view-quick-links {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.quick-link-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 8px;
+  background: none;
+  border: none;
+  transition: transform 0.2s ease;
+}
+
+.quick-link-button:hover {
+  transform: scale(1.05);
+}
+
+.quick-link-circle {
+  width: 50px;
+  height: 50px;
+  border: 2px solid #007bff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f4f9ff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.quick-link-icon {
+  font-size: 24px;
+}
+
+.quick-link-label {
+  font-size: 12px;
+  margin-top: 6px;
+  color: #333;
+}
+
+/* Right: Form controls */
+.purchase-order-view-form-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-end;
+}
+
+/* Form Field Group */
+.purchase-order-view-field-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+}
+
+.purchase-order-view-label {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: #222;
+}
+
+.purchase-order-view-input,
+.purchase-order-view-select {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #000;
+  font-size: 13px;
+  background-color: #fff;
+  color: #030303;
+  outline-offset: 2px;
+  transition: border-color 0.3s ease;
+}
+
+.purchase-order-view-input:focus,
+.purchase-order-view-select:focus {
+  border-color: #4c6ef5;
+  outline: none;
+}
+
+.purchase-order-view-select option {
+  background-color: #000;
+  color: #fff;
+}
+
+/* Search button */
+.purchase-order-view-search-button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 22px;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.purchase-order-view-search-button:hover {
+  background-color: #1e40af;
+}
+
+/* ==================== TABLE CARD ==================== */
+.purchase-order-view-form-card {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px 25px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+  flex: 1;
+  overflow: auto;
+  max-height: none;
+  margin-bottom: 70px; /* spacing from bottom */
+}
+
+.purchase-order-view-form-card h3 {
+  margin-bottom: 15px;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #222;
+}
+
+/* ==================== TABLE STYLES ==================== */
+.purchase-order-view-table-container {
+  overflow-x: auto;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+  max-height: 350px;
+
+  /* Scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f0f0f0;
+}
+
+.purchase-order-view-table-container::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.purchase-order-view-table-container::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 8px;
+}
+
+.purchase-order-view-table-container::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 8px;
+  border: 2px solid #f0f0f0;
+}
+
+.purchase-order-view-table-container::-webkit-scrollbar-thumb:hover {
+  background-color: #666;
+}
+
+
+
+/* Table */
+.purchase-order-view-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #222;
+  min-width: 600px;
+  table-layout: auto;
+}
+
+.purchase-order-view-table thead tr {
+  background: linear-gradient(90deg, #4c6ef5, #364fc7);
+  color: white;
+  font-weight: 700;
+}
+
+.purchase-order-view-table thead th {
+  padding: 10px 8px;
+  text-align: left;
+  border-bottom: 3px solid #2c3e50;
+  white-space: nowrap;
+}
+
+.purchase-order-view-table tbody tr {
+  border-bottom: 1.4px solid #ddd;
+  transition: background-color 0.3s ease;
+}
+
+.purchase-order-view-table tbody tr:hover {
+  background-color: #f0f5ff;
+}
+
+.purchase-order-view-table tbody td {
+  padding: 8px 8px;
+  text-align: center;
+  color: #222;
+  font-size: 8.5pt;
+}
+
+.purchase-order-view-row-approved {
+  background-color: #8df18d; /* Light green background */
+  font-weight: 500;
+}
+
+.purchase-order-view-row-approved:hover {
+  background-color: #d0ffd0;
+}
+
+/* ==================== ACTION BUTTON ==================== */
+.purchase-order-view-action-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.purchase-order-view-action-button:hover {
+  background-color: #218838;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 600px) {
+  .purchase-order-view-top-section {
+    flex-direction: column;
+  }
+
+  .purchase-order-view-form-grid {
+    flex-direction: column;
+  }
+
+  .purchase-order-view-field-group {
+    width: 100%;
+  }
+
+  .purchase-order-view-search-button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,79 @@
+.userCreationForm-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  font-family: sans-serif;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+}
+.userCreationForm-title {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.userCreationForm-subtitle {
+  text-align: center;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.userCreationForm-section {
+  margin-bottom: 30px;
+}
+
+.userCreationForm-section h2 {
+  margin-bottom: 10px;
+  color: #003366;
+  font-size: 18px;
+}
+
+.userCreationForm-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.userCreationForm-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.userCreationForm-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.userCreationForm-full-input,
+.userCreationForm-container input[type="text"],
+.userCreationForm-container input[type="email"] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.userCreationForm-container input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.userCreationForm-submit-button {
+  background-color: #003366;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+}
+
+.userCreationForm-submit-button:hover {
+  background-color: #0055aa;
+}

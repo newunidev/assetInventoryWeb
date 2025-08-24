@@ -1,155 +1,181 @@
 .inventory-container {
-    padding: 20px;
-  }
-  
-  .search-panel {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-    align-items: center;
-    background: #a7ccf1;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0px 2px 15px rgba(204, 179, 179, 0.1);
-  }
-  
-  .search-panel select,
-  .search-panel input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-  }
-  
-  .search-panel button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  
-  .search-panel button:hover {
-    background-color: #0056b3;
-  }
+  padding: 20px;
+}
 
-  .search-panel .download-btn {
-    background-color: red;
-    color: white;
-    margin-left: auto;
-  }
-  
-  .search-panel .download-btn:hover {
-    background-color: green;
-  }
-  
-  /* Table Styling */
-  .inventory-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-  }
-  
-  .inventory-table th, .inventory-table td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: left;
-  }
-  
-  .inventory-table th {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  .inventory-table tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  .search-button {
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: 10px;
-  }
-  
-  .search-button:hover {
-    background-color: #0056b3;
-  }
+.inventorycountsearch-panel {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  align-items: center;
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 10px;
+  border-color: black;
+  box-shadow: 0px 2px 15px rgba(204, 179, 179, 1);
+}
 
-  .table-container {
-    max-height: 400px; /* Adjust height as needed */
-    overflow-y: auto;
-  }
-  
-  .inventory-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .inventory-table th,
-  .inventory-table td {
-    padding: 8px;
-    border: 1px solid #ddd;
-    text-align: left;
-    font-size: 14px;
-  }
-  
-  .inventory-table tr.available {
-    background-color: #a4eab4; /* Light green background for Available items */
-  }
+.inventorycountsearch-panel select,
+.inventorycountsearch-panel input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+  color: black;
+}
 
-  .count-cards {
-    display: flex;
-    justify-content: space-around;
-    margin: 20px 0;
-  }
-  
-  .count-card {
-    background: #fff;
-    border-radius: 10px;
-    padding: 15px;
-    width: 45%;
-    text-align: center;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .factory-machine {
-    border-left: 5px solid green;
-  }
-  
-  .other-factory-machine {
-    border-left: 5px solid red;
-  }
+.inventorycountsearch-panel button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
 
-  .download-btn {
-    background: #de0505;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  
-  .download-btn:hover {
-    background: #219150;
-  }
+.inventorycountsearch-panel button:hover {
+  background-color: #0056b3;
+}
 
-  .report-heading {
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 20px;
-  }
+.inventorycountsearch-panel .download-btn {
+  background-color: red;
+  color: white;
+  margin-left: auto;
+}
 
+.inventorycountsearch-panel .download-btn:hover {
+  background-color: green;
+}
 
-  /*popup las location style*/
-  /* Container */
+/* Table Styling */
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.inventory-table th,
+.inventory-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.inventory-table th {
+  background-color: #007bff;
+  color: white;
+}
+
+.inventory-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+.search-button {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+.table-container {
+  flex: 1;
+  height: 100%;
+  max-height: calc(
+    80vh - 160px
+  ); /* Adjust based on your layout's header/footer height */
+  overflow-y: auto;
+  margin-top: 5px;
+  /* Firefox */
+  scrollbar-width: auto;
+  scrollbar-color: #ccc transparent;
+}
+
+/* Chrome, Edge, Safari */
+.table-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
+
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.inventory-table th,
+.inventory-table td {
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 12px;
+}
+
+.inventory-table tr.available {
+  background-color: #a4eab4; /* Light green background for Available items */
+}
+
+.count-cards {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.count-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  width: 45%;
+  text-align: center;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.factory-machine {
+  border-left: 5px solid green;
+}
+
+.other-factory-machine {
+  border-left: 5px solid red;
+}
+
+.download-btn {
+  background: #de0505;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.download-btn:hover {
+  background: #219150;
+}
+
+.report-heading {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+/*popup las location style*/
+/* Container */
 /* ✅ Full-screen overlay */
 .assetinventorycount-popup-overlay {
   position: fixed;

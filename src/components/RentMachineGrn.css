@@ -1,0 +1,303 @@
+/* Root wrapper */
+.grn-wrapper {
+  padding: 10px 10px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9faff;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Thin Modern Scrollbar */
+.grn-page {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  background: #ffffff;
+  height: 100vh;
+  overflow-y: hidden;
+  max-height: 550px;
+  
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #81c784 transparent;
+}
+
+.grn-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px; /* spacing below the header */
+}
+
+.top-right-grn-btn {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #033720, #00eea2);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.top-right-grn-btn:hover {
+  background: linear-gradient(135deg, #7074ee, #05055c);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(229, 57, 53, 0.4);
+}
+
+.grn-data {
+  
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  background: #f9fafb;
+  height: 100vh;
+  overflow-y: auto;
+  max-height: 550px;
+  
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #81c784 transparent;
+}
+
+/* Scrollbar for Chrome, Edge, Safari */
+.grn-page::-webkit-scrollbar,
+.grn-data::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.grn-page::-webkit-scrollbar-track,
+.grn-data::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.grn-page::-webkit-scrollbar-thumb,
+.grn-data::-webkit-scrollbar-thumb {
+  background: #81c784; /* soft green */
+  border-radius: 10px;
+}
+
+.grn-page::-webkit-scrollbar-thumb:hover,
+.grn-data::-webkit-scrollbar-thumb:hover {
+  background: #66bb6a; /* darker green on hover */
+}
+
+/* Scrollable container wrapper */
+.grn-container {
+  background: #f1f8f1; /* very light green */
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0, 128, 0, 0.1);
+  max-height: 520px;
+  overflow-y: auto;
+  margin-bottom: 25px;
+
+  /* Scrollbar inside container */
+  scrollbar-width: thin;
+  scrollbar-color: #81c784 transparent;
+}
+
+.grn-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.grn-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.grn-container::-webkit-scrollbar-thumb {
+  background-color: #81c784;
+  border-radius: 10px;
+}
+
+.grn-container::-webkit-scrollbar-thumb:hover {
+  background-color: #66bb6a;
+}
+
+.grn-page h2 {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.supplier-info {
+  color: #555;
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+
+.category-block {
+  margin-bottom: 25px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 15px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+.add-btn {
+  background: #034a47;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.add-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Table styles */
+.grn-table,
+.search-results {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 6px; /* vertical spacing between rows */
+  font-size: 13px;
+  color: #2e3a2f; /* dark green text */
+  box-shadow: 0 2px 5px rgb(0 0 0 / 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.grn-table th,
+.search-results th {
+  background: #a5d6a7; /* light green header */
+  color: #1b5e20; /* dark green text */
+  font-weight: 600;
+  padding: 10px 12px;
+  text-align: left;
+  user-select: none;
+  font-size: 11px;
+}
+
+.grn-table td,
+.search-results td {
+  background: #ffffff;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e0e0e0;
+  vertical-align: middle;
+  font-size: 10px;
+}
+
+.grn-table tbody tr:last-child td,
+.search-results tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.grn-table tbody tr:hover,
+.search-results tbody tr:hover {
+  background: #e8f5e9; /* very light green */
+  cursor: pointer;
+}
+
+.empty-row {
+  text-align: center;
+  color: #777;
+  font-style: italic;
+  background: transparent;
+}
+
+/* Modal styles */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 6px;
+  width: 700px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal h4 {
+  margin-bottom: 10px;
+}
+
+.search-box {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.search-box button {
+  padding: 6px 12px;
+  background: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.select-btn {
+  background: #43a047;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.primary-btn {
+  background: #1976d2;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.secondary-btn {
+  background: #43a047;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.cancel-btn {
+  background: #ccc;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.modal-actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}

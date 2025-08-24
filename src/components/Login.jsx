@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../utility/api"; // Import login API method
+import { loginUser,loginUserWithCookie } from "../utility/api"; // Import login API method
 import { getAllPermissions } from "../controller/EmployeeController";
 import "./Login.css"; // Import CSS file
 
@@ -46,8 +46,9 @@ const LoginPage = () => {
         localStorage.setItem("userBranch", data.user.branch);
         localStorage.setItem("userid", data.user.employee_id);
         localStorage.setItem("name", data.user.name);
+        
 
-        console.log(data.user.employee_id);
+        console.log(data.user.branch);
 
         const permissionData = await getAllPermissions(data.user.employee_id);
         if (permissionData.success) {
@@ -56,6 +57,7 @@ const LoginPage = () => {
 
           // Store in localStorage as a JSON string
           localStorage.setItem("permissions", JSON.stringify(permissionIds));
+          console.log("Permissions",localStorage.getItem("permissions"));
         }
 
         navigate("/dashboardcontent");
@@ -73,7 +75,7 @@ const LoginPage = () => {
     <div className="login-container">
       <div className="login-box">
         <img
-          src="/public/nu.png"
+          src="/nu.png"
           alt="User Profile"
           className="user-profile-img"
         />
@@ -105,6 +107,7 @@ const LoginPage = () => {
           {/* ✅ Show spinner when loading */}
           <button type="submit" className="login-btn" disabled={loading}>
             {loading ? <div className="spinner"></div> : "Login"}
+             
           </button>
         </form>
       </div>

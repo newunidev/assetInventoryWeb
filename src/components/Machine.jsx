@@ -1,20 +1,23 @@
-
-
-
-
 // export default Machine;
-import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
-import { getMachines } from '../utility/api';
-import { getItemCountLastScannedLocation } from '../controller/ItemController';
-import { FaSearch, FaTimes } from 'react-icons/fa';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
-import './Machine.css';
+import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
+import { getMachines } from "../utility/api";
+import { getItemCountLastScannedLocation } from "../controller/ItemController";
+import { FaSearch, FaTimes } from "react-icons/fa";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import "./Machine.css";
+import { usePageTitle } from "../utility/usePageTitle";
 
 const branches = [
-  "All", "Hettipola", "Bakamuna1", "Bakamuna2", "Mathara",
-  "Welioya", "Sample Room", "Piliyandala"
+  "All",
+  "Hettipola",
+  "Bakamuna1",
+  "Bakamuna2",
+  "Mathara",
+  "Welioya",
+  "Sample Room",
+  "Piliyandala",
 ];
 
 const Machine = () => {
@@ -23,7 +26,7 @@ const Machine = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [popupSearch, setPopupSearch] = useState("");
-
+  const [, setPageTitle] = usePageTitle();
 
   //this is for pop window scan option//
 
@@ -31,9 +34,12 @@ const Machine = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-
   //end for pop up window
-  
+
+  useEffect(() => {
+    setPageTitle("📊 Machine Details Report");
+  }, [setPageTitle]);
+
 
   useEffect(() => {
     const fetchMachines = async () => {
@@ -54,13 +60,15 @@ const Machine = () => {
     fetchMachines();
   }, []);
 
-  const filteredMachines = machines.filter(machine =>
-    (selectedBranch === "All" || machine.branch === selectedBranch) &&
-    (searchQuery === "" ||
-      machine.item_code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      machine.serial_no.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      machine.Category.cat_name.toLowerCase().includes(searchQuery.toLowerCase()) 
-    )
+  const filteredMachines = machines.filter(
+    (machine) =>
+      (selectedBranch === "All" || machine.branch === selectedBranch) &&
+      (searchQuery === "" ||
+        machine.item_code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        machine.serial_no.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        machine.Category.cat_name
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()))
   );
 
   // Open Popup
@@ -83,14 +91,14 @@ const Machine = () => {
       setError("Please enter an item code");
       return;
     }
-  
+
     setItemDetails(null); // ✅ Clear previous item details
     setError(null); // ✅ Clear previous errors
     setLoading(true); // ✅ Show loading state
-  
+
     try {
       const response = await getItemCountLastScannedLocation(popupSearch);
-      
+
       if (response.success && response.latestItemCount) {
         setItemDetails(response.latestItemCount);
       } else {
@@ -102,14 +110,13 @@ const Machine = () => {
       setLoading(false); // ✅ Stop loading
     }
   };
-  
 
   return (
     <div className="machine-container">
-      <h2 className="report-heading">📊 Machine Details Report</h2>
+      {/* <h2 className="report-heading">📊 Machine Details Report</h2> */}
 
       {/* Filters: Branch Dropdown & Search Box */}
-      <div className="search-panel">
+      <div className="machinesearch-panel">
         <div className="field-container">
           <label htmlFor="branchSelect">Select Branch:</label>
           <select
@@ -138,12 +145,10 @@ const Machine = () => {
         </div>
 
         <button className="checkmachine-btn" onClick={openPopup}>
-        📍TRACK 
+          📍TRACK
         </button>
 
-        <button className="download-btn">
-          PDF
-        </button>
+        <button className="download-btn">PDF</button>
       </div>
 
       {/* Popup Dialog */}
@@ -156,14 +161,17 @@ const Machine = () => {
               </button>
               <h3 className="popup-title-popup">MACHINE TRACKER</h3>
               <div className="search-container-track-popup">
-              <input
+                <input
                   type="text"
                   className="popup-search-input"
                   placeholder="Enter Item Code..."
                   value={popupSearch}
                   onChange={(e) => setPopupSearch(e.target.value)}
                 />
-                <button className="search-btn-popup" onClick={handlePopupSearch}>
+                <button
+                  className="search-btn-popup"
+                  onClick={handlePopupSearch}
+                >
                   <FaSearch />
                 </button>
               </div>
@@ -172,19 +180,33 @@ const Machine = () => {
               {itemDetails && (
                 <div className="item-details-popup">
                   <h4>Item Details</h4>
-                  <p>🔹 <strong>Name:</strong> {itemDetails.Item.name}</p>
-                  <p>🔢 <strong>Serial No:</strong> {itemDetails.Item.serial_no}</p>
-                  <p>📂 <strong>Category:</strong> {itemDetails.Category.cat_name}</p>
-                  <p>📅 <strong>Last Scanned Date:</strong> {itemDetails.scanned_date}</p>
-                  <p>🏢 <strong>Last Scanned Branch:</strong> {itemDetails.current_branch}</p>
-                  <p>📍 <strong>Owner Branch:</strong> {itemDetails.branch}</p>
+                  <p>
+                    🔹 <strong>Name:</strong> {itemDetails.Item.name}
+                  </p>
+                  <p>
+                    🔢 <strong>Serial No:</strong> {itemDetails.Item.serial_no}
+                  </p>
+                  <p>
+                    📂 <strong>Category:</strong>{" "}
+                    {itemDetails.Category.cat_name}
+                  </p>
+                  <p>
+                    📅 <strong>Last Scanned Date:</strong>{" "}
+                    {itemDetails.scanned_date}
+                  </p>
+                  <p>
+                    🏢 <strong>Last Scanned Branch:</strong>{" "}
+                    {itemDetails.current_branch}
+                  </p>
+                  <p>
+                    📍 <strong>Owner Branch:</strong> {itemDetails.branch}
+                  </p>
                 </div>
               )}
             </div>
           </div>,
           document.body
-        )
-      }
+        )}
       {/* Machine Table */}
       <div className="table-container">
         <table>
@@ -204,7 +226,11 @@ const Machine = () => {
               filteredMachines.map((machine) => (
                 <tr
                   key={machine.item_code}
-                  className={machine.description?.toLowerCase() === "repairing" ? "repairing" : ""}
+                  className={
+                    machine.description?.toLowerCase() === "repairing"
+                      ? "repairing"
+                      : ""
+                  }
                 >
                   <td>{machine.item_code || "N/A"}</td>
                   <td>{machine.serial_no || "N/A"}</td>
@@ -221,7 +247,6 @@ const Machine = () => {
               </tr>
             )}
           </tbody>
-
         </table>
       </div>
     </div>

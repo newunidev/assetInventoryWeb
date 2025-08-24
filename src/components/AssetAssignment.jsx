@@ -14,6 +14,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { usePageTitle } from "../utility/usePageTitle";
 
 // Get the current date in YYYY-MM-DD format
 const currentDate = new Date().toISOString().split("T")[0];
@@ -40,6 +41,11 @@ const AssetAssignment = () => {
     useState(false);
 
   const [permissions, setPermissions] = useState([]); // State to store permissions
+  const [, setPageTitles] = usePageTitle();
+
+  useEffect(() => {
+    setPageTitles("🧑‍🤝‍🧑💻 It Asset Assignment");
+  }, [setPageTitles]);
 
   // Load permissions from localStorage on component mount
   useEffect(() => {
@@ -229,6 +235,9 @@ const AssetAssignment = () => {
       (assignment.assets.serial_no?.toLowerCase() ?? "").includes(
         searchTerm.toLowerCase()
       ) ||
+      (assignment.assets.asset_id?.toLowerCase() ?? "").includes(
+        searchTerm.toLowerCase()
+      ) ||
       (assignment.assets.brand?.toLowerCase() ?? "").includes(
         searchTerm.toLowerCase()
       ) ||
@@ -259,10 +268,14 @@ const AssetAssignment = () => {
     const columns = [
       "EPF NO",
       "Branch",
+      "Department",
       "IT Asset CODE",
       "Serial No",
       "User Name",
       "Brand",
+      "Processor",
+      "Hard",
+      "Ram",
       "Assigned Date",
       "Status",
       "Condition",
@@ -272,10 +285,14 @@ const AssetAssignment = () => {
     const rows = filteredAssignments.map((assignment) => [
       assignment.users.epf_no,
       assignment.users.branch,
+      assignment.users.designation,
       assignment.assets.asset_id,
       assignment.assets.serial_no,
       assignment.users.full_name,
       assignment.assets.brand,
+      assignment.assets.processor,
+      assignment.assets.storage,
+      assignment.assets.ram,
       new Date(assignment.assigned_date).toLocaleDateString(),
       assignment.isCurrentUser ? "Assigned" : "Returned",
       assignment.assets.condition,
@@ -347,6 +364,9 @@ const AssetAssignment = () => {
       "IT Asset CODE": assignment.assets.asset_id,
       "Serial No": assignment.assets.serial_no,
       Brand: assignment.assets.brand,
+      Processor:assignment.assets.processor,
+      Hard:assignment.assets.storage,
+      Ram:assignment.assets.ram,
       "Assigned Date": new Date(assignment.assigned_date).toLocaleDateString(),
       Status: assignment.isCurrentUser ? "Assigned" : "Returned",
       "Returned Date": assignment.returned_date
@@ -416,11 +436,81 @@ const AssetAssignment = () => {
     saveAs(blob, fileName);
   };
 
+  const downloadIdleAssetsExcel = () => {
+    if (filteredAssets.length === 0) {
+      alert("No IT assets to export.");
+      return;
+    }
+
+    const data = filteredAssets.map((asset) => ({
+      "Asset ID": asset.asset_id,
+      "Serial No": asset.serial_no,
+      Brand: asset.brand,
+      Name: asset.name,
+      Processor: asset.processor,
+      Ram: asset.ram,
+      Hard: asset.storage,
+      Condition: asset.condition,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const range = XLSX.utils.decode_range(worksheet["!ref"]);
+
+    // Style header row
+    const headers = Object.keys(data[0]);
+    headers.forEach((header, colIndex) => {
+      const cellRef = XLSX.utils.encode_cell({ r: 0, c: colIndex });
+      if (!worksheet[cellRef]) worksheet[cellRef] = {};
+
+      worksheet[cellRef].s = {
+        font: { bold: true },
+        fill: { fgColor: { rgb: "EEEEEE" } },
+        alignment: { horizontal: "center" },
+        border: {
+          top: { style: "thin", color: { rgb: "000000" } },
+          bottom: { style: "thin", color: { rgb: "000000" } },
+          left: { style: "thin", color: { rgb: "000000" } },
+          right: { style: "thin", color: { rgb: "000000" } },
+        },
+      };
+    });
+
+    // Apply border to all data cells
+    for (let R = range.s.r; R <= range.e.r; R++) {
+      for (let C = range.s.c; C <= range.e.c; C++) {
+        const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
+        if (!worksheet[cellRef]) worksheet[cellRef] = {};
+        worksheet[cellRef].s = {
+          border: {
+            top: { style: "thin", color: { rgb: "000000" } },
+            bottom: { style: "thin", color: { rgb: "000000" } },
+            left: { style: "thin", color: { rgb: "000000" } },
+            right: { style: "thin", color: { rgb: "000000" } },
+          },
+        };
+      }
+    }
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "IT Assets");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+
+    saveAs(blob, "IT_Assets.xlsx");
+  };
+
   return (
     <div className="asset-assignment-container">
-      <h2>Asset Assignments</h2>
+      {/* <h2>Asset Assignments</h2> */}
 
-      <div className="search-panel">
+      <div className="assetassignsearch-panel">
         <input
           type="text"
           placeholder="Search assignments..."
@@ -446,7 +536,7 @@ const AssetAssignment = () => {
         </div>
       </div>
 
-      <div className="table-container">
+      <div className="assignmenttable-container">
         {loading ? (
           <p style={{ textAlign: "center" }}>Loading...</p>
         ) : (
@@ -461,6 +551,9 @@ const AssetAssignment = () => {
                 <th>Serial No</th>
 
                 <th>Brand</th>
+                <th>Processor</th>
+                <th>Hard</th>
+                <th>Ram</th>
                 <th>Assigned Date</th>
                 <th>Status</th>
                 <th>Returned Date</th>
@@ -489,6 +582,9 @@ const AssetAssignment = () => {
                     <td>{assignment.assets.serial_no}</td>
 
                     <td>{assignment.assets.brand}</td>
+                    <td>{assignment.assets.processor}</td>
+                    <td>{assignment.assets.storage}</td>
+                    <td>{assignment.assets.ram}</td>
                     <td>
                       {new Date(assignment.assigned_date).toLocaleDateString()}
                     </td>
@@ -564,6 +660,8 @@ const AssetAssignment = () => {
                     <th>Brand</th>
                     <th>Name</th>
                     <th>Processor</th>
+                    <th>RAM</th>
+                    <th>Hard</th>
                     <th>Condition</th>
                   </tr>
                 </thead>
@@ -579,6 +677,8 @@ const AssetAssignment = () => {
                         <td>{asset.brand}</td>
                         <td>{asset.name}</td>
                         <td>{asset.processor}</td>
+                        <td>{asset.ram}</td>
+                        <td>{asset.storage}</td>
                         <td>{asset.condition}</td>
                       </tr>
                     ))
@@ -593,7 +693,30 @@ const AssetAssignment = () => {
               </table>
             </div>
 
-            <button onClick={closePopup}>Close</button>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "10px",
+                marginTop: "20px",
+              }}
+            >
+              <button onClick={closePopup}>Close</button>
+              <button
+                onClick={downloadIdleAssetsExcel}
+                style={{
+                  backgroundColor: "green",
+                  color: "white",
+                  padding: "8px 16px",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  marginBottom: "10px",
+                }}
+              >
+                📥Excel
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -693,6 +816,10 @@ const AssetAssignment = () => {
                 <p>
                   🔍 <strong>Serial No:</strong>{" "}
                   {selectedAssetAssignment.assets.serial_no}
+                </p>
+                <p>
+                  🔍 <strong>Name:</strong>{" "}
+                  {selectedAssetAssignment.assets.name}
                 </p>
                 <p>
                   🏷️ <strong>Brand:</strong>{" "}

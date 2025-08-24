@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { getCategories } from "../controller/CategoryController";
-import { getAllIdleScanCountbyCateogryLast3Days,getAllIdleScanCountbyCateogryTodaysDate } from "../controller/ItemController";
+import {
+  getAllIdleScanCountbyCateogryLast3Days,
+  getAllIdleScanCountbyCateogryTodaysDate,
+  getItemScanCountByCategory,
+} from "../controller/ItemController";
 import "./IdleScanReport.css"; // Import styles
 import { GiSewingMachine } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
+import { usePageTitle } from "../utility/usePageTitle";
 
 const IdleScanReport = () => {
   const [categories, setCategories] = useState([]);
   const [scanDataMap, setScanDataMap] = useState({}); // Stores scan counts
+  const [runningScanDataMap, setRunningScanDataMap] = useState({});
   const [selectedCategory, setSelectedCategory] = useState(""); // Filter by category
   const navigate = useNavigate();
+  const [, setPageTitles] = usePageTitle();
   // Manually set the branch names
   const branches = [
     { branch_id: 1, branch_name: "Hettipola" },
@@ -22,6 +29,10 @@ const IdleScanReport = () => {
   ];
 
   useEffect(() => {
+    setPageTitles("📊 Idle Scan Report");
+  }, [setPageTitles]);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const categoriesData = await getCategories();
@@ -30,9 +41,15 @@ const IdleScanReport = () => {
         // Fetch scan count data
         const scanCountsResponse =
           await getAllIdleScanCountbyCateogryTodaysDate();
+
         if (scanCountsResponse.success) {
           processScanData(scanCountsResponse.counts || []);
           console.log("Data", scanCountsResponse);
+        }
+        // Running counts
+        const runningCountsResponse = await getItemScanCountByCategory(); // 👈 your existing method
+        if (runningCountsResponse.success) {
+          processRunningScanData(runningCountsResponse.counts || []);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -41,6 +58,40 @@ const IdleScanReport = () => {
 
     fetchData();
   }, []);
+
+  //method for running machines
+  const processRunningScanData = (scans) => {
+    let dataMap = {};
+
+    // Initialize the map
+    categories.forEach((category) => {
+      dataMap[category.cat_id] = {
+        category_name: category.cat_name,
+        counts: {},
+      };
+      branches.forEach((branch) => {
+        dataMap[category.cat_id].counts[branch.branch_name] = 0;
+      });
+    });
+
+    // Populate counts
+    scans.forEach(
+      ({ category_id, category_name, current_branch, unique_item_count }) => {
+        if (!dataMap[category_id]) {
+          dataMap[category_id] = {
+            category_name: category_name,
+            counts: {},
+          };
+        }
+        if (!dataMap[category_id].counts[current_branch]) {
+          dataMap[category_id].counts[current_branch] = 0;
+        }
+        dataMap[category_id].counts[current_branch] = unique_item_count || 0;
+      }
+    );
+
+    setRunningScanDataMap(dataMap);
+  };
 
   const processScanData = (scans) => {
     let dataMap = {};
@@ -76,30 +127,64 @@ const IdleScanReport = () => {
   };
 
   return (
-    <div>
-      <div className="idleScanReport-header-container">
-         
-         
-      </div>
+    <div className="idleScanReport-main-container">
+      <div className="idleScanReport-header-container"></div>
 
       {/* Dropdown to filter by category */}
       <div className="idleScanReport-filter-container">
-        <label htmlFor="categoryFilter">Filter by Category: </label>
-        <select
-          id="idlescanreport-categoryFilter"
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+          }}
         >
-          <option value="">All Categories</option>
-          {categories.map((category) => (
-            <option key={category.cat_id} value={category.cat_id}>
-              {category.cat_name}
-            </option>
-          ))}
-        </select>
+          <div>
+            <label htmlFor="categoryFilter">Filter by Category: </label>
+            <select
+              id="idlescanreport-categoryFilter"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+            >
+              <option value="">All Categories</option>
+              {categories.map((category) => (
+                <option key={category.cat_id} value={category.cat_id}>
+                  {category.cat_name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Color Legend aligned right */}
+          <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+              <span
+                style={{
+                  width: "20px",
+                  height: "20px",
+                  backgroundColor: "red",
+                  borderRadius: "50%",
+                }}
+              ></span>
+              <span>Idle</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+              <span
+                style={{
+                  width: "20px",
+                  height: "20px",
+                  backgroundColor: "green",
+                  borderRadius: "50%",
+                }}
+              ></span>
+              <span>Running</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="idleScanReport-table-container">
+      {/* <div className="idleScanReport-table-container">
         <table className="idleScanReport-scan-table">
           <thead>
             <tr>
@@ -150,8 +235,8 @@ const IdleScanReport = () => {
               ))}
           </tbody>
         </table>
-      </div>
-      {/* <div className="idleScanReport-table-container">
+      </div> */}
+      <div className="idleScanReport-table-container">
         <table className="idleScanReport-scan-table">
           <thead>
             <tr>
@@ -177,7 +262,10 @@ const IdleScanReport = () => {
                         branch.branch_name
                       ] || 0;
 
-                    const runningCount = 0; // Dummy Running Machine Count
+                    const runningCount =
+                      runningScanDataMap[category.cat_id]?.counts[
+                        branch.branch_name
+                      ] || 0;
 
                     return (
                       <td
@@ -210,7 +298,7 @@ const IdleScanReport = () => {
               ))}
           </tbody>
         </table>
-      </div> */}
+      </div>
     </div>
   );
 };

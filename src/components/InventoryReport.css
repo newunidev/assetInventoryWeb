@@ -1,6 +1,9 @@
 .inventory-container {
     padding: 20px;
   }
+  .inventory-report-container{
+     padding: 24px;
+  }
   
   .search-panel {
     display: flex;

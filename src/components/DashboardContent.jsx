@@ -7,6 +7,7 @@ import {
 import { getITAssetCountByCategory } from "../controller/ItAssetController";
 import { getMachines } from "../utility/api";
 import { useNavigate } from "react-router-dom"; // Import useNavigate hook
+import { usePageTitle } from "../utility/usePageTitle";
 
 import MachineDetailDisplay from "../pages/MachineDetailsDisplay";
 
@@ -22,14 +23,20 @@ const DashboardContent = () => {
 
   const [itAssetCountDetails, setItAssetCountDetails] = useState([]);
 
+  const [, setPageTitles] = usePageTitle();
+
   const navigate = useNavigate(); // Initialize useNavigate
   
   const handleCateogryCardClick = (branch,category) => {
-    console.log("Hello clicked", branch);
+    //console.log("Hello clicked", branch);
     //const url = `/machine-details?branch=${encodeURIComponent(branch)}`;
     const url = `/machine-details?branch=${encodeURIComponent(branch)}&category=${encodeURIComponent(category)}`;
     window.open(url, "_blank"); // Opens the URL in a new tab
   };
+
+  useEffect(() => {
+    setPageTitles("📊 Dashboard");
+  }, [setPageTitles]);
 
   // Fetch Machines from API
   useEffect(() => {
@@ -178,7 +185,7 @@ const DashboardContent = () => {
         <input
           type="text"
           className="search-bar"
-          placeholder="Search item..."
+          placeholder="Enter Item Code/ Barcode/ Serial Number"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />

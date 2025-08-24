@@ -6,6 +6,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { usePageTitle } from "../utility/usePageTitle";
 
 const availableBrands = [
   "HP",
@@ -48,6 +49,13 @@ const ItAssetDetails = () => {
   const selectedCategory =
     itCategories.find((c) => c.cat_id === selectedCategoryId)?.cat_name || "";
   // Load permissions from localStorage on component mount
+
+  const [, setPageTitles] = usePageTitle();
+
+  useEffect(() => {
+    setPageTitles("🖥️💻 IT Machine Details");
+  }, [setPageTitles]);
+
   useEffect(() => {
     const storedPermissions =
       JSON.parse(localStorage.getItem("permissions")) || [];
@@ -277,8 +285,8 @@ const ItAssetDetails = () => {
   };
 
   return (
-    <div>
-      <h2>IT Asset Details</h2>
+    <div className="transferMachine-container">
+      {/* <h2>IT Asset Details</h2> */}
 
       <div className="itassetreport-search-panel">
         {/* Left Side: Search Input & Category Dropdown */}
@@ -374,7 +382,7 @@ const ItAssetDetails = () => {
           </table>
         )}
       </div> */}
-      <div className="table-container">
+      <div className="itassettable-container">
         {loading ? (
           <p style={{ textAlign: "center" }}>Loading...</p>
         ) : (
@@ -385,6 +393,8 @@ const ItAssetDetails = () => {
                 <th>Serial No</th>
                 <th>Brand</th>
                 <th>Name</th>
+                <th>Description</th>
+                
 
                 {/* Show all columns when no category is selected */}
                 {selectedCategory === "" && (
@@ -422,6 +432,7 @@ const ItAssetDetails = () => {
                     <td>{asset.serial_no}</td>
                     <td>{asset.brand}</td>
                     <td>{asset.name}</td>
+                    <td>{asset.description}</td>
 
                     {/* Show all columns when no category is selected */}
                     {selectedCategory === "" && (

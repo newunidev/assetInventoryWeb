@@ -1,13 +1,23 @@
 
+.transferMachine-container {
+  padding: 24px;
+  font-family: "Segoe UI", sans-serif;
+  background: #f4f8fb;
+  min-height: 100vh;
+}
+
+
 .itassetreport-search-panel {
   display: flex;
   justify-content: space-between; /* Align left & right elements */
   align-items: center;
-  background: #694cea;
+  background: rgb(255, 255, 255);
   padding: 10px;
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
   flex-wrap: wrap; /* Ensures responsiveness */
+  margin-top: 10px;
+  
 }
 
 /* Left section (Search + Category) */
@@ -31,6 +41,8 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   width: 200px;
+  background-color: white;
+  color: black;
 }
 
 /* Category Dropdown */
@@ -40,11 +52,15 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   cursor: pointer;
+  background-color: white;
+  color: black;
 }
 
 /* Download Dropdown */
 .itassetreport-download-container {
   position: relative;
+  color: black;
+  background-color:white;
 }
 
 .itassetreport-dropdown {
@@ -102,7 +118,7 @@
 
 
 /* Table Container */
-.table-container {
+.itassettable-container {
   width: 100%;
   min-height: 300px;
   max-height: 500px;
@@ -112,10 +128,14 @@
   border-radius: 8px;
   font-size: 12px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+
+  scrollbar-width: none;
+
 }
 
 /* Table Styling */
-.user-table {
+.itassetuser-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
@@ -123,29 +143,29 @@
 }
 
 /* Table Header */
-.user-table thead {
+.itassetuser-table thead {
   background-color: #4a90e2;
   color: white;
 }
 
-.user-table th {
+.itassetuser-table th {
   padding: 12px;
   text-align: left;
   border-bottom: 2px solid #ddd;
 }
 
 /* Table Rows */
-.user-table tbody tr {
+.itassetuser-table tbody tr {
   border-bottom: 1px solid #ddd;
   transition: background 0.3s;
 }
 
-.user-table td {
+.itassetuser-table td {
   padding: 12px;
 }
 
 /* Hover Effect */
-.user-table tbody tr:hover {
+.itassetuser-table tbody tr:hover {
   background-color: #f5f5f5;
 }
 
@@ -155,12 +175,12 @@
       padding: 10px;
   }
 
-  .user-table {
+  .itassetuser-table {
       font-size: 14px;
   }
 
-  .user-table th, 
-  .user-table td {
+  .itassetuser-table th, 
+  .itassetuser-table td {
       padding: 10px;
   }
 

@@ -6,6 +6,9 @@ import { getCategories } from "../controller/CategoryController";
 import { getAllItemCountLastScannedLocation } from "../controller/ItemController";
 import { useLocation } from "react-router-dom";
 
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
 const MachineDetailDisplay = () => {
   // Receive branch as a prop
   const [machines, setMachines] = useState([]);
@@ -107,7 +110,92 @@ const MachineDetailDisplay = () => {
     const scannedItem = lastScannedItems.find(
       (item) => item.item_id === itemCode
     );
-    return scannedItem ? scannedItem.current_branch : machineBranch;
+    return scannedItem ? scannedItem.current_branch : "No Scan Found";
+  };
+
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+
+    // Header
+    doc.setFontSize(16);
+    doc.text("Machine Tracking Report", 14, 15);
+
+    doc.setFontSize(10);
+    doc.text(`Branch: ${branchFromURL || "All"}`, 14, 25);
+    doc.text(`Category: ${category || "All Categories"}`, 14, 32);
+    doc.text(`Search Query: ${searchQuery || "None"}`, 14, 39);
+
+    const tableBody = filteredMachines.map((machine) => {
+      const lastScanned = getLastScannedBranch(
+        machine.item_code,
+        machine.branch
+      );
+      return {
+        data: [
+          machine.item_code || "N/A",
+          machine.serial_no || "N/A",
+          machine.name || "N/A",
+          machine.description || "N/A",
+          machine.branch || "N/A",
+          lastScanned,
+          machine.model_no || "N/A",
+          machine.box_no || "N/A",
+        ],
+        isNoScan: lastScanned === "No Scan Found",
+      };
+    });
+
+    // AutoTable
+    doc.autoTable({
+      startY: 45,
+      head: [
+        [
+          "Item Code",
+          "Serial No",
+          "Name",
+          "Description",
+          "Branch",
+          "Last Scanned Branch",
+          "Model No",
+          "Box No",
+        ],
+      ],
+      body: tableBody.map((row) => row.data),
+      theme: "grid",
+      styles: {
+        fontSize: 7,
+        cellPadding: 2,
+      },
+      headStyles: {
+        fillColor: [41, 128, 185],
+        textColor: 255,
+        fontStyle: "bold",
+      },
+      columnStyles: {
+        // Let content define the width, use auto
+        0: { cellWidth: "wrap" },
+        1: { cellWidth: "wrap" },
+        2: { cellWidth: "wrap" },
+        3: { cellWidth: "wrap" },
+        4: { cellWidth: "wrap" },
+        5: { cellWidth: "wrap" },
+        6: { cellWidth: "wrap" },
+        7: { cellWidth: "wrap" },
+      },
+      willDrawCell: function (data) {
+        const rowIndex = data.row.index;
+        const colIndex = data.column.index;
+        const rowData = tableBody[rowIndex];
+
+        // Highlight entire row if "No Scan Found"
+        if (rowData && rowData.isNoScan) {
+          data.cell.styles.fillColor = [255, 0, 0]; // Red background
+          data.cell.styles.textColor = 255; // White text
+        }
+      },
+    });
+
+    doc.save("Machine_Tracking_Report.pdf");
   };
 
   return (
@@ -153,7 +241,10 @@ const MachineDetailDisplay = () => {
         </div>
 
         {/* Download PDF Button */}
-        <button className="machintrackingreport-download-btn">
+        <button
+          className="machintrackingreport-download-btn"
+          onClick={downloadPDF}
+        >
           Download PDF
         </button>
       </div>
@@ -189,7 +280,19 @@ const MachineDetailDisplay = () => {
                   <td>{machine.name || "N/A"}</td>
                   <td>{machine.description || "N/A"}</td>
                   <td>{machine.branch || "N/A"}</td>
-                  <td>
+                  {/* <td>
+                    {getLastScannedBranch(machine.item_code, machine.branch)}
+                  </td> */}
+                  <td
+                    className={
+                      getLastScannedBranch(
+                        machine.item_code,
+                        machine.branch
+                      ) === "No Scan Found"
+                        ? "no-scan-found"
+                        : ""
+                    }
+                  >
                     {getLastScannedBranch(machine.item_code, machine.branch)}
                   </td>
                   <td>{machine.model_no || "N/A"}</td>

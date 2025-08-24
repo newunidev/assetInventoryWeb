@@ -1,0 +1,301 @@
+.rentmachineallocation-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  padding: 16px;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden;
+  min-height: 80vh;
+}
+
+.rentmachineallocation-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.rentmachineallocation-right {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow-y: hidden;
+  max-height: 85vh;
+}
+
+.rentmachineallocation-form-card {
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 12px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
+  border: 1px solid #ccc; /* Add this line for the border */
+}
+
+.rentmachineallocation-form-heading {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.rentmachineallocation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rentmachineallocation-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.rentmachineallocation-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  flex: 1;
+  min-width: 28%;
+}
+
+.rentmachineallocation-form input,
+.rentmachineallocation-form textarea,
+.rentmachineallocation-form select {
+  padding: 6px 8px;
+  height: 30px;
+  font-size: 13px;
+  border: 1px solid #060606;
+  border-radius: 5px;
+  background-color: white;
+  color: black;
+  box-sizing: border-box;
+}
+
+.rentmachineallocation-form input[type="date"] {
+  background-color: rgb(255, 255, 255);
+  color: black;
+  border: 1px solid #232222;
+  border-radius: 5px;
+  padding: 6px 8px;
+  font-size: 13px;
+  height: 30px;
+  width: 100%;
+  
+}
+.rentmachineallocation-form input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1); /* This will invert the color, making a white icon black */
+  /* Or you can try to set a specific color if the filter doesn't work as expected */
+  /* color: black; */ 
+}
+.rentmachineallocation-form textarea {
+  height: 50px;
+  resize: vertical;
+}
+
+.rentmachineallocation-form button {
+  align-self: flex-start;
+  padding: 6px 14px;
+  font-size: 13px;
+  background-color: #222269;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  height: 32px;
+}
+
+.rentmachineallocation-form button:hover {
+  background-color: #000048;
+}
+
+.rentmachineallocation-machinetable-card {
+  flex: 1;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
+  overflow-y: hidden;
+  max-height: calc(45vh - 10px);
+  margin-bottom: 10px;
+  border: 1px solid #ccc; /* Add this line for the border */
+
+  /* Hide scrollbars */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+/* Enable scrolling on tbody or wrap tbody in a div */
+.rentmachineallocation-machinetable tbody {
+  display: block;       /* Make tbody scrollable */
+  max-height: 180px;    /* Adjust height as needed */
+  overflow-y: auto;     /* Enable vertical scrolling */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.2) transparent;
+}
+
+/* Keep thead fixed and aligned */
+.rentmachineallocation-machinetable thead,
+.rentmachineallocation-machinetable tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+.rentmachineallocation-machinetable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-height: 80vh;
+  
+}
+
+
+.rentmachineallocation-machinetable th,
+.rentmachineallocation-machinetable td {
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 12px;
+}
+
+.rentmachineallocation-machinetable thead {
+  background-color: #222269;
+  color: white;
+}
+
+.rentmachineallocation-machinetable tbody tr:hover {
+  background-color: #f2f2f2;
+  cursor: pointer;
+}
+
+
+/**/
+.rentmachineallocation-allocationtable {
+  border-collapse: collapse;
+  font-size: 12px; /* Fixed: must include unit */
+  font-weight: normal;
+  width: max-content; /* Allows table to grow horizontally */
+  min-width: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Use your standard font */
+  border-radius: 10;
+}
+
+/* Table container scrolls vertically when it hits the parent height */
+.rentmachineallocation-allocationtable-container {
+  height: 100%; /* Takes full height of parent */
+  max-height: 100%; /* Ensures it doesn't grow beyond parent */
+  overflow-y: auto;
+  border: 1px solid #ccc;
+}
+
+/* Wrapper to allow horizontal scrolling */
+.rentmachineallocation-allocationtable-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+/* Table headers */
+.rentmachineallocation-allocationtable,
+.rentmachineallocation-allocationtable th,
+.rentmachineallocation-allocationtable td {
+  font-size: 13px !important;
+  font-weight: bold !important;
+  
+}
+
+
+/* Optional: Thin scrollbar styling */
+.rentmachineallocation-allocationtable-wrapper::-webkit-scrollbar,
+.rentmachineallocation-allocationtable-container::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.rentmachineallocation-allocationtable-wrapper::-webkit-scrollbar-thumb,
+.rentmachineallocation-allocationtable-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.rentmachineallocation-allocationtable-wrapper::-webkit-scrollbar-track,
+.rentmachineallocation-allocationtable-container::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.rentmachineallocation-allocationtable-wrapper,
+.rentmachineallocation-allocationtable-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+}
+
+.rentmachineallocation-inactive-row {
+  background-color: #b01919; /* Light red background */
+  color: #a10000;            /* Dark red text for better contrast */
+}
+
+
+.rentmachineallocation-allocationsearch-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.rentmachineallocation-allocationsearch-input {
+  width: 280px;         /* Reduced width */
+  height: 36px;         /* Increased height */
+  padding: 6px 10px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+  color: black;
+}
+.rentmachineallocation-radio-group {
+  display: flex;
+  gap: 10px;
+  font-size: 15px;
+}
+
+
+
+
+
+.rentmachineallocation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.rentmachineallocation-header h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.rentmachineallocation-search-input {
+  padding: 6px 10px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 50%;
+  background-color: white;
+  color: black;
+}
+
+
+.rentmachineallocation-warning-banner {
+  background-color: #ffe0e0;
+  color: #b30000;
+  border: 1px solid #ffcccc;
+  padding: 15px;
+  margin: 20px 0;
+  border-radius: 8px;
+  font-weight: bold;
+  text-align: center;
+}

@@ -1,0 +1,364 @@
+.purchase-order-report-all-wrapper {
+  margin: 20px auto;
+  padding: 0 20px;
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+.purchase-order-report-all-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 10px 5px;
+  max-width: 1000px;
+  margin: auto;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  color: #333;
+  min-height: calc(100vh - 70px);
+  margin-bottom: 20px;
+}
+
+.purchase-order-report-all-header {
+  margin-bottom: 25px;
+}
+
+.purchase-order-report-all-header-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+}
+
+.purchase-order-report-all-barcode-container {
+  margin-top: 30px;
+  margin-right: 1px;
+  margin-left: 10px;
+  padding: 0;
+}
+
+.purchase-order-report-all-company-details {
+  text-align: center;
+  flex-grow: 1;
+}
+
+.purchase-order-report-all-header h2 {
+  font-size: 28px;
+  color: #003366;
+  margin-bottom: 5px;
+}
+
+.purchase-order-report-all-labels {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 40px;
+  margin-bottom: 25px;
+  padding-left: 100px;
+}
+
+.purchase-order-report-all-label {
+  font-weight: 600;
+  color: #444;
+  font-size: 12px;
+}
+
+.purchase-order-report-all-label span {
+  font-weight: normal;
+  color: #000;
+}
+
+.purchase-order-report-all-label-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 6px;
+  align-items: flex-start;
+  font-weight: bold;
+}
+
+.purchase-order-report-all-label-row strong {
+  min-width: 100px;
+  font-weight: bold;
+}
+
+.purchase-order-report-all-label-value {
+  flex: 1;
+  white-space: pre-line;
+}
+
+.purchase-order-report-all-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.purchase-order-report-all-table th,
+.purchase-order-report-all-table td {
+  border: 1px solid #ccc;
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 10px;
+}
+
+.purchase-order-report-all-table th {
+  background-color: #003366;
+  color: #fff;
+  font-weight: 600;
+}
+
+.purchase-order-report-all-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.purchase-order-report-all-footer {
+  margin-top: 40px;
+  font-weight: 500;
+  color: #555;
+}
+
+.purchase-order-report-all-download-button {
+  background-color: #003366;
+  color: #fff;
+  padding: 10px 20px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.purchase-order-report-all-download-button:hover {
+  background-color: #005599;
+}
+
+ 
+
+.purchase-order-report-all-signatures-row {
+  margin-top: 50px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.purchase-order-report-all-signature-box {
+  flex: 1;
+  text-align: center;
+}
+
+.purchase-order-report-all-signature-box strong {
+  display: block;
+  margin-bottom: 40px;
+  font-size: 14px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.purchase-order-report-all-signature-label {
+  font-size: 13px;
+  color: #333;
+}
+
+/* Scrollbar styling */
+.purchase-order-report-all-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+.purchase-order-report-all-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+.purchase-order-report-all-wrapper::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.purchase-order-report-all-wrapper::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+.purchase-order-report-all-wrapper {
+  scrollbar-width: thin;
+  scrollbar-color: #888 transparent;
+}
+
+.purchase-order-report-all-top-right-corner {
+  text-align: right;
+  font-weight: bold;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.purchase-order-report-all-icon-button {
+  background-color: red;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.purchase-order-report-all-print-button {
+  background-color: white;
+  color: black;
+  border: 4px solid black;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* PRINT STYLES */
+@media print {
+  * {
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+  }
+
+  *::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  html, body {
+    overflow: visible !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 5mm;
+  }
+
+  body,
+  .purchase-order-report-all-print-content {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 10pt;
+    line-height: 1.15;
+    color: black;
+  }
+
+  .purchase-order-report-all-print-content {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  table.purchase-order-report-all-table {
+    border-collapse: collapse;
+    border: 1px solid black;
+    font-size: 10pt;
+  }
+
+  table.purchase-order-report-all-table th,
+  table.purchase-order-report-all-table td {
+    border: 1px solid black;
+    padding: 2px 4px;
+  }
+
+  table.purchase-order-report-all-table th {
+    font-size: 10pt;
+    color: #000;
+  }
+
+  button,
+  .navbar,
+  .sidebar {
+    display: none !important;
+  }
+
+  canvas {
+    max-width: 120px !important;
+    max-height: 40px !important;
+  }
+}
+
+
+/*for stick buttons*/
+.purchase-order-report-all-sticky-buttons {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Common styles for both buttons */
+.purchase-order-report-all-approve-button,
+.purchase-order-report-all-reject-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+  transform: scale(1);
+}
+
+/* Approve button styling */
+.purchase-order-report-all-approve-button {
+  background: linear-gradient(135deg, #4caf50, #2e7d32);
+}
+
+.purchase-order-report-all-approve-button:hover {
+  background: linear-gradient(135deg, #43a047, #1b5e20);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+}
+
+/* Reject button styling */
+.purchase-order-report-all-reject-button {
+  background: linear-gradient(135deg, #e53935, #b71c1c);
+}
+
+.purchase-order-report-all-reject-button:hover {
+  background: linear-gradient(135deg, #d32f2f, #7f0000);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(229, 57, 53, 0.4);
+}
+
+/*PO GRN*/
+.purchase-order-report-all-grn-button {
+  background: linear-gradient(135deg, #2d055f, #862ae8);
+}
+
+.purchase-order-report-all-grn-button:hover {
+  background: linear-gradient(135deg, #7074ee, #05055c);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(229, 57, 53, 0.4);
+}
+
+.purchase-order-report-all-edit-button {
+  background: linear-gradient(135deg, #260447, #097ebc);
+}
+
+.purchase-order-report-all-edit-button:hover {
+  background: linear-gradient(135deg, #0eeddb, #210249);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(229, 57, 53, 0.4);
+}
+.purchase-order-report-all-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 24px;
+  color: #555;
+  background-color: #f9f9f9;
+}
+
+.blinking-loader {
+  animation: blink 1.2s linear infinite;
+  font-weight: bold;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.3;
+  }
+}

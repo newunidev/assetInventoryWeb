@@ -1,0 +1,153 @@
+.rentmachinesummery-wrapper {
+  padding: 16px;
+  background: #f0f2f5;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.rentmachinesummery-container {
+  display: flex;
+  height: 100%;
+  gap: 16px;
+}
+
+/* LEFT */
+.rentmachinesummery-left {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 85vh;
+}
+
+.rentmachinesummery-table-container {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+.rentmachinesummery-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 500px;
+}
+
+ 
+
+.rentmachinesummery-table th,
+.rentmachinesummery-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 12px;
+  text-align: left;
+  
+  
+}
+
+.rentmachinesummery-table th {
+  background-color: #7eb0f7;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  font-size: 14;
+}
+
+.expired-row {
+  background-color: #ffeaea;
+  color: #d10000;
+}
+
+/* RIGHT */
+.rentmachinesummery-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 85vh;
+  gap: 16px;
+  
+
+}
+.rentmachinesummery-chart-row {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.rentmachinesummery-chart-row .chart-container {
+  flex: 1;
+}
+
+/* ALERTS */
+.rentmachinesummery-alerts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.alert-box {
+  padding: 14px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  background-color: #fffbe6;
+  border-left: 6px solid #ffc107;
+}
+
+.alert-expired {
+  background-color: #ffe5e5;
+  border-left-color: #e74c3c;
+}
+
+.alert-active {
+  background-color: #e8fff1;
+  border-left-color: #2ecc71;
+}
+
+.alert-branches {
+  background-color: #e6f3ff;
+  border-left-color: #3498db;
+}
+
+/* CHARTS */
+.rentmachinesummery-bottom-charts {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  padding-right: 4px;
+
+  /* Hide scrollbars */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.chart-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+  min-height: 240px;
+   
+}
+
+.chart-small-container {
+  height: 250px; /* Reduced height */
+  background-color: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

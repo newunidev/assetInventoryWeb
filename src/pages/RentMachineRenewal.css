@@ -1,0 +1,271 @@
+/* Main wrapper for the entire page */
+.rentmachinerenewal-wrapper {
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+  height: 100%;
+  background-color: #f9f9f9;
+}
+
+/* Left side form container (split into top and bottom) */
+.rentmachinerenewal-left {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Form card styling */
+.rentmachinerenewal-form-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Input label */
+.rentmachinerenewal-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #013b47;
+}
+
+/* Input and date fields */
+.rentmachinerenewal-input,
+.rentmachinerenewal-datepicker {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  width: 100%;
+}
+
+/* Submit or Action button */
+.rentmachinerenewal-button {
+  background-color: #013b47;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.rentmachinerenewal-button:hover {
+  background-color: #025c70;
+}
+
+/* Table section */
+.rentmachinerenewal-table-container {
+  width: 70%;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+  max-height: 90%;
+}
+
+/* Table */
+.rentmachinerenewal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.rentmachinerenewal-table th,
+.rentmachinerenewal-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+  font-size: 12px;
+}
+
+.rentmachinerenewal-table th {
+  background-color: #013b47;
+  color: white;
+  font-weight: 600;
+}
+
+.rentmachinerenewal-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* ===== New styles for right section search and branch select ===== */
+
+/* Container holding search input and branch select */
+.rentmachinerenewal-search-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-start; /* left align */
+  flex-wrap: nowrap;
+  margin-bottom: 15px;
+}
+
+/* Smaller input/select for search and branch select */
+.rentmachinerenewal-input {
+  font-size: 13px;
+  padding: 6px 10px;
+  min-width: 150px;
+  max-width: 250px;
+  border-radius: 6px;
+  border: 1.5px solid #013b47;
+  background-color: #fff;
+  color: #013b47;
+  box-sizing: border-box;
+  transition: border-color 0.25s ease;
+  cursor: pointer;
+}
+
+.rentmachinerenewal-input:focus {
+  border-color: #026f88;
+  box-shadow: 0 0 4px rgba(2, 111, 136, 0.5);
+}
+
+/* Fix width for branch select */
+.rentmachinerenewal-search-row select.rentmachinerenewal-input {
+  width: 180px;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .rentmachinerenewal-wrapper {
+    flex-direction: column;
+  }
+
+  .rentmachinerenewal-left,
+  .rentmachinerenewal-table-container {
+    width: 100%;
+  }
+}
+
+/* Row container for RentItem ID and PO_No inputs */
+.rentmachinerenewal-input-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.rentmachinerenewal-input-row label {
+  flex: 1; /* Equal width for both inputs */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Make RentItem ID input read-only visually distinct */
+.rentmachinerenewal-input[readonly] {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+  color: #666;
+}
+
+.rentmachinerenewal-daterow {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.rentmachinerenewal-label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: #013b47;
+  font-weight: 500;
+}
+
+.rentmachinerenewal-input[type="date"] {
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 180px;
+}
+.rentmachinerenewal-table-toolbar {
+  margin-bottom: 15px;
+}
+
+.rentmachinerenewal-toolbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Align items by their bottom edge */
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.rentmachinerenewal-search-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.rentmachinerenewal-input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.rentmachinerenewal-button-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.rentmachinerenewal-label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 0px;
+}
+
+.rentmachinerenewal-new-button {
+  background-color: #228B22; /* forest green */
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.rentmachinerenewal-new-button:hover {
+  background-color: #1a6f1a;
+}
+.rentmachinerenewal-daterow-with-button {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.rentmachinerenewal-daterow {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  flex-grow: 1;
+}
+
+.rentmachinerenewal-allocate-button {
+  padding: 10px 20px;
+  background-color: #2e8b57;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.rentmachinerenewal-allocate-button:hover {
+  background-color: #246b44;
+}

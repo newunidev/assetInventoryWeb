@@ -1,103 +1,103 @@
 /* General Layout */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  html, body, #root {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-  
-  .dashboard {
-    display: flex;
-    width: 100%;
-    height: 100vh;
-    background-color: #f4f4f4;
-  }
-  
-  /* Sidebar */
-  .sidebar {
-    background-color: #000000;
-    color: white;
-    width: 220px;
-    padding: 20px;
-    transition: all 0.3s ease-in-out;
-    height: 100vh;
-  }
-  
-  .sidebar.closed {
-    width: 60px;
-  }
-  
-  .sidebar ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .sidebar li {
-    display: flex;
-    align-items: left;
-    gap: 10px;
-    padding: 10px;
-    cursor: pointer;
-    transition: 0.3s;
-    border-radius: 8px; /* Adjust the value as needed */
-  }
-  
-  .sidebar li:hover {
-    background-color: #ff6229;
-  }
-  
-  .logout {
-    margin-top: 50px;
-    color: #e74c3c;
-  }
-  
-  /* Menu Button */
-  .menu-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    margin-bottom: 20px;
-  }
-  
-  /* Main Content */
-  .main-content {
-    flex: 1;
-    padding: 20px;
-    height: 100vh;
-    overflow-y: auto;
-    color: #333; /* Set dark text color */
-    font-weight: bold;
-    
-    
-  }
-  
-   
-  
-  /* Cards */
-  .card-container {
-    display: flex;
-    gap: 20px;
-    margin-top: 20px;
-  }
-  
-  .card {
-    background: white;
-    padding: 20px;
-    flex: 1;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    color: #333; /* Set dark text color */
-    font-weight: bold;
-  }
-  
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.dashboard {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  background-color: #f4f4f4;
+}
+
+/* Sidebar */
+.sidebar {
+  background: linear-gradient(to bottom, #000000, #222269);
+  color: white;
+  width: 220px;
+  padding: 20px;
+  transition: all 0.3s ease-in-out;
+  height: 100vh;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 100px;
+}
+
+.sidebar.closed {
+  width: 60px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  display: flex;
+  align-items: left;
+  gap: 10px;
+  padding: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 8px; /* Adjust the value as needed */
+}
+
+.sidebar li:hover {
+  background-color: #222269;
+}
+
+.logout {
+  margin-top: 50px;
+  color: #222269;
+}
+
+/* Menu Button */
+.menu-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+   padding: 0 0px 20px 0px; /* top padding 0 */
+  height: 100vh;
+  overflow-y: hidden;
+  color: #333; /* Set dark text color */
+  font-weight: bold;
+}
+
+/* Cards */
+.card-container {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  flex: 1;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  color: #333; /* Set dark text color */
+  font-weight: bold;
+}
+
 /* Ensure text color stays white on hover */
 .link {
   text-decoration: none;
@@ -110,16 +110,17 @@
   transition: background 0.3s;
 }
 
+
 .link:hover {
-  color: white !important;  /* Force white text color */
-  background-color: #ff6229;
+  color: white !important; /* Force white text color */
+  background-color: #222269;
 }
 
 .sub-menu .link:hover {
   color: white !important; /* Ensure submenu links also stay white */
 }
-  
-   /*start for cehck sub menu */
+
+/*start for cehck sub menu */
 /* Parent List Item */
 .reports {
   position: relative;
@@ -137,7 +138,7 @@
 /* Updated Submenu Styling */
 .sub-menu {
   position: absolute;
-  left: 0;  /* Align to left (under Reports) */
+  left: 0; /* Align to left (under Reports) */
   top: 100%; /* Show below the Reports list */
   background: #2a2a3d;
   border-radius: 8px;
@@ -145,7 +146,7 @@
   box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.2);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-10px);  /* Start slightly above */
+  transform: translateY(-10px); /* Start slightly above */
   transition: opacity 0.3s ease, transform 0.3s ease;
   width: 180px; /* Adjust width if needed */
 }
@@ -178,15 +179,12 @@
 }
 
 .sub-menu .link:hover {
-  color: #f4a261;
+  color: #8d61f4;
 }
 
-   
-   
-   
-   /*end*/
-  
-  .navbar {
+/*end*/
+
+/* .navbar {
     
     display: flex;
     justify-content: space-between;
@@ -196,65 +194,100 @@
     padding: 10px 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 10px; /* Adjust the value as needed */
-  }
-  
-  .user-info {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    background: #2a2a3a;
-    padding: 8px 15px;
-    border-radius: 10px;
-    flex-wrap: wrap;  /* Allows wrapping on smaller screens */
-    max-width: 100%;   /* Ensures it does not overflow */
-    justify-content: space-between; /* Adjusts spacing dynamically */
- }
-  
- .user-details {
-    display: flex;
-    flex-direction: column;
-    min-width: 0; /* Prevents overflow */
-    flex: 1; /* Allows it to shrink and grow */
-  }
-  
-  .user-email {
-    font-weight: bold;
-    color: #f4b400;
-  }
-  
-  .user-branch {
-    color: #ff043a;
-    font-style: italic;
-  }
-  
-  .profile-btn {
-    white-space: nowrap; /* Prevents button text from breaking */
-    flex-shrink: 0;
-    background-color: green; /* Prevents button from shrinking too much */
-  }
-  
-  .profile-btn:hover {
-    background: #3367d6;
-  }
+/*}
+   */
+
+.navbar {
+  margin: 0;
+  padding: 0 20px; /* Remove vertical padding */
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to right, #000000, #222269);;
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 70px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: #1c1c4f; /* 50% transparent */
+
+  padding: 0 12px;
+  border-radius: 10px;
+  height: 100%; /* Fills parent's height */
+  flex-wrap: nowrap; /* Avoid wrapping inside navbar */
+  border-bottom-right-radius: 70px;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Prevents overflow */
+  flex: 1; /* Allows it to shrink and grow */
+}
+
+.user-email {
+  font-weight: bold;
+  color: #f4b400;
+}
+
+.user-branch {
+  color: #ff043a;
+  font-style: italic;
+}
 
 
-  .logout-btn {
-    background-color: #e2002d; /* Red color */
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px; /* Space between icon and text */
-    transition: background 0.3s ease-in-out;
+.profile-btn {
+  white-space: nowrap;         /* Prevents text from breaking */
+  flex-shrink: 0;
+  background-color: white;     /* White background */
+  color: #222269;              /* Text or icon color */
+  border: none;
+  border-radius: 50%;          /* Makes it circular */
+  width: 40px;                 /* Adjust size */
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;             /* Adjust text/icon size */
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Optional shadow */
+}
+
+.profile-btn:hover {
+  background: #3367d6;
+}
+
+.logout-btn {
+  width: auto;           /* Allow the button to grow */
+  height: auto;
+  padding: 12px;         /* Padding creates size */
+  background-color: #e2002d;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease-in-out;
 }
 
 .logout-btn:hover {
-    background-color: #de7773; /* Darker red on hover */
+  background-color: #ffd60b; /* Darker red on hover */
 }
+.logout-container {
+  position: absolute;
+  bottom: 20px;
+  left: 6%;
+  transform: translateX(-50%);
+}
+
 
 .sidebar-footer {
   position: absolute;
@@ -265,30 +298,89 @@
   text-align: right;
   font-size: 12px;
   font-weight: bold;
-  color: #363030;
+  color: #303336;
   padding: 1px;
   background: white(0, 0, 0, 0.1);
 }
 
+/* Notification icon container */
+.notification-icon {
+  position: relative;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+/* Notification count badge */
+.notification-icon {
+  position: relative;
+  display: inline-block;
+}
+
+.bell {
+  font-size: 22px;
+  position: relative;
+}
+
+.notification-count {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: red;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+  user-select: none;
+  pointer-events: none;
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  background-color: #000; /* Black background */
+  color: #fff; /* White font color */
+  width: 240px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  padding: 12px;
+  z-index: 1000;
+  font-size: 14px;
+}
+
+.notification-dropdown li {
+  padding: 8px 10px;
+  border-bottom: 1px solid #333; /* Darker border */
+  cursor: default;
+}
+
+.notification-dropdown li:last-child {
+  border-bottom: none;
+}
+
+.notification-dropdown li:hover {
+  background-color: #222; /* Dark grey hover */
+}
 
 @media (max-width: 600px) {
   .user-info {
-      flex-direction: column; /* Stack items vertically */
-      align-items: flex-start; /* Align content to the left */
-      gap: 10px; /* Reduce spacing for smaller screens */
+    flex-direction: column; /* Stack items vertically */
+    align-items: flex-start; /* Align content to the left */
+    gap: 10px; /* Reduce spacing for smaller screens */
   }
 
   .profile-btn {
-      width: 100%; /* Make button full-width on small screens */
-      text-align: center;
+    width: 100%; /* Make button full-width on small screens */
+    text-align: center;
   }
 }
-
 
 /*styles for it asset side button*/
 /* IT Assets Menu */
 /* Parent List Item */
-.itassets {
+.parentdropdown {
   position: relative;
   align-items: center;
   cursor: pointer;
@@ -298,15 +390,15 @@
   transition: background 0.3s ease-in-out;
 }
 
-.itassets:hover {
+.parentdropdown:hover {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
 }
 
 /* Right-aligned Submenu */
-.itassets .sub-menu {
+.parentdropdown .sub-menu {
   position: absolute;
-  left: 100%;  /* Push submenu to the right of the parent */
+  left: 100%; /* Push submenu to the right of the parent */
   top: 0; /* Align submenu to the top of the parent */
   background: #2a2a3d;
   border-radius: 8px;
@@ -314,14 +406,14 @@
   box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.2);
   opacity: 0;
   visibility: hidden;
-  transform: translateX(-10px);  /* Start slightly left */
+  transform: translateX(-10px); /* Start slightly left */
   transition: opacity 0.3s ease, transform 0.3s ease;
   width: 240px; /* Adjust width if needed */
   z-index: 1000; /* Ensure it appears above other elements */
 }
 
 /* Show submenu on hover */
-.itassets:hover .sub-menu {
+.parentdropdown:hover .sub-menu {
   opacity: 1;
   visibility: visible;
   transform: translateX(0); /* Move to position */
@@ -348,5 +440,28 @@
 }
 
 .sub-menu .link:hover {
-  color: #f4a261;
+  color: #222269;
+}
+
+
+/* Nested submenu specific style */
+.sub-menu .sub-menu {
+  left: 100%;
+  top: 0;
+  font-size: 13px; /* or any size you prefer */
+  background-color: #ffffff;
+  min-width: 220px;
+}
+
+/* Optional: style for nested submenu links */
+.sub-menu .sub-menu .link {
+  font-size: 15px;
+  color: #000;
+}
+
+.nested-dropdown {
+  font-size: 14px; /* or 13px, adjust as needed */
+  display: flex;
+  align-items: center;
+  gap: 8px; /* optional spacing between icon and text */
 }

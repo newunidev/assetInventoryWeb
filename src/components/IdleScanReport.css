@@ -1,9 +1,16 @@
+.idleScanReport-main-container{
+   padding-left: 24px;
+   padding-bottom: 24px;
+   padding-right: 24px;
+   padding-top: 10px;
+}
 /* Center the header and animation horizontally */
 .idleScanReport-header-container {
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 20px; /* Add margin for spacing */
+    
   }
   
   .idleScanReport-sleeping-animal-animation {

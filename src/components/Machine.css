@@ -101,12 +101,12 @@
 
   /*css for search panel Start*/ 
   
-  .search-panel {
+  .machinesearch-panel {
     display: flex;
     align-items: center; /* Align items vertically */
     gap: 15px;
     margin-bottom: 20px;
-    background: #a7ccf1;
+    background: #ffffff;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0px 2px 15px rgba(204, 179, 179, 0.1);
@@ -114,7 +114,7 @@
   }
   
   /* Ensure each label + input is in a row */
-  .search-panel .field-container {
+  .machinesearch-panel .field-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -122,7 +122,7 @@
   }
   
   /* Label Styling */
-  .search-panel .field-container label {
+  .machinesearch-panel .field-container label {
     font-weight: bold;
     font-size: 14px;
     color: #333;
@@ -130,8 +130,8 @@
   }
   
   /* Input & Select Box Styling */
-  .search-panel .field-container select,
-  .search-panel .field-container input {
+  .machinesearch-panel .field-container select,
+  .machinesearch-panel .field-container input {
     padding: 8px 12px;
     font-size: 16px;
     border: 2px solid #ddd;
@@ -145,7 +145,7 @@
   }
   
   /* Download PDF Button */
-  .search-panel .download-btn {
+  .machinesearch-panel .download-btn {
     background-color: red;
     color: white;
     padding: 10px 15px;
@@ -157,11 +157,11 @@
     margin-left: auto; /* Pushes it to the right */
   }
   
-  .search-panel .download-btn:hover {
+  .machinesearch-panel .download-btn:hover {
     background-color: green;
   }
   /* Download PDF Button */
-  .search-panel .checkmachine-btn {
+  .machinesearch-panel .checkmachine-btn {
     background-color: blue;
     color: white;
      
@@ -173,7 +173,7 @@
     margin-left: auto; /* Pushes it to the right */
   }
   
-  .search-panel .checkmachine-btn:hover {
+  .machinesearch-panel .checkmachine-btn:hover {
     background-color:lawngreen;
   }
   

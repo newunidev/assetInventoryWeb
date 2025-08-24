@@ -21,11 +21,16 @@
   gap: 20px; /* Space between the two rows */
   flex-shrink: 0; /* Prevent resizing */
   
-  border: 3px solid #73e83d; /* Green border */
+  border: 3px solid #010557; /* Green border */
   border-radius: 10px; /* Rounded corners */
   
   padding: 20px; /* Adds space inside the border */
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+
+  max-height: 85vh;        /* Adjust height as needed */
+  overflow-y: auto;  
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none; 
 }
 
 /* First Row: Grid Layout */

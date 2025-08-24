@@ -12,7 +12,6 @@
 //   const [categories, setCategories] = useState([]); // Store categories
 //   const [items, setItems] = useState([]); // Store retrieved items
 
- 
 //   const [itemScans, setItemScans] = useState([]); // Store scanned item data
 
 //   // Sample branches (you can replace this with dynamic data)
@@ -35,42 +34,40 @@
 //     fetchCategories();
 //   }, []);
 
-  
-
 //   const handleSearchItems = async () => {
 //     // Validation check
 //     if (!branch || !category) {
 //       alert("Please select a branch and category before searching.");
 //       return;
 //     }
-  
+
 //     console.log("Searching for:", { branch, scannedDate, category, searchTerm });
-  
+
 //     try {
 //       const fetchedItems = await getItemsByBranchCategory(branch, category);
 //       console.log("Fetched Items:", fetchedItems);
-  
+
 //       if (fetchedItems && fetchedItems.success) {
 //         let itemsList = fetchedItems.items;
-  
+
 //         // Fetch item scans
 //         const fetchedItemCountScans = await getItemCountScans(category, branch, scannedDate);
 //         console.log("Fetched Item Count Scans:", fetchedItemCountScans);
-  
+
 //         if (fetchedItemCountScans && fetchedItemCountScans.success) {
 //           const scannedItemMap = new Map();
-  
+
 //           // Store scanned items in a map
 //           fetchedItemCountScans.itemCountScans.forEach(scan => {
 //             scannedItemMap.set(scan.Item.item_code, scan.Item);
 //           });
-  
+
 //           // Map over items and set availability based on item_code presence in item scans
 //           let updatedItems = itemsList.map(item => ({
 //             ...item,
 //             availability: scannedItemMap.has(item.item_code) ? "Available" : "Not Available"
 //           }));
-  
+
 //           // Fetch additional details for items not in itemsList
 //           const missingItemPromises = [];
 //           scannedItemMap.forEach((scannedItem, itemCode) => {
@@ -89,11 +86,11 @@
 //               );
 //             }
 //           });
-  
+
 //           // Wait for all missing items to be fetched and add them to the list
 //           const missingItems = await Promise.all(missingItemPromises);
 //           updatedItems = [...updatedItems, ...missingItems.filter(item => item !== null)];
-  
+
 //           setItems(updatedItems);
 //         } else {
 //           // If no scans found, mark all items as "Not Available"
@@ -110,13 +107,6 @@
 //       console.error("Error fetching item count or scans:", error);
 //     }
 //   };
-  
-  
-
-
-
-
-  
 
 //   return (
 //     <div className="inventory-report-container">
@@ -195,14 +185,11 @@
 //             </table>
 //         </div>
 
-
-
 //     </div>
 //   );
 // };
 
 // export default InventoryCountReport;
-
 
 // import React, { useState, useEffect } from "react";
 // import { getCategories } from "../controller/CategoryController"; // Import API call
@@ -455,6 +442,8 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import "./InventoryCountReport.css";
 import ReactDOM from "react-dom"; // ✅ Required for the popup
+import { getAllItemCountLastScannedLocation } from "../controller/ItemController";
+import { usePageTitle } from "../utility/usePageTitle";
 
 const InventoryCountReport = () => {
   const [branch, setBranch] = useState("");
@@ -465,6 +454,11 @@ const InventoryCountReport = () => {
   const [items, setItems] = useState([]);
   const [factoryMachineCount, setFactoryMachineCount] = useState(0);
   const [otherFactoryMachineCount, setOtherFactoryMachineCount] = useState(0);
+
+  
+
+  const [lastScannedItems, setLastScannedItems] = useState([]);
+  const [, setPageTitles] = usePageTitle();
 
 
   // ✅ Popup state
@@ -482,6 +476,10 @@ const InventoryCountReport = () => {
     "Sample Room",
     "Piliyandala",
   ];
+
+  useEffect(() => {
+    setPageTitles(" Asset Availability Scan Report");
+  }, [setPageTitles]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -551,10 +549,12 @@ const InventoryCountReport = () => {
           setItems(updatedItems);
 
           const factoryCount = updatedItems.filter(
-            (item) => item.availability === "Available" && item.branch === branch
+            (item) =>
+              item.availability === "Available" && item.branch === branch
           ).length;
           const otherFactoryCount = updatedItems.filter(
-            (item) => item.availability === "Available" && item.branch !== branch
+            (item) =>
+              item.availability === "Available" && item.branch !== branch
           ).length;
 
           setFactoryMachineCount(factoryCount);
@@ -589,17 +589,32 @@ const InventoryCountReport = () => {
 
     doc.setFontSize(14);
     doc.text(`Factory Machine Count: ${factoryMachineCount}`, 14, 50);
-    doc.text(`Other Factory Machine Count: ${otherFactoryMachineCount}`, 14, 57);
+    doc.text(
+      `Other Factory Machine Count: ${otherFactoryMachineCount}`,
+      14,
+      57
+    );
 
     doc.autoTable({
       startY: 65,
-      head: [["Item Code", "Serial No", "Name", "Description", "Branch", "Availability"]],
+      head: [
+        [
+          "Item Code",
+          "Serial No",
+          "Name",
+          "Description",
+          "Branch",
+          "Last Scanned Branch",
+          "Availability",
+        ],
+      ],
       body: items.map((item) => [
         item.item_code,
         item.serial_no,
         item.name,
         item.description,
         item.branch || "N/A",
+        getLastScannedBranch(item.item_code, item.branch),
         item.availability,
       ]),
       theme: "striped",
@@ -607,8 +622,6 @@ const InventoryCountReport = () => {
 
     doc.save("Inventory_Count_Report.pdf");
   };
-
-
 
   // ✅ Open Popup and Fetch Last Scan Details
   const openPopup = async (itemCode) => {
@@ -637,11 +650,35 @@ const InventoryCountReport = () => {
     setSelectedItem(null);
   };
 
+  // Fetch last scanned items
+  useEffect(() => {
+    const fetchLastScannedItems = async () => {
+      try {
+        const response = await getAllItemCountLastScannedLocation();
+        if (response.success && Array.isArray(response.data)) {
+          setLastScannedItems(response.data);
+        } else {
+          console.error("Unexpected API response format:", response);
+        }
+      } catch (error) {
+        console.error("Failed to fetch last scanned items:", error);
+      }
+    };
+    fetchLastScannedItems();
+  }, []);
+
+  const getLastScannedBranch = (itemCode, machineBranch) => {
+    const scannedItem = lastScannedItems.find(
+      (item) => item.item_id === itemCode
+    );
+    return scannedItem ? scannedItem.current_branch : "No Scan Found";
+  };
+
   return (
     <div className="inventory-report-container">
-      <h2 className="report-heading">📊 LIVE Machine Report</h2>
+      {/* <h2 className="report-heading">📊 LIVE Machine Report</h2> */}
 
-      <div className="search-panel">
+      <div className="inventorycountsearch-panel">
         <select value={branch} onChange={(e) => setBranch(e.target.value)}>
           <option value="">Select Branch</option>
           {branches.map((b, index) => (
@@ -680,12 +717,9 @@ const InventoryCountReport = () => {
         <button className="download-btn" onClick={downloadPDF}>
           PDF
         </button>
-
-        
       </div>
-      
+
       <div className="count-cards">
-        
         <div className="count-card factory-machine">
           <h3>Factory Machine Count</h3>
           <p>{factoryMachineCount}</p>
@@ -697,10 +731,7 @@ const InventoryCountReport = () => {
         </div>
       </div>
 
-      
-
       <div className="table-container">
-      
         <table className="inventory-table">
           <thead>
             <tr>
@@ -709,6 +740,7 @@ const InventoryCountReport = () => {
               <th>Name</th>
               <th>Description</th>
               <th>Branch</th>
+              <th>Last Scanned Branch</th>
               <th>Availability</th>
             </tr>
           </thead>
@@ -717,7 +749,9 @@ const InventoryCountReport = () => {
               items.map((item) => (
                 <tr
                   key={item.item_code}
-                  className={item.availability === "Available" ? "available" : ""}
+                  className={
+                    item.availability === "Available" ? "available" : ""
+                  }
                   onClick={() => openPopup(item.item_code)} // ✅ Open popup on click
                 >
                   <td>{item.item_code}</td>
@@ -725,6 +759,16 @@ const InventoryCountReport = () => {
                   <td>{item.name}</td>
                   <td>{item.description}</td>
                   <td>{item.branch || "N/A"}</td>
+                  <td
+                    className={
+                      getLastScannedBranch(item.item_code, item.branch) ===
+                      "No Scan Found"
+                        ? "no-scan-found"
+                        : ""
+                    }
+                  >
+                    {getLastScannedBranch(item.item_code, item.branch)}
+                  </td>
                   <td>{item.availability}</td>
                 </tr>
               ))
@@ -738,36 +782,54 @@ const InventoryCountReport = () => {
       </div>
 
       {/* ✅ Popup Component */}
-{showPopup &&
-  ReactDOM.createPortal(
-    <div className="assetinventorycount-popup-overlay">
-      <div className="assetinventorycount-popup-container">
-        <button className="assetinventorycount-close-btn" onClick={closePopup}>
-          ✖
-        </button>
-        <h3 className="assetinventorycount-popup-title">MACHINE TRACKER</h3>
+      {showPopup &&
+        ReactDOM.createPortal(
+          <div className="assetinventorycount-popup-overlay">
+            <div className="assetinventorycount-popup-container">
+              <button
+                className="assetinventorycount-close-btn"
+                onClick={closePopup}
+              >
+                ✖
+              </button>
+              <h3 className="assetinventorycount-popup-title">
+                MACHINE TRACKER
+              </h3>
 
-        {loading && <p className="assetinventorycount-loading">Loading...</p>}
-        {error && <p className="assetinventorycount-error">{error}</p>}
+              {loading && (
+                <p className="assetinventorycount-loading">Loading...</p>
+              )}
+              {error && <p className="assetinventorycount-error">{error}</p>}
 
-        {selectedItem && (
-          <div className="assetinventorycount-item-details">
-            <p>🔹 <strong>Name:</strong> {selectedItem.Item.name}</p>
-            <p>🔢 <strong>Serial No:</strong> {selectedItem.Item.serial_no}</p>
-            <p>📂 <strong>Category:</strong> {selectedItem.Category.cat_name}</p>
-            <p>📅 <strong>Last Scanned Date:</strong> {selectedItem.scanned_date}</p>
-            <p>🏢 <strong>Last Scanned Branch:</strong> {selectedItem.current_branch}</p>
-            <p>📍 <strong>Owner Branch:</strong> {selectedItem.branch}</p>
-          </div>
+              {selectedItem && (
+                <div className="assetinventorycount-item-details">
+                  <p>
+                    🔹 <strong>Name:</strong> {selectedItem.Item.name}
+                  </p>
+                  <p>
+                    🔢 <strong>Serial No:</strong> {selectedItem.Item.serial_no}
+                  </p>
+                  <p>
+                    📂 <strong>Category:</strong>{" "}
+                    {selectedItem.Category.cat_name}
+                  </p>
+                  <p>
+                    📅 <strong>Last Scanned Date:</strong>{" "}
+                    {selectedItem.scanned_date}
+                  </p>
+                  <p>
+                    🏢 <strong>Last Scanned Branch:</strong>{" "}
+                    {selectedItem.current_branch}
+                  </p>
+                  <p>
+                    📍 <strong>Owner Branch:</strong> {selectedItem.branch}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>,
+          document.body
         )}
-      </div>
-    </div>,
-    document.body
-  )}
-
-
-
-
     </div>
   );
 };

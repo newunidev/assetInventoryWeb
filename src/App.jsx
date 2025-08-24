@@ -47,6 +47,24 @@ import MachineTrackingReport from "./components/MachineTrackingReport";
 import MachineDetailDisplay from "./pages/MachineDetailsDisplay";
 import IdleScanReport from "./components/IdleScanReport";
 import IdleMachineDetails from "./pages/IdleMachineDetails";
+import MachineTransfer from "./pages/MachineTransfer";
+import RentMachine from "./pages/RentMachine";
+
+import RentMachineAllocation from "./pages/RentMachineAllocation";
+import RentMachineSummary from "./pages/RentMachineSummary";
+
+import RentMachineRenewal from "./pages/RentMachineRenewal";
+import PurchaseOrder from "./pages/purchaseOrder";
+import PurchaseOrderEdit from "./components/PurchaseOrderEdit"
+import PurchaseOrderReport from "./components/PurchaseOrderReport";
+import PurchaseOrderView from "./components/PurchaseOrderView";
+import PurchaseOrderReportAll from "./components/PurchaseOrderReportAll";
+import RentMachineGrn from "./components/RentMachineGrn"
+
+//test
+import UserCreationForm from "./pages/UserCreationForm";
+import UnderDevelopment from "./pages/UnderMaintanance";
+import UserManagementDashboard from "./components/UserManagementDashboard";
 
 function App() {
   return (
@@ -62,14 +80,34 @@ function App() {
         <Route path="/scans" element={<PrivateRoute><Dashboard><ScanDashboard /></Dashboard></PrivateRoute>} />
         <Route path="/reports/inventoryreport" element={<PrivateRoute><Dashboard><InventoryReport /></Dashboard></PrivateRoute>} />
         <Route path="/reports/inventorycountreport" element={<PrivateRoute><Dashboard><InventoryCountReport /></Dashboard></PrivateRoute>} />
-        {/* <Route path="/reports/idle" element={<PrivateRoute><Dashboard><IdleScanReport /></Dashboard></PrivateRoute>} /> */}
+        <Route path="/reports/idle" element={<PrivateRoute><Dashboard><IdleScanReport /></Dashboard></PrivateRoute>} />
         <Route path="/reports/machinetrackingreport" element={<PrivateRoute><Dashboard><MachineTrackingReport /></Dashboard></PrivateRoute>} />
         <Route path="/dashboardcontent" element={<PrivateRoute><Dashboard><DashboardContent /></Dashboard></PrivateRoute>} />
         <Route path="/itassets/assetuser" element={<PrivateRoute><Dashboard><AssetUser /></Dashboard></PrivateRoute>} />
         <Route path="/itassets/itassets" element={<PrivateRoute><Dashboard><ItAssetDetails /></Dashboard></PrivateRoute>} />
         <Route path="/itassets/assetassignment" element={<PrivateRoute><Dashboard><AssetAssignment /></Dashboard></PrivateRoute>} />
         <Route path="/machine-details" element={<PrivateRoute><Dashboard><MachineDetailDisplay /></Dashboard></PrivateRoute>} />
-        {/* <Route path="/idlemachinedetails" element={<PrivateRoute><Dashboard><IdleMachineDetails /></Dashboard></PrivateRoute>} /> */}
+        <Route path="/idlemachinedetails" element={<PrivateRoute><Dashboard><IdleMachineDetails /></Dashboard></PrivateRoute>} />
+        <Route path="/reports/machinetransfers" element={<PrivateRoute><Dashboard><MachineTransfer/></Dashboard></PrivateRoute>}/>
+
+        <Route path="/rentmachines/createrentmachines" element={<PrivateRoute><Dashboard><RentMachine /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/allocations" element={<PrivateRoute><Dashboard><RentMachineAllocation /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/summary" element={<PrivateRoute><Dashboard><RentMachineSummary /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/renewal" element={<PrivateRoute><Dashboard><RentMachineRenewal /></Dashboard></PrivateRoute>} />
+
+        <Route path="/rentmachines/po" element={<PrivateRoute><Dashboard><PurchaseOrder /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/poreports/:poId" element={<PrivateRoute><Dashboard><PurchaseOrderReport /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/poedit/:poId" element={<PrivateRoute><Dashboard><PurchaseOrderEdit /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/poview" element={<PrivateRoute><Dashboard><PurchaseOrderView /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/poreportsall/:poId" element={<PrivateRoute><Dashboard><PurchaseOrderReportAll /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/grn/:poId" element={<PrivateRoute><Dashboard><RentMachineGrn /></Dashboard></PrivateRoute>} />
+
+        <Route path="/usercreationform" element={<PrivateRoute><Dashboard><UserCreationForm /></Dashboard></PrivateRoute>} />
+        <Route path="/undermaintanance" element={<PrivateRoute><Dashboard><UnderDevelopment /></Dashboard></PrivateRoute>} />
+
+        <Route path="/usermanagement" element={<PrivateRoute><Dashboard><UserManagementDashboard /></Dashboard></PrivateRoute>} />
+
+
 
       </Routes>
     </Router>

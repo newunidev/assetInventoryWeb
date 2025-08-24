@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { getAllAssetUsers } from "../controller/AssetUserController"; // Import API calls
 import "./AssetUser.css"; // Import styles
+import { usePageTitle } from "../utility/usePageTitle";
 
 const AssetUser = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [, setPageTitle] = usePageTitle();
+
+  useEffect(() => {
+    setPageTitle("Asset Users");
+  }, [setPageTitle]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -21,16 +27,23 @@ const AssetUser = () => {
     fetchUsers();
   }, []);
 
-  const filteredUsers = users.filter(user =>
-    (user.full_name?.toLowerCase() ?? "").includes(searchTerm.toLowerCase()) ||
-    (user.designation?.toLowerCase() ?? "").includes(searchTerm.toLowerCase()) ||
-    (user.branch?.toLowerCase() ?? "").includes(searchTerm.toLowerCase()) ||
-    (user.epf_no?.toString().toLowerCase() ?? "").includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter(
+    (user) =>
+      (user.full_name?.toLowerCase() ?? "").includes(
+        searchTerm.toLowerCase()
+      ) ||
+      (user.designation?.toLowerCase() ?? "").includes(
+        searchTerm.toLowerCase()
+      ) ||
+      (user.branch?.toLowerCase() ?? "").includes(searchTerm.toLowerCase()) ||
+      (user.epf_no?.toString().toLowerCase() ?? "").includes(
+        searchTerm.toLowerCase()
+      )
   );
 
   return (
     <div className="asset-user-container">
-      <h2>Asset Users</h2>
+      {/* <h2>Asset Users</h2> */}
 
       <div className="search-panel">
         <input
@@ -41,11 +54,11 @@ const AssetUser = () => {
         />
       </div>
 
-      <div className="table-container">
+      <div className="asset-user-table-container">
         {loading ? (
           <p style={{ textAlign: "center" }}>Loading...</p>
         ) : (
-          <table className="user-table">
+          <table className="asset-user-table">
             <thead>
               <tr>
                 <th>EPF NO</th>
@@ -68,7 +81,7 @@ const AssetUser = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="2" style={{ textAlign: "center" }}>
+                  <td colSpan="5" style={{ textAlign: "center" }}>
                     No users found
                   </td>
                 </tr>
