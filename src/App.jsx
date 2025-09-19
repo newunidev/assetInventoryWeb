@@ -54,12 +54,19 @@ import RentMachineAllocation from "./pages/RentMachineAllocation";
 import RentMachineSummary from "./pages/RentMachineSummary";
 
 import RentMachineRenewal from "./pages/RentMachineRenewal";
-import PurchaseOrder from "./pages/purchaseOrder";
+import PurchaseOrder from "./pages/PurchaseOrder";
 import PurchaseOrderEdit from "./components/PurchaseOrderEdit"
 import PurchaseOrderReport from "./components/PurchaseOrderReport";
 import PurchaseOrderView from "./components/PurchaseOrderView";
 import PurchaseOrderReportAll from "./components/PurchaseOrderReportAll";
 import RentMachineGrn from "./components/RentMachineGrn"
+import RentMachineTransfer from "./components/RentMachineTransfer";
+import RenewalPurchaseOrder from "./pages/RenewalPurchaseOrder";
+import RenewalPurchaseOrderEdit from "./components/RenewalPurchaseOrderEdit";
+import RenewalPurchaseOrderReport from "./components/RenewalPurchaseOrderReport";
+import RenewalPurchaseOrderReportAll from "./components/RenewalPurchaseOrderReportAll";
+import RentMachinePrintCard from "./components/RentMachinePrintCard";
+import RentMachineReturn from "./components/RentMachineReturn";
 
 //test
 import UserCreationForm from "./pages/UserCreationForm";
@@ -91,16 +98,23 @@ function App() {
         <Route path="/reports/machinetransfers" element={<PrivateRoute><Dashboard><MachineTransfer/></Dashboard></PrivateRoute>}/>
 
         <Route path="/rentmachines/createrentmachines" element={<PrivateRoute><Dashboard><RentMachine /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/rentmachinetransfers" element={<PrivateRoute><Dashboard><RentMachineTransfer /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/allocations" element={<PrivateRoute><Dashboard><RentMachineAllocation /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/summary" element={<PrivateRoute><Dashboard><RentMachineSummary /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/return" element={<PrivateRoute><Dashboard><RentMachineReturn /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/renewal" element={<PrivateRoute><Dashboard><RentMachineRenewal /></Dashboard></PrivateRoute>} />
 
         <Route path="/rentmachines/po" element={<PrivateRoute><Dashboard><PurchaseOrder /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/porenewal" element={<PrivateRoute><Dashboard><RenewalPurchaseOrder /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/poreports/:poId" element={<PrivateRoute><Dashboard><PurchaseOrderReport /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/renewalporeports/:poId" element={<PrivateRoute><Dashboard><RenewalPurchaseOrderReport /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/poedit/:poId" element={<PrivateRoute><Dashboard><PurchaseOrderEdit /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/renewalpoedit/:poId" element={<PrivateRoute><Dashboard><RenewalPurchaseOrderEdit /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/poview" element={<PrivateRoute><Dashboard><PurchaseOrderView /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/poreportsall/:poId" element={<PrivateRoute><Dashboard><PurchaseOrderReportAll /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/renewalporeportsall/:poId" element={<PrivateRoute><Dashboard><RenewalPurchaseOrderReportAll /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/grn/:poId" element={<PrivateRoute><Dashboard><RentMachineGrn /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/printcard" element={<PrivateRoute><Dashboard><RentMachinePrintCard /></Dashboard></PrivateRoute>} />
 
         <Route path="/usercreationform" element={<PrivateRoute><Dashboard><UserCreationForm /></Dashboard></PrivateRoute>} />
         <Route path="/undermaintanance" element={<PrivateRoute><Dashboard><UnderDevelopment /></Dashboard></PrivateRoute>} />

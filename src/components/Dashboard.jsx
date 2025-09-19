@@ -10,6 +10,12 @@ import { GiFactory } from "react-icons/gi";
 import { GiForklift } from "react-icons/gi";
 import { useEffect } from "react";
 import { usePageTitle } from "../utility/usePageTitle";
+import {
+  FaFileInvoice,
+  FaRedoAlt,
+  FaFolderOpen,
+  FaHistory,
+} from "react-icons/fa";
 
 import "./Dashboard.css"; // Import the CSS file
 
@@ -48,6 +54,8 @@ const Dashboard = ({ children }) => {
     }, 1000); // ✅ Delay redirect to see logs in the console
   };
 
+  const branch = localStorage.getItem("userBranch");
+  const isHeadOffice = branch === "Head Office";
   return (
     <div className="dashboard">
       {/* Sidebar */}
@@ -144,14 +152,19 @@ const Dashboard = ({ children }) => {
 
           <li
             className="parentdropdown"
-            onMouseEnter={() => setIsReportsOpen(true)}
+            onMouseEnter={() => setIsReportsOpen(false)}
             onMouseLeave={() => setIsReportsOpen(false)}
           >
             <GiForklift size={40} color="white" className="icon" />
             Rent Machines{" "}
             <FaChevronDown className={isReportsOpen ? "rotate" : ""} />
             {isReportsOpen && (
-              <ul className="sub-menu">
+              <ul className="sub-menu-upward">
+                {/* <li>
+                  <Link to="/rentmachines/createrentmachines" className="link">
+                     ⚙️🟢🔴Machines
+                  </Link>
+                </li> */}
                 <li>
                   <Link to="/rentmachines/createrentmachines" className="link">
                     🏭 New Rent Machine
@@ -172,19 +185,73 @@ const Dashboard = ({ children }) => {
 
                   {isPOOpen && (
                     <ul className="sub-menu">
-                      <li>
+                      {/* <li>
                         <Link to="/rentmachines/po" className="link">
-                          🧾 Create PO
+                          <FaFileInvoice
+                            style={{ color: "#4CAF50", marginRight: "8px" }}
+                          />{" "}
+                          Create PO
                         </Link>
+                      </li>
+
+                      <li>
+                        <Link to="/rentmachines/porenewal" className="link">
+                          <FaRedoAlt
+                            style={{ color: "#2196F3", marginRight: "8px" }}
+                          />{" "}
+                          Renew PO
+                        </Link>
+                      </li> */}
+                      <li>
+                        {isHeadOffice ? (
+                          <span className="disabled-link">
+                            <FaFileInvoice
+                              style={{ color: "#aaa", marginRight: "8px" }}
+                            />{" "}
+                            Create PO
+                          </span>
+                        ) : (
+                          <Link to="/rentmachines/po" className="link">
+                            <FaFileInvoice
+                              style={{ color: "#4CAF50", marginRight: "8px" }}
+                            />{" "}
+                            Create PO
+                          </Link>
+                        )}
+                      </li>
+
+                      <li>
+                        {isHeadOffice ? (
+                          <span className="disabled-link">
+                            <FaRedoAlt
+                              style={{ color: "#aaa", marginRight: "8px" }}
+                            />{" "}
+                            Renew PO
+                          </span>
+                        ) : (
+                          <Link to="/rentmachines/porenewal" className="link">
+                            <FaRedoAlt
+                              style={{ color: "#2196F3", marginRight: "8px" }}
+                            />{" "}
+                            Renew PO
+                          </Link>
+                        )}
                       </li>
                       <li>
                         <Link to="/rentmachines/poview" className="link">
-                          📄 View POs
+                          <FaFolderOpen
+                            style={{ color: "#FF9800", marginRight: "8px" }}
+                          />{" "}
+                          View POs
                         </Link>
                       </li>
+
                       <li>
                         <Link to="/purchaseorders/history" className="link">
-                          📚 PO History
+                          <FaHistory
+                            style={{ color: "#9C27B0", marginRight: "8px" }}
+                          />{" "}
+                          PO History
                         </Link>
                       </li>
                     </ul>
@@ -198,13 +265,26 @@ const Dashboard = ({ children }) => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/itassets/returns" className="link">
+                  <Link to="/rentmachines/return" className="link">
                     🔁 Return
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/rentmachines/rentmachinetransfers"
+                    className="link"
+                  >
+                    🚚 Transfer Rent Machines
                   </Link>
                 </li>
                 <li>
                   <Link to="/rentmachines/summary" className="link">
                     📈 Rent Summary
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/rentmachines/printcard" className="link">
+                    🪪 Print Card
                   </Link>
                 </li>
               </ul>
@@ -218,8 +298,8 @@ const Dashboard = ({ children }) => {
               onClick={(e) => {
                 const permissionIds =
                   JSON.parse(localStorage.getItem("permissions")) || [];
-                  console.log("permsionin muser",permissionIds);
-                
+                console.log("permsionin muser", permissionIds);
+
                 if (!permissionIds.includes("PERM005")) {
                   e.preventDefault(); // Prevent navigation
                   alert("You do not have permission to access this page.");

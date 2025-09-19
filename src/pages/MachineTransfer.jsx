@@ -30,7 +30,6 @@ const MachineTransfer = () => {
   const [showPending, setShowPending] = useState(false);
   const [, setPageTitles] = usePageTitle();
 
-
   useEffect(() => {
     setPageTitles("🚚🔁 Machine Transfer");
   }, [setPageTitles]);
@@ -71,6 +70,15 @@ const MachineTransfer = () => {
 
     return matchesSearch && matchesStatus;
   });
+
+  const handlePrint = async () => {
+    try {
+      window.print();
+    } catch (err) {
+      console.error("Print record error:", err);
+      alert("Error recording print attempt");
+    }
+  };
 
   return (
     <div className="transferMachine-container">
@@ -148,6 +156,10 @@ const MachineTransfer = () => {
             </label>
           </div>
         </div>
+
+        <button className="po-edit-button-add" onClick={handlePrint}>
+          PDF
+        </button>
       </div>
 
       {fromBranch && toBranch && (

@@ -1,0 +1,366 @@
+.renewal-po-edit-wrapper {
+  padding: 20px 25px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9faff;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --------- Top Section --------- */
+.renewal-po-edit-top-section {
+  max-height: 300px;
+  padding: 12px 18px;
+  overflow-y: auto;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.renewal-po-edit-form-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.renewal-po-edit-field-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.renewal-po-edit-label {
+  font-size: 12px;
+  margin-bottom: 2px;
+  font-weight: bold;
+}
+
+.renewal-po-edit-input,
+.renewal-po-edit-select,
+.renewal-po-edit-textarea {
+  background-color: #ffffff;
+  color: #030303;
+  border: 1px solid #000;
+  border-radius: 6px;
+  padding: 6px;
+  font-size: 12px;
+  background-origin: border-box;
+  background-clip: padding-box;
+}
+
+.renewal-po-edit-select option {
+  background-color: #000;
+  color: #fff;
+}
+
+/* --------- Form Card & Table --------- */
+.renewal-po-edit-form-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 20px 25px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex: 1;
+  max-height: 370px;
+  overflow: auto;
+}
+
+.renewal-po-edit-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.renewal-po-edit-action-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.renewal-po-edit-right-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.renewal-po-edit-button-add {
+  background-color: #020735;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.renewal-po-edit-button-add:hover {
+  background-color: #0e0ae4;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.renewal-po-edit-button-approval {
+  background-color: #167119;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.3s ease;
+}
+
+.renewal-po-edit-button-approval:hover {
+  background-color: #71ff78;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.renewal-po-edit-button-save {
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.3s ease;
+}
+
+.renewal-po-edit-button-save:hover {
+  background-color: #1b0478;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.renewal-po-edit-action-buttons button:first-child {
+  margin-right: auto;
+}
+
+.renewal-po-edit-action-buttons button:last-child {
+  margin-left: auto;
+}
+
+.renewal-po-edit-table-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  border-radius: 8px;
+  border: 1.5px solid #ddd;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+  min-height: 0;
+  scrollbar-width: 12px;
+}
+
+.renewal-po-edit-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #222;
+  table-layout: fixed;
+  min-width: 800px;
+}
+
+.renewal-po-edit-table thead tr {
+  background: linear-gradient(90deg, #4c6ef5, #364fc7);
+  color: white;
+  font-weight: 700;
+}
+
+.renewal-po-edit-table thead th {
+  padding: 10px 8px;
+  text-align: left;
+  border-bottom: 3px solid #2c3e50;
+  white-space: nowrap;
+}
+
+.renewal-po-edit-table tbody tr {
+  border-bottom: 1.4px solid #ddd;
+  transition: background-color 0.3s ease;
+}
+
+.renewal-po-edit-table tbody tr:hover {
+  background-color: #f0f5ff;
+}
+
+.renewal-po-edit-table tbody td {
+  padding: 8px 8px;
+  text-align: left;
+  color: #222;
+}
+
+.renewal-po-edit-table tbody td select,
+.renewal-po-edit-table tbody td input {
+  width: 100%;
+  padding: 5px 6px;
+  font-size: 0.85rem;
+  border: 1.5px solid #bbb;
+  border-radius: 5px;
+  box-sizing: border-box;
+  color: #000;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+}
+
+.renewal-po-edit-table tbody td select:focus,
+.renewal-po-edit-table tbody td input:focus {
+  border-color: #3182ce;
+  outline: none;
+}
+
+.renewal-po-edit-table tbody td:last-child {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.renewal-po-edit-button-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  flex-shrink: 0;
+}
+
+.renewal-po-edit-button-row button {
+  background-color: #3b82f6;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 6px;
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.renewal-po-edit-button-row button:hover {
+  background-color: #2563eb;
+}
+
+.renewal-po-edit-total {
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #111;
+}
+
+.renewal-po-edit-button-submit {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 15px;
+  flex-shrink: 0;
+}
+
+/* Common button base */
+.renewal-po-edit-btn {
+  padding: 4px 10px;
+  font-size: 13px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease-in-out;
+  margin: 0 4px;
+}
+
+/* Save button */
+.renewal-po-edit-btn-save {
+  background-color: #4caf50;
+  color: white;
+}
+
+.renewal-po-edit-btn-save:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+/* Delete button */
+.renewal-po-edit-btn-delete {
+  background-color: #f44336;
+  color: white;
+}
+
+.renewal-po-edit-btn-delete:hover {
+  background-color: #d32f2f;
+  transform: scale(1.05);
+}
+
+.renewal-po-edit-button-submit:hover {
+  background-color: #1e40af;
+}
+
+/* --------- Scrollbar Styling --------- */
+.renewal-po-edit-top-section::-webkit-scrollbar,
+.renewal-po-edit-table-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.renewal-po-edit-top-section::-webkit-scrollbar-thumb,
+.renewal-po-edit-table-container::-webkit-scrollbar-thumb {
+  background-color: #a0aec0;
+  border-radius: 10px;
+}
+
+.renewal-po-edit-top-section::-webkit-scrollbar-track,
+.renewal-po-edit-table-container::-webkit-scrollbar-track {
+  background-color: #f1f5f9;
+}
+
+/* Loading overlay */
+.renewal-po-edit-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.renewal-po-edit-loading-spinner {
+  text-align: center;
+  font-size: 20px;
+  color: #013b47;
+}
+
+.loader-icon {
+  font-size: 40px;
+  animation: blink 1s step-start infinite;
+  display: block;
+  margin-bottom: 10px;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}

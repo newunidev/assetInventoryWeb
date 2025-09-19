@@ -98,7 +98,7 @@ export const getAllMachineAvailableToGrn = async (branch) => {
   try {
     const token = localStorage.getItem("token"); // Step 1: Get token
     //console.log("Branch:",branch);
-    const response = await apiClient.get(`rentmachines-avaialable-to-grn?rented_by=${"NA"}&machine_status=${"Available To Grn"}`, {
+    const response = await apiClient.get(`rentmachines-avaialable-to-grn?rented_by=&machine_status=${"Available To Grn"}`, {
       headers: {
         Authorization: `Bearer ${token}`, // Step 2: Attach token
       },

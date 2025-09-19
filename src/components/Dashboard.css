@@ -150,6 +150,28 @@ body,
   transition: opacity 0.3s ease, transform 0.3s ease;
   width: 180px; /* Adjust width if needed */
 }
+.sub-menu-upward {
+  position: absolute;
+  left: 0;               /* Align to left of parent */
+  left: 100%;          /* Position above parent */
+  background: #2a2a3d;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px); /* start slightly below */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  width: 250px;
+  z-index: 1000;
+}
+
+/* Show submenu on hover */
+.parentdropdown:hover > .sub-menu-upward {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
 
 /* Show submenu on hover */
 .reports:hover .sub-menu {
@@ -157,7 +179,15 @@ body,
   visibility: visible;
   transform: translateY(0); /* Move to position */
 }
-
+.disabled-link {
+  color: #aaa;
+  cursor: not-allowed;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  margin-right: 8px;
+  opacity: 0.6;
+}
 /* Submenu Items */
 .sub-menu li {
   padding: 8px 12px;

@@ -4,28 +4,28 @@ import autoTable from "jspdf-autotable";
 import {
   purchaseOrderByPoId,
   updatePurchaseOrderApproval1,
-  updatePurchaseOrderApproval2,
+  updateRenewalPurchaseOrderApproval2,
   poApprovalByPoId,
   updatePoStatus,
   createPoPrintPool,
   getPoPrintPoolByPoId,
   createPurchaseOrderReturn,
 } from "../controller/PurchaseOrderController";
-import { categoryPurchaseOrderByPoId } from "../controller/CategoryPurchaseOrderController";
+import { getRenewalPurchaseOrderMachinesByPoId } from "../controller/RenewalPurchaseOrderController";
 import { useParams } from "react-router-dom";
 import "./PurchaseOrderReport.css";
 import JsBarcode from "jsbarcode";
 import "./PurchaseOrderReportAll.css";
 import { FaCheckCircle, FaTimesCircle, FaTruckLoading } from "react-icons/fa";
 
-const PurchaseOrderReportAll = () => {
+const RenewalPurchaseOrderReportAll = () => {
   const { poId } = useParams();
   const [poDetails, setPoDetails] = useState(null);
-  const [categoryItems, setCategoryItems] = useState([]);
+  const [renewalDetails, setRenewalDetails] = useState([]); // 🔹 Initialize as []
   const [poApproval, setPoApproval] = useState({});
   const [error, setError] = useState(null);
   const barcodeRef = useRef(null);
-  const [loading, setLoading] = useState(true); // Add this line
+  const [loading, setLoading] = useState(true);
   const [poPrintPool, setPoPrintPool] = useState(null);
 
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -37,9 +37,6 @@ const PurchaseOrderReportAll = () => {
   );
   const hasApprovalPermission =
     permissions.includes("PERM003") || permissions.includes("PERM004");
-
-  console.log("Approve permission check :", hasApprovalPermission);
-
   const hasGrnPermission = permissions.includes("PERM004");
 
   useEffect(() => {
@@ -59,66 +56,44 @@ const PurchaseOrderReportAll = () => {
     }
   }, [poId]);
 
-  const getBarcodeImage = () => {
-    return barcodeRef.current.toDataURL("image/png");
-  };
+  const getBarcodeImage = () => barcodeRef.current.toDataURL("image/png");
 
   const fetchReportData = async (id) => {
-    setLoading(true); // Show loading
+    setLoading(true);
     try {
       const poRes = await purchaseOrderByPoId(id);
-      const catRes = await categoryPurchaseOrderByPoId(id);
+      const renewalRes = await getRenewalPurchaseOrderMachinesByPoId(id); // 🔹 Updated
       const poApp = await poApprovalByPoId(id);
       const poPrintRes = await getPoPrintPoolByPoId(id);
 
-      console.log("Cat Response", catRes);
-
       if (poRes.success && poRes.purchaseOrder) {
         setPoDetails(poRes.purchaseOrder);
-        console.log(
-          "PO Details ",
-          poRes.purchaseOrder.branch_id,
-          "And ",
-          localStorage.getItem("userBranchId")
-        ); // log here
-        console.log(
-          "PO Details maatching:",
-          poRes.purchaseOrder.branch_id === localStorage.getItem("userBranchId")
-        ); // log here
-        setLoading(false); // Hide loading
+        //console.log("Check Status", poRes);
       } else {
         throw new Error(poRes.message || "Failed to fetch purchase order.");
-        setLoading(false); // Hide loading
       }
 
-      if (catRes.success && Array.isArray(catRes.categoryPurchaseOrders)) {
-        setCategoryItems(catRes.categoryPurchaseOrders);
-        setLoading(false); // Hide loading
+      if (renewalRes.success && renewalRes.poMachineRenewals) {
+        setRenewalDetails(renewalRes.poMachineRenewals); // 🔹 Correct property
       } else {
-        throw new Error(catRes.message || "Failed to fetch category items.");
-        setLoading(false); // Hide loading
+        setRenewalDetails([]); // 🔹 empty array instead of null
       }
 
       if (poApp.success && poApp.poApproval) {
         setPoApproval(poApp.poApproval);
-
-        setLoading(false); // Hide loading
-      } else {
-        throw new Error(catRes.message || "Failed to fetch poapprovals.");
-        setLoading(false); // Hide loading
       }
 
       if (poPrintRes.success && poPrintRes.data) {
         setPoPrintPool(poPrintRes.data);
       } else {
-        setPoPrintPool(null); // no record found
-        //setError(poPrintRes.message || "Failed to fetch PO print data.");
+        setPoPrintPool(null);
       }
+
       setLoading(false);
     } catch (err) {
       console.error("Error fetching report data:", err);
       setError(err.message || "Unknown error occurred.");
-      setLoading(false); // Hide loading
+      setLoading(false);
     }
   };
 
@@ -156,6 +131,7 @@ const PurchaseOrderReportAll = () => {
     }
   };
 
+  
   const handleApprove = async () => {
     try {
       const approverId = localStorage.getItem("userid");
@@ -163,25 +139,34 @@ const PurchaseOrderReportAll = () => {
       const hasPerm003 = permissions.includes("PERM003"); // Approval1
       const hasPerm004 = permissions.includes("PERM004"); // Approval2
 
-      const updatedData = {
-        po_no: poId,
-      };
+      // Prepare machines array for Approval2
+      const machines = renewalDetails.map((item) => ({
+        rent_item_id: item.RentMachine?.rent_item_id,
+        branch: poDetails.branch_id,
+        po_id: poId,
+        from_date: item.from_date,
+        to_date: item.to_date,
+      }));
+
+      const updatedData = { po_no: poId };
 
       // 🧠 Super User: has both permissions
       if (hasPerm003 && hasPerm004) {
-        // If approval1 already done, do approval2
         if (poApproval.approval1) {
+          // Perform Approval2
           updatedData.approval2_by = approverId;
           updatedData.approval2 = true;
+          updatedData.machines = machines; // ✅ include machines
 
-          const response = await updatePurchaseOrderApproval2(updatedData);
+          await updateRenewalPurchaseOrderApproval2(updatedData);
           alert(`Super User: Approved Second Level! PO ID: ${poId}`);
           await updatePoStatus(poId, "Approved");
         } else {
+          // Perform Approval1
           updatedData.approval1_by = approverId;
           updatedData.approval1 = true;
 
-          const response = await updatePurchaseOrderApproval1(updatedData);
+          await updatePurchaseOrderApproval1(updatedData);
           alert(`Super User: Approved First Level! PO ID: ${poId}`);
         }
         window.location.reload();
@@ -192,7 +177,7 @@ const PurchaseOrderReportAll = () => {
         updatedData.approval1_by = approverId;
         updatedData.approval1 = true;
 
-        const response = await updatePurchaseOrderApproval1(updatedData);
+        await updatePurchaseOrderApproval1(updatedData);
         alert(`Approved First Level! PO ID: ${poId}`);
         window.location.reload();
       }
@@ -201,8 +186,9 @@ const PurchaseOrderReportAll = () => {
       else if (hasPerm004) {
         updatedData.approval2_by = approverId;
         updatedData.approval2 = true;
+        updatedData.machines = machines; // ✅ include machines
 
-        const response = await updatePurchaseOrderApproval2(updatedData);
+        await updateRenewalPurchaseOrderApproval2(updatedData);
         alert(`Approved Second Level! PO ID: ${poId}`);
         await updatePoStatus(poId, "Approved");
         window.location.reload();
@@ -228,7 +214,7 @@ const PurchaseOrderReportAll = () => {
   };
 
   const handleEdit = () => {
-    const url = `/rentmachines/poedit/${encodeURIComponent(poId)}`;
+    const url = `/rentmachines/renewalpoedit/${encodeURIComponent(poId)}`;
 
     window.open(url, "_blank");
   };
@@ -264,17 +250,16 @@ const PurchaseOrderReportAll = () => {
       alert("🚨 Server error while rejecting PO. Please try again.");
     }
   };
+  // 🔹 handleDownload, handlePrint, handleApprove, handleReject, submitReject remain unchanged
 
   return (
     <div className="purchase-order-report-all-print-content">
       <div className="purchase-order-report-all-wrapper">
-        <div className="purchase-order-report-all-watermark">
-          {poDetails?.status === "Pending"
-            ? "PENDING APPROVAL"
-            : poDetails?.status === "Approved"
-            ? "APPROVED PO"
-            : ""}
-        </div>
+        {poDetails?.status === "Pending" && (
+          <div className="purchase-order-report-all-watermark">
+            PENDING APPROVAL
+          </div>
+        )}
         <div className="purchase-order-report-all-container">
           <div className="purchase-order-report-all-header">
             <div className="purchase-order-report-all-header-content">
@@ -290,7 +275,7 @@ const PurchaseOrderReportAll = () => {
                   Email: newunive@gmail.com &nbsp; | &nbsp; Web:
                   www.newuniverse.lk
                 </p>
-                <h3>PURCHASE ORDER</h3>
+                <h3>RENEWAL PURCHASE ORDER</h3>
                 <h2>PO NO : {poId}</h2>
                 <h3>
                   {poPrintPool
@@ -436,36 +421,35 @@ const PurchaseOrderReportAll = () => {
                 </div>
               </div>
 
-              {categoryItems.length > 0 && (
+              {renewalDetails.length > 0 && (
                 <>
                   <table className="purchase-order-report-all-table">
                     <thead>
                       <tr>
-                        <th>Category</th>
+                        <th>Machine Name</th>
+                        <th>Serial Numner</th>
                         <th>Description</th>
-
-                        <th>From</th>
-                        <th>To</th>
-                        <th>Quantity</th>
-                        <th>No.Of Days</th>
-                        <th>Cost / Day</th>
-                        <th>Discount (%)</th>
+                        <th>From Date</th>
+                        <th>To Date</th>
+                        <th>Qty</th>
+                        <th>Days</th>
+                        <th>Per Day Cost</th>
+                        <th>Discount %</th>
                         <th>Discount Amount</th>
-                        <th>Total Price</th>
+                        <th>Total</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {categoryItems.map((item, index) => {
-                        const qty = Number(item.Qty) || 0;
-                        const cost = Number(item.PerDay_Cost) || 0;
+                      {renewalDetails.map((item, index) => {
+                        const qty = Number(item.qty) || 0;
+                        const cost = Number(item.perday_cost) || 0;
                         const discount = Number(item.d_percent) || 0;
 
-                        // Parse dates and calculate number of days (inclusive)
                         const fromDate = new Date(item.from_date);
                         const toDate = new Date(item.to_date);
-                        const timeDiff = toDate.getTime() - fromDate.getTime();
                         const numberOfDays =
-                          Math.floor(timeDiff / (1000 * 3600 * 24)) + 1; // +1 for inclusive range
+                          Math.floor((toDate - fromDate) / (1000 * 3600 * 24)) +
+                          1;
 
                         const gross = qty * cost * numberOfDays;
                         const discountAmount = (gross * discount) / 100;
@@ -473,9 +457,9 @@ const PurchaseOrderReportAll = () => {
 
                         return (
                           <tr key={index}>
-                            <td>{item.Category?.cat_name}</td>
-                            <td>{item.description}</td>
-
+                            <td>{item.RentMachine?.name}</td>
+                            <td>{item.RentMachine?.serial_no}</td>
+                            <td>{item?.description}</td>
                             <td>{item.from_date}</td>
                             <td>{item.to_date}</td>
                             <td>{qty}</td>
@@ -489,7 +473,6 @@ const PurchaseOrderReportAll = () => {
                       })}
                     </tbody>
                   </table>
-
                   {/* Subtotal calculation */}
                   <div
                     style={{
@@ -500,17 +483,18 @@ const PurchaseOrderReportAll = () => {
                   >
                     <div style={{ fontWeight: "bold", fontSize: "16px" }}>
                       {(() => {
-                        const subtotal = categoryItems.reduce((acc, item) => {
-                          const qty = Number(item.Qty) || 0;
-                          const cost = Number(item.PerDay_Cost) || 0;
+                        const subtotal = renewalDetails.reduce((acc, item) => {
+                          const qty = Number(item.qty) || 0;
+                          const cost = Number(item.perday_cost) || 0;
                           const discount = Number(item.d_percent) || 0;
 
                           const fromDate = new Date(item.from_date);
                           const toDate = new Date(item.to_date);
-                          const timeDiff =
-                            toDate.getTime() - fromDate.getTime();
                           const numberOfDays =
-                            Math.floor(timeDiff / (1000 * 60 * 60 * 24)) + 1;
+                            Math.floor(
+                              (toDate.getTime() - fromDate.getTime()) /
+                                (1000 * 3600 * 24)
+                            ) + 1;
 
                           const gross = qty * cost * numberOfDays;
                           const discountAmount = (gross * discount) / 100;
@@ -529,7 +513,7 @@ const PurchaseOrderReportAll = () => {
                                 display: "flex",
                                 justifyContent: "space-between",
                                 marginBottom: "5px",
-                                gap: "20px", // ✅ adds gap between label and value
+                                gap: "20px",
                               }}
                             >
                               <span style={{ minWidth: "150px" }}>
@@ -587,12 +571,12 @@ const PurchaseOrderReportAll = () => {
                               </span>
                               <span>
                                 Rs.{" "}
-                                {(
-                                  subtotal +
-                                  (poDetails.is_vat || poDetails.is_svat
-                                    ? taxAmount
-                                    : 0)
-                                ).toFixed(2)}
+                                {(poDetails.is_svat
+                                  ? subtotal // ✅ SVAT → use subtotal only
+                                  : subtotal +
+                                    (poDetails.is_vat ? taxAmount : 0)
+                                ) // ✅ VAT → add tax
+                                  .toFixed(2)}
                               </span>
                             </div>
                           </>
@@ -718,23 +702,23 @@ const PurchaseOrderReportAll = () => {
             )}
 
             {/* <button
-              onClick={handleReject}
-              className="purchase-order-report-all-reject-button"
-              disabled={
-                !!(
+                onClick={handleReject}
+                className="purchase-order-report-all-reject-button"
+                disabled={
+                  !!(
+                    poApproval?.FirstApprover?.name &&
+                    poApproval?.SecondApprover?.name
+                  )
+                }
+                title={
                   poApproval?.FirstApprover?.name &&
                   poApproval?.SecondApprover?.name
-                )
-              }
-              title={
-                poApproval?.FirstApprover?.name &&
-                poApproval?.SecondApprover?.name
-                  ? "Both approvals already completed"
-                  : "Reject PO"
-              }
-            >
-              <FaTimesCircle /> Reject
-            </button> */}
+                    ? "Both approvals already completed"
+                    : "Reject PO"
+                }
+              >
+                <FaTimesCircle /> Reject
+              </button> */}
             {poDetails?.status === "Pending" && (
               <button
                 onClick={handleReject}
@@ -757,22 +741,6 @@ const PurchaseOrderReportAll = () => {
             )}
           </>
         )}
-
-        {/* GRN button is always visible and appears after Reject */}
-        <button
-          onClick={handleGrn}
-          disabled={
-            !(
-              poApproval?.FirstApprover?.name &&
-              poApproval?.SecondApprover?.name &&
-              poDetails?.branch_id ===
-                Number(localStorage.getItem("userBranchId"))
-            )
-          }
-          className="purchase-order-report-all-grn-button"
-        >
-          <FaTruckLoading /> GRN
-        </button>
 
         <button
           onClick={handleEdit}
@@ -821,4 +789,4 @@ const PurchaseOrderReportAll = () => {
   );
 };
 
-export default PurchaseOrderReportAll;
+export default RenewalPurchaseOrderReportAll;

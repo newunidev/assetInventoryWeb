@@ -27,7 +27,7 @@ export const loginUser = async (email, password) => {
       params: { email, password }, // Pass parameters correctly
     });
 
-    //console.log('Login Response:', response.data); // ✅ Log response
+    console.log('Login Response:', response.data); // ✅ Log response
 
     return response.data; // Return response (success, token, user info)
   } catch (error) {

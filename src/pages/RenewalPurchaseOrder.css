@@ -1,0 +1,375 @@
+.renewalPurchaseOrder-wrapper {
+  padding: 20px 25px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9faff;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --------- Top Section --------- */
+.renewalPurchaseOrder-top-section {
+  max-height: 300px;
+  padding: 12px 18px;
+  overflow-y: auto;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.renewalPurchaseOrder-form-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.renewalPurchaseOrder-field-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.renewalPurchaseOrder-label {
+  font-size: 12px;
+  margin-bottom: 2px;
+  font-weight: bold;
+}
+
+.renewalPurchaseOrder-input,
+.renewalPurchaseOrder-select,
+.renewalPurchaseOrder-textarea {
+  background-color: #ffffff;
+  color: #030303;
+  border: 1px solid #000;
+  border-radius: 6px;
+  padding: 6px;
+  font-size: 12px;
+  background-origin: border-box;
+  background-clip: padding-box;
+}
+
+.renewalPurchaseOrder-select option {
+  background-color: #000;
+  color: #fff;
+}
+
+/* --------- Form Card & Table --------- */
+.renewalPurchaseOrder-form-card {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px 25px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex: 1;
+  max-height: 370px;
+  overflow: auto;
+}
+
+.renewalPurchaseOrder-form-card h3 {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #222;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.renewalPurchaseOrder-table-container {
+  flex-grow: 1;
+  overflow-x: auto; /* horizontal scroll for small screens */
+  overflow-y: auto; /* vertical scroll */
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
+  max-height: 400px; /* adjust as needed */
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f0f0f0;
+}
+
+/* Custom scrollbar for Webkit browsers */
+.renewalPurchaseOrder-table-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.renewalPurchaseOrder-table-container::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+}
+
+.renewalPurchaseOrder-table-container::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+
+.renewalPurchaseOrder-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem; /* smaller font */
+  font-weight: 500;
+  color: #222;
+  table-layout: fixed;
+  min-width: 700px; /* allows horizontal scroll */
+}
+
+.renewalPurchaseOrder-table thead tr {
+  background: linear-gradient(90deg, #4c6ef5, #364fc7);
+  color: white;
+  font-weight: 600;
+}
+
+.renewalPurchaseOrder-table thead th {
+  padding: 6px 6px; /* tighter cells */
+  text-align: left;
+  border-bottom: 2px solid #2c3e50;
+  white-space: nowrap;
+  font-size: 0.8rem;
+}
+
+.renewalPurchaseOrder-table tbody tr {
+  border-bottom: 1px solid #ddd;
+  transition: background-color 0.2s ease;
+}
+
+.renewalPurchaseOrder-table tbody tr:hover {
+  background-color: #e7f0ff;
+}
+
+.renewalPurchaseOrder-table tbody td {
+  padding: 5px 6px; /* tighter cells */
+  text-align: left;
+  color: #222;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.renewalPurchaseOrder-table tbody td select,
+.renewalPurchaseOrder-table tbody td input {
+  width: 100%;
+  padding: 5px 6px;
+  font-size: 0.85rem;
+  border: 1.5px solid #bbb;
+  border-radius: 5px;
+  box-sizing: border-box;
+  color: #000;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+}
+
+.renewalPurchaseOrder-table tbody td select:focus,
+.renewalPurchaseOrder-table tbody td input:focus {
+  border-color: #3182ce;
+  outline: none;
+}
+
+.renewalPurchaseOrder-table tbody td:last-child {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* --------- Buttons & Total --------- */
+.renewalPurchaseOrder-button-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  flex-shrink: 0;
+}
+
+.renewalPurchaseOrder-button-row button {
+  background-color: #3b82f6;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 6px;
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.renewalPurchaseOrder-button-row button:hover {
+  background-color: #2563eb;
+}
+
+.renewalPurchaseOrder-total {
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #111;
+}
+
+.renewalPurchaseOrder-submit-button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 15px;
+  flex-shrink: 0;
+}
+
+.renewalPurchaseOrder-submit-button:hover {
+  background-color: #1e40af;
+}
+
+.renewalPurchaseOrder-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.renewalPurchaseOrder-action-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.renewalPurchaseOrder-action-buttons button:first-child {
+  margin-right: auto;
+}
+
+.renewalPurchaseOrder-action-buttons button:last-child {
+  margin-left: auto;
+}
+
+/* Add Machine button */
+.renewalPurchaseOrder-button-add {
+  background-color: #ffffff;
+  border-color: #000;
+  border-width: 3px;
+}
+
+.renewalPurchaseOrder-button-add:hover {
+  background-color: #2563eb;
+}
+
+/* Select button */
+.renewalPurchaseOrder-button-submit {
+  background-color: #2f855a;
+}
+
+.renewalPurchaseOrder-button-submit:hover {
+  background-color: #2c7a4b;
+}
+
+/* --------- Scrollbar Styling --------- */
+.renewalPurchaseOrder-top-section::-webkit-scrollbar,
+.renewalPurchaseOrder-table-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.renewalPurchaseOrder-top-section::-webkit-scrollbar-thumb,
+.renewalPurchaseOrder-table-container::-webkit-scrollbar-thumb {
+  background-color: #a0aec0;
+  border-radius: 10px;
+}
+
+.renewalPurchaseOrder-top-section::-webkit-scrollbar-track,
+.renewalPurchaseOrder-table-container::-webkit-scrollbar-track {
+  background-color: #f1f5f9;
+}
+
+/* --------- Loading Spinner / Overlay --------- */
+.renewalPurchaseOrder-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5); /* dark overlay */
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.renewalPurchaseOrder-loading-spinner {
+  background-color: #fff;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  max-width: 900px; /* increased from 600px */
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  text-align: center;
+  font-size: 1rem;
+  color: #013b47;
+}
+
+.renewalPurchaseOrder-loading-spinner table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.renewalPurchaseOrder-loading-spinner th,
+.renewalPurchaseOrder-loading-spinner td {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.renewalPurchaseOrder-loader-icon {
+  font-size: 40px;
+  animation: blink 1s step-start infinite;
+  display: block;
+  margin-bottom: 10px;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Gradient buttons on the right */
+.renewalPurchaseOrder-button-row-right {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px; /* space between buttons */
+  margin-top: 15px;
+}
+
+.renewalPurchaseOrder-gradient-button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.3s ease;
+}
+
+/* Send To Approval Button Gradient */
+.renewalPurchaseOrder-gradient-button-approval {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+}
+
+.renewalPurchaseOrder-gradient-button-approval:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+/* Save Button Gradient */
+.renewalPurchaseOrder-gradient-button-save {
+  background: linear-gradient(135deg, #ff512f, #dd2476);
+}
+
+.renewalPurchaseOrder-gradient-button-save:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+

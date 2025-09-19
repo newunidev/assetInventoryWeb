@@ -1,0 +1,80 @@
+.rentreturn-wrapper {
+  padding: 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #f9faff;
+  min-height: 100vh;
+}
+
+.rentreturn-container {
+  display: flex;
+  gap: 20px;
+}
+
+.rentreturn-left,
+.rentreturn-right {
+  flex: 1;
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rentreturn-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.rentreturn-header h3 {
+  margin: 0;
+  color: #2a2a3d;
+}
+
+.rentreturn-search {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+}
+
+.rentreturn-search:focus {
+  border-color: #2196f3;
+}
+
+.rentreturn-table-container {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.rentreturn-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+
+.rentreturn-table td {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 12px;
+  font-weight: lighter;
+   
+}
+
+.rentreturn-table th {
+  background: #001849;
+  font-weight: bold;
+   padding: 8px 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 12px;
+}
+
+.expired-row {
+  background: #ffe5e5;
+}
+
+.returned-row {
+  background: #e5ffe5;
+}

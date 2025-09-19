@@ -181,3 +181,31 @@
     opacity: 1;
   }
 }
+
+
+@media print {
+  .transferMachine-table-container {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .transferMachine-table {
+    page-break-inside: auto;
+    width: 100% !important;
+  }
+
+  .transferMachine-table thead {
+    display: table-header-group; /* repeat header on every page */
+  }
+
+  .transferMachine-table tbody tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  /* Optional: make filters/buttons hidden in print */
+  .transferMachine-filters,
+  .transferMachine-animation {
+    display: none !important;
+  }
+}

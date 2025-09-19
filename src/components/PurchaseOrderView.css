@@ -305,3 +305,18 @@
     width: 100%;
   }
 }
+
+
+.purchase-order-report-all-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  font-size: 80px;
+  font-weight: 900;
+  color: rgba(255, 0, 0, 0.2); /* transparent red */
+  white-space: nowrap;
+  z-index: 0;
+  pointer-events: none; /* prevent interaction */
+  user-select: none;
+}

@@ -1,0 +1,278 @@
+/* Main container */
+.rent-machine-transfer-container {
+  padding: 20px;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f4f7fa;
+  min-height: 90vh;
+}
+
+.rent-machine-transfer-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 28px;
+  color: #013b47;
+}
+
+/* Grid layout */
+.rent-machine-transfer-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Cards */
+/* Cards */
+.rent-machine-transfer-left-card,
+.rent-machine-transfer-right-card {
+  flex: 1;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+  min-width: 450px;
+  height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Table wrapper for scroll */
+.rent-machine-transfer-table-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  /* Add custom scrollbar for WebKit */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Scrollbar for WebKit browsers (Chrome, Edge, Safari) */
+.rent-machine-transfer-table-wrapper::-webkit-scrollbar {
+  width: 10px; /* width of vertical scrollbar */
+  height: 10px; /* height of horizontal scrollbar */
+}
+
+.rent-machine-transfer-table-wrapper::-webkit-scrollbar-track {
+  background: #f0f0f0; /* track color */
+  border-radius: 10px;
+}
+
+.rent-machine-transfer-table-wrapper::-webkit-scrollbar-thumb {
+  background: #1976d2; /* thumb color */
+  border-radius: 10px;
+  border: 2px solid #f0f0f0; /* optional padding around thumb */
+}
+
+.rent-machine-transfer-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #0d47a1; /* darken on hover */
+}
+
+/* Firefox */
+.rent-machine-transfer-table-wrapper {
+  scrollbar-width: thin; /* auto, thin, or none */
+  scrollbar-color: #1976d2 #f0f0f0; /* thumb track */
+}
+/* Toolbar */
+.rent-machine-transfer-toolbar {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+
+.rent-machine-transfer-search {
+  width: 100%;
+  max-width: 250px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #013b47;
+  background-color: white;
+}
+
+/* Table wrapper for scroll */
+.rent-machine-transfer-table-wrapper {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Table */
+.rent-machine-transfer-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  table-layout: auto;
+  font-size: 12px; /* smaller font */
+}
+
+.rent-machine-transfer-table th,
+.rent-machine-transfer-table td {
+  border: 1px solid #ddd;
+  padding: 6px 8px;
+  font-size: 9.5px;
+  text-align: center;
+  white-space: nowrap; /* prevent wrapping */
+}
+
+.rent-machine-transfer-table th {
+  background-color: #013b47;
+  color: white;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.rent-machine-transfer-table td button {
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 6px;
+  transition: all 0.2s;
+}
+
+.rent-machine-transfer-table td button:hover {
+  background: #013b47;
+  color: white;
+  border-color: #013b47;
+}
+
+/* Form row */
+.rent-machine-transfer-form-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* Branch select */
+.rent-machine-transfer-branch-select {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1.5px solid #013b47;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #013b47;
+  cursor: pointer;
+  width: 48%;
+}
+
+/* Modal backdrop */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal container */
+.modal {
+  background: #ffffff;
+  padding: 25px 30px;
+  border-radius: 12px;
+  width: 400px;
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal h3 {
+  margin-bottom: 15px;
+  font-size: 22px;
+  color: #013b47;
+}
+
+.modal p {
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Modal select with arrow icon */
+.modal-select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1.5px solid #013b47;
+  font-size: 14px;
+  color: #013b47;
+  cursor: pointer;
+  background-color: white;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='12' height='12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23013b47' stroke-width='2' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+/* Modal buttons */
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.modal button {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.modal button:first-of-type {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.modal button:first-of-type:hover {
+  background-color: #218838;
+}
+
+.modal button:last-of-type {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.modal button:last-of-type:hover {
+  background-color: #c82333;
+}
+
+/* Modal labels */
+.modal-label {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 14px;
+  color: #013b47;
+  margin: 10px 0 5px 0;
+}
+
+.modal-label .arrow {
+  font-size: 14px;
+  color: #013b47;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .rent-machine-transfer-grid {
+    flex-direction: column;
+  }
+
+  .rent-machine-transfer-left-card,
+  .rent-machine-transfer-right-card {
+    width: 100%;
+    min-width: unset;
+    height: auto;
+  }
+}
+ 

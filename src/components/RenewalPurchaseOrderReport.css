@@ -1,0 +1,226 @@
+.porenewal-report-wrapper {
+  margin: 20px auto;
+  padding: 0 20px;
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+.porenewal-report-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 10px 5px;
+  max-width: 1000px;
+  margin: auto;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  color: #333;
+  min-height: calc(100vh - 70px);
+  margin-bottom: 20px;
+}
+
+.porenewal-report-header {
+  margin-bottom: 25px;
+}
+
+.porenewal-report-header-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+}
+
+.porenewal-report-barcode-container {
+  margin-top: 30px;
+  margin-right: 1px;
+  margin-left: 10px;
+  padding: 0;
+}
+
+.porenewal-report-company-details {
+  text-align: center;
+  flex-grow: 1;
+}
+
+.porenewal-report-company-details h2 {
+  font-size: 28px;
+  color: #003366;
+  margin-bottom: 5px;
+}
+
+.porenewal-report-labels {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 40px;
+  margin-bottom: 25px;
+  padding-left: 100px;
+}
+
+.porenewal-report-label {
+  font-weight: 600;
+  color: #444;
+  font-size: 12px;
+}
+
+.porenewal-report-label-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 6px;
+  align-items: flex-start;
+  font-weight: bold;
+}
+
+.porenewal-report-label-row strong {
+  min-width: 100px;
+  font-weight: bold;
+}
+
+.porenewal-report-label-value {
+  flex: 1;
+  white-space: pre-line;
+}
+
+.porenewal-report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.porenewal-report-table th,
+.porenewal-report-table td {
+  border: 1px solid #ccc;
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 10px;
+}
+
+.porenewal-report-table th {
+  background-color: #003366;
+  color: #fff;
+  font-weight: 600;
+}
+
+.porenewal-report-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.porenewal-signatures {
+  margin-top: 50px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.porenewal-signatures > div {
+  flex: 1;
+  text-align: center;
+}
+
+.porenewal-report-top-right-corner {
+  text-align: right;
+  font-weight: bold;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.porenewal-report-icon-button {
+  background-color: red;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.porenewal-report-print-button {
+  background-color: white;
+  color: black;
+  border: 4px solid black;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* Scrollbar styling */
+.porenewal-report-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.porenewal-report-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.porenewal-report-wrapper::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.porenewal-report-wrapper::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+.porenewal-report-wrapper {
+  scrollbar-width: thin;
+  scrollbar-color: #888 transparent;
+}
+
+/* Print styles */
+@media print {
+  * {
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+  }
+
+  *::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  html, body {
+    overflow: visible !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 5mm;
+  }
+
+  body, .po-print-content {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 10pt;
+    line-height: 1.15;
+    color: black;
+  }
+
+  .po-print-content {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  table.porenewal-report-table {
+    border-collapse: collapse;
+    border: 1px solid black;
+    font-size: 10pt;
+  }
+
+  table.porenewal-report-table th,
+  table.porenewal-report-table td {
+    border: 1px solid black;
+    padding: 2px 4px;
+  }
+
+  table.porenewal-report-table th {
+    font-size: 10pt;
+    color: #000;
+  }
+
+  button, .navbar, .sidebar {
+    display: none !important;
+  }
+
+  canvas {
+    max-width: 120px !important;
+    max-height: 40px !important;
+  }
+}

@@ -24,6 +24,38 @@
   overflow: hidden;
   height: 85vh;
 }
+.rentmachinesummery-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.rentmachinesummery-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.rentmachinesummery-branch-dropdown,
+.rentmachinesummery-search {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.rentmachinesummery-print-btn {
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.rentmachinesummery-print-btn:hover {
+  background: #43a047;
+}
 
 .rentmachinesummery-table-container {
   flex: 1;

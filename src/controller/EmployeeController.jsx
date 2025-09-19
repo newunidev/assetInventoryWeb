@@ -26,7 +26,21 @@ export const getAllPermissionsAll = async () => {
     }
 };
 
+export const getAllBranches = async () => {
+     
+    try {
+        const response = await apiClient.get(`branches`);
+        //console.log(' User permission Response Response:', response.data); // ✅ Log API response
+        return response.data; // Return item data
+    } catch (error) {
+        console.error('Error fetching branches:', error.message);
+        throw error;
+    }
+};
+
+
 
 export default {
-    getAllPermissions
+    getAllPermissions,
+    getAllBranches
  };

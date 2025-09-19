@@ -104,7 +104,7 @@ export const getAllPoApprovals = async () => {
 
 //method to update purchase order status column
 export const updatePoStatus = async (poid, status) => {
-  //console.log("Method Called");
+  console.log("Method Called");
   try {
     const token = localStorage.getItem("token");
 
@@ -118,7 +118,7 @@ export const updatePoStatus = async (poid, status) => {
       }
     );
 
-    //console.log("PO Status Updated Successfully", response.data);
+    console.log("PO Status Updated Successfully", response.data);
     return response.data;
   } catch (error) {
     console.error(
@@ -146,7 +146,7 @@ export const updateEntirePurchaseOrderbyPoId = async (id, purchaseOrder) => {
       }
     );
 
-   // console.log("PO details Updated Successfully", response);
+    // console.log("PO details Updated Successfully", response);
     return response.data;
   } catch (error) {
     console.error("Error updating PO:", error.response?.data || error.message);
@@ -185,6 +185,32 @@ export const updatePurchaseOrderApproval2 = async (approvalData) => {
 
     const response = await apiClient.put(
       `po-approvals/approval2`,
+      approvalData, // directly send the object with po_no, approval1_by, approval1
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("PO Approval Updated Successfully", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error updating PO Approval:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+//po approval 2 for the po renewal with the machine life records as well
+export const updateRenewalPurchaseOrderApproval2 = async (approvalData) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await apiClient.put(
+      `renewalpo-approvals/approval2`,
       approvalData, // directly send the object with po_no, approval1_by, approval1
       {
         headers: {
@@ -272,6 +298,27 @@ export const getPoPrintPoolByPoId = async (poid) => {
   }
 };
 
+export const createPurchaseOrderReturn = async (poReject) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await apiClient.post("porejects", poReject, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("PO Reject Created Success Created Success", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error creating Purchase Order reject:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
 //======================methods for po print pool END ============================//
 
 export default {
@@ -284,4 +331,6 @@ export default {
   poApprovalByPoId,
   updatePoStatus,
   updateEntirePurchaseOrderbyPoId,
+  createPurchaseOrderReturn,
+  updateRenewalPurchaseOrderApproval2
 };

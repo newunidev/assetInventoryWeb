@@ -71,7 +71,7 @@ const RentMachineGrn = () => {
       try {
         const id = poId;
         const res = await categoryPurchaseOrderByPoId(id);
-        //console.log("Cat PO Data", res);
+        console.log("Cat PO Data", res);
         if (res.success && res.categoryPurchaseOrders) {
           const formattedPO = {
             po_no: id,
@@ -81,6 +81,8 @@ const RentMachineGrn = () => {
               cpo_id: item.cpo_id, // <-- actual CategoryPurchaseOrder id
               name: item.Category?.cat_name || "",
               orderedQty: item.Qty,
+              from_date: item.from_date,
+              to_date: item.to_date,
               receivedMachines: [],
             })),
           };
@@ -99,9 +101,9 @@ const RentMachineGrn = () => {
     const fetchInactiveMachines = async () => {
       try {
         const res = await getAllMachineAvailableToGrn(
-          localStorage.getItem("userBranch")
+          localStorage.getItem("userBranchId")
         );
-        console.log("machine to grn",res);
+        console.log("machine to grn", res);
         if (res.success && res.machines) {
           setAllInactiveMachines(res.machines);
         }
@@ -114,28 +116,6 @@ const RentMachineGrn = () => {
     fetchInactiveMachines();
   }, []);
 
-  // 🔹 Auto-filter machines when category or search changes
-  // useEffect(() => {
-  //   if (!selectedCategory) {
-  //     setSearchResults([]);
-  //     return;
-  //   }
-
-  //   const filtered = allInactiveMachines.filter(
-  //     (m) =>
-  //       m.cat_id === selectedCategory.id &&
-  //       (m.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //         m.serial_no.toLowerCase().includes(searchTerm.toLowerCase()))
-  //   );
-
-  //   setSearchResults(
-  //     filtered.map((m) => ({
-  //       ...m, // keep all original fields
-  //       id: m.rent_item_id, // optionally override/add fields
-  //       serial: m.serial_no,
-  //     }))
-  //   );
-  // }, [selectedCategory, searchTerm, allInactiveMachines]);
   useEffect(() => {
     if (!selectedCategory || !po) {
       setSearchResults([]);
@@ -160,50 +140,12 @@ const RentMachineGrn = () => {
     );
   }, [selectedCategory, searchTerm, allInactiveMachines, po]);
 
-  // const handleAddMachineToGRN = (machine) => {
-  //   setPo((prev) => ({
-  //     ...prev,
-  //     categories: prev.categories.map((cat) =>
-  //       cat.id === selectedCategory.id
-  //         ? { ...cat, receivedMachines: [...cat.receivedMachines, machine] }
-  //         : cat
-  //     ),
-  //   }));
-  //   setSelectedCategory(null);
-  //   setSearchResults([]);
-  //   setSearchTerm("");
-  // };
-  // const handleAddMachineToGRN = (machine) => {
-  //   setPo((prev) => ({
-  //     ...prev,
-  //     categories: prev.categories.map((cat) => {
-  //       if (cat.id === selectedCategory.id) {
-  //         // Check if machine already added
-  //         const exists = cat.receivedMachines.some(
-  //           (m) => m.rent_item_id === machine.rent_item_id
-  //         );
-  //         if (exists) return cat; // Do not add duplicates
-  //         return {
-  //           ...cat,
-  //           receivedMachines: [...cat.receivedMachines, machine],
-  //         };
-  //       }
-  //       return cat;
-  //     }),
-  //   }));
-  //   setSelectedCategory(null);
-  //   setSearchResults([]);
-  //   setSearchTerm("");
-  // };
   const handleAddMachineToGRN = (machine) => {
- 
     const flattenedMachine = {
       ...machine,
       category: machine.Category?.cat_name || "",
       supplier: machine.Supplier?.name || "",
     };
-
-    
 
     setPo((prev) => ({
       ...prev,
@@ -234,154 +176,11 @@ const RentMachineGrn = () => {
     setNewMachine({ name: "", serial: "" });
   };
 
-  // const handleCreateGrn = async () => {
-  //   if (!po) return;
-
-  //   let grnId = null; // Store GRN ID to delete if bulk creation fails
-
-  //   try {
-  //     // 1️⃣ Prepare GRN data
-  //     const grnData = {
-  //       po_id: po.po_no,
-  //       grn_date: new Date().toISOString().split("T")[0], // YYYY-MM-DD
-  //       created_by: parseInt(localStorage.getItem("userid")), // Adjust if needed
-  //       additional: `Received ${po.categories.reduce(
-  //         (sum, c) => sum + c.receivedMachines.length,
-  //         0
-  //       )} units in good condition. Verified against PO.`,
-  //     };
-
-  //     // 2️⃣ Call createGrn API
-  //     const grnResponse = await createGrn(grnData);
-
-  //     if (grnResponse.success && grnResponse.grn) {
-  //       grnId = grnResponse.grn.grn_id;
-
-  //       // 3️⃣ Prepare bulk GRN machines data
-  //       const bulkData = po.categories.flatMap((cat) =>
-  //         cat.receivedMachines.map((m) => ({
-  //           grn_id: grnId,
-  //           cpo_id: cat.id,
-  //           rent_item_id: m.rent_item_id,
-  //           additional: "Checked and approved",
-  //         }))
-  //       );
-
-  //       // 4️⃣ Call createBulkGrnRentMachines API
-  //       const bulkResponse = await createBulkGrnRentMachines(bulkData);
-
-  //       if (bulkResponse.success) {
-  //         alert("GRN created successfully!");
-  //         // Optionally reset or refresh
-  //       } else {
-  //         // ❌ Bulk failed → Roll back GRN
-  //         await deleteGrnById(grnId);
-  //         alert("Error creating GRN machines. GRN rolled back.");
-  //       }
-  //     } else {
-  //       alert("Error creating GRN.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error creating GRN:", error);
-
-  //     // ❌ Ensure rollback if GRN was created but process failed
-  //     if (grnId) {
-  //       try {
-  //         await deleteGrnById(grnId);
-  //         console.log("Rolled back GRN:", grnId);
-  //       } catch (deleteError) {
-  //         console.error("Error rolling back GRN:", deleteError);
-  //       }
-  //     }
-
-  //     alert("An error occurred while creating GRN.");
-  //   }
-  // };
-  // const handleCreateGrn = async () => {
-
-  //   if (!po) return;
-
-  //   let grnId = null;
-
-  //   try {
-  //     // 1️⃣ Get already-received machines for this PO
-  //     const existingGrnRes = await getGrnDetailsWithGrnRentMachinesByPoId(
-  //       po.po_no
-  //     );
-  //     let alreadyReceivedIds = new Set();
-
-  //     if (existingGrnRes.success && existingGrnRes.grns) {
-  //       alreadyReceivedIds = new Set(
-  //         existingGrnRes.grns.flatMap((grn) =>
-  //           grn.GRN_RentMachines.map((rm) => rm.rent_item_id)
-  //         )
-  //       );
-  //     }
-
-  //     // 2️⃣ Filter only new machines that aren't already received
-  //     const newMachines = po.categories.flatMap((cat) =>
-  //       cat.receivedMachines
-  //         .filter((m) => !alreadyReceivedIds.has(m.rent_item_id))
-  //         .map((m) => ({
-  //           cpo_id: cat.cpo_id,
-  //           rent_item_id: m.rent_item_id,
-  //           additional: "Checked and approved",
-  //         }))
-  //     );
-
-  //     if (newMachines.length === 0) {
-  //       alert("No new machines to add to GRN.");
-  //       return;
-  //     }
-
-  //     // 3️⃣ Create GRN
-  //     const grnData = {
-  //       po_id: po.po_no,
-  //       grn_date: new Date().toISOString().split("T")[0],
-  //       created_by: parseInt(localStorage.getItem("userid")),
-  //       additional: `Received ${newMachines.length} new units in good condition.`,
-  //     };
-  //     console.log("grn Data",grnData);
-  //     const grnResponse = await createGrn(grnData);
-
-  //     if (grnResponse.success && grnResponse.grn) {
-  //       grnId = grnResponse.grn.grn_id;
-
-  //       // 4️⃣ Attach GRN ID to new machines
-  //       const bulkData = newMachines.map((m) => ({
-  //         grn_id: grnId,
-  //         ...m,
-  //       }));
-
-  //       const bulkResponse = await createBulkGrnRentMachines(bulkData);
-
-  //       if (bulkResponse.success) {
-  //         alert("GRN created successfully!");
-  //       } else {
-  //         await deleteGrnById(grnId);
-  //         alert("Error creating GRN machines. GRN rolled back.");
-  //       }
-  //     } else {
-  //       alert("Error creating GRN.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error creating GRN:", error);
-  //     if (grnId) {
-  //       try {
-  //         await deleteGrnById(grnId);
-  //         //console.log("Rolled back GRN:", grnId);
-  //       } catch (deleteError) {
-  //         console.error("Error rolling back GRN:", deleteError);
-  //       }
-  //     }
-  //     alert("An error occurred while creating GRN.");
-  //   }
-  // };
   const handleCreateGrn = async () => {
     if (!po) return;
 
     let grnId = null;
-    let branch = null;
+    let branchId = null;
 
     try {
       // 1️⃣ Get already-received machines for this PO
@@ -444,13 +243,29 @@ const RentMachineGrn = () => {
 
       if (grnResponse.success && grnResponse.grn) {
         grnId = grnResponse.grn.grn_id;
-        branch =localStorage.getItem("userBranch");
+        branchId = localStorage.getItem("userBranchId");
         // 4️⃣ Attach GRN ID to new machines
-        const bulkData = newMachines.map((m) => ({
-          grn_id: grnId,
-          branch: branch,
-          ...m,
-        }));
+        // const bulkData = newMachines.map((m) => ({
+
+        //   grn_id: grnId,
+        //   branch: branchId,
+        //   po_id:poId,
+
+        //   ...m,
+        // }));
+        const bulkData = newMachines.map((m) => {
+          const category = po.categories.find((cat) => cat.cpo_id === m.cpo_id);
+          return {
+            grn_id: grnId,
+            branch: branchId,
+            po_id: poId,
+            cpo_id: m.cpo_id,
+            rent_item_id: m.rent_item_id,
+            from_date: category?.from_date || null,
+            to_date: category?.to_date || null,
+            additional: m.additional,
+          };
+        });
 
         const bulkResponse = await createBulkGrnRentMachines(bulkData);
 
@@ -549,13 +364,13 @@ const RentMachineGrn = () => {
           </div>
 
           {selectedCategory && (
-            <div className="modal-backdrop">
-              <div className="modal">
+            <div className="grn-modal-backdrop">
+              <div className="grn-modal">
                 <h4>
                   <FaSearch /> Add Machine for {selectedCategory.name}
                 </h4>
 
-                <div className="search-box">
+                <div className="grn-search-box">
                   <input
                     placeholder="Search Machine..."
                     value={searchTerm}
@@ -563,7 +378,7 @@ const RentMachineGrn = () => {
                   />
                 </div>
 
-                <table className="search-results">
+                <table className="grn-search-results">
                   <thead>
                     <tr>
                       <th>Item Code</th>
@@ -582,7 +397,6 @@ const RentMachineGrn = () => {
                       </tr>
                     ) : (
                       searchResults.map((m) => {
-                         
                         const alreadyAdded = po.categories
                           .find((cat) => cat.id === selectedCategory.id)
                           ?.receivedMachines.some(
@@ -598,7 +412,7 @@ const RentMachineGrn = () => {
                             <td>
                               {!alreadyAdded && (
                                 <button
-                                  className="select-btn"
+                                  className="grn-select-btn"
                                   onClick={() => handleAddMachineToGRN(m)}
                                   title="Select this machine"
                                 >
@@ -613,15 +427,17 @@ const RentMachineGrn = () => {
                   </tbody>
                 </table>
 
-                <div className="modal-actions">
+                <div className="grn-modal-actions">
                   <button
-                    className="secondary-btn"
-                    onClick={() => setShowAddMachineModal(true)}
+                    className="grn-secondary-btn"
+                    onClick={() =>
+                      window.open("/rentmachines/createrentmachines", "_blank")
+                    }
                   >
                     + Add New Machine
                   </button>
                   <button
-                    className="cancel-btn"
+                    className="grn-cancel-btn"
                     onClick={() => setSelectedCategory(null)}
                   >
                     Cancel

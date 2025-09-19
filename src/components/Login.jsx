@@ -44,6 +44,7 @@ const LoginPage = () => {
         localStorage.setItem("token", data.token);
         localStorage.setItem("userEmail", data.user.email);
         localStorage.setItem("userBranch", data.user.branch);
+        localStorage.setItem("userBranchId", data.user.branch_details.branch_id);
         localStorage.setItem("userid", data.user.employee_id);
         localStorage.setItem("name", data.user.name);
         

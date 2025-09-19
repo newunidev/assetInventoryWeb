@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./PurchaseOrderEdit.css";
+import "./RenewalPurchaseOrderEdit.css";
 import { useParams, useNavigate } from "react-router-dom";
 
 import {
@@ -9,12 +9,14 @@ import {
 import { getCategories } from "../controller/CategoryController";
 import { getAllSuppliers } from "../controller/RentMachineController";
 import { usePageTitle } from "../utility/usePageTitle";
+
 import {
-  categoryPurchaseOrderByPoId,
-  createCategoryPurchaseOrder,
-  deleteCategoryPurchaseOrder,
-  bulkCategoryPurchaseOrderUpdateCreate,
-} from "../controller/CategoryPurchaseOrderController";
+  getRenewalPurchaseOrderMachinesByPoId,
+  deleteRenewalPurchaseOrderMachine,
+  bulkRenewalPurchaseOrderUpdateCreate,
+} from "../controller/RenewalPurchaseOrderController";
+
+import { getAllRentMachineLifeExpired } from "../controller/RentMachineLifeController";
 
 const initialRow = {
   category: "",
@@ -27,7 +29,7 @@ const initialRow = {
   total: 0,
 };
 
-const PurchaseOrderEdit = () => {
+const RenewalPurchaseOrderEdit = () => {
   const { poId } = useParams();
   const navigate = useNavigate();
   const [, setPageTitle] = usePageTitle();
@@ -38,6 +40,9 @@ const PurchaseOrderEdit = () => {
   const [purchaseOrder, setPurchaseOrder] = useState(null);
   const [taxOption, setTaxOption] = useState("");
   const [categoryItems, setCategoryItems] = useState([]);
+  const [rentMachines, setRentMachines] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const invoiceOptions = [
     "New Universe Corporate Head Office Borella",
@@ -57,21 +62,52 @@ const PurchaseOrderEdit = () => {
     }
   }, [poId]);
   useEffect(() => {
-    setPageTitle("Rent Machine PO EDIT");
+    setPageTitle("Renewal Rent Machine PO EDIT");
   }, [setPageTitle]);
+
+  const fetchRentMachines = async () => {
+    try {
+      const res = await getAllRentMachineLifeExpired();
+      if (res.success && Array.isArray(res.data)) {
+        console.log(res);
+        return res.data.map((item) => ({
+          id: item.RentMachine.rent_item_id,
+          serial_no: item.RentMachine.serial_no,
+          name: item.RentMachine.name,
+          perDayCost: item.RentMachine.rent_cost_per_day || 0, // optional
+          rawData: item, // store full data if needed
+        }));
+      }
+      return [];
+    } catch (err) {
+      console.error("Failed to fetch expired machines:", err);
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    const loadMachines = async () => {
+      const machines = await fetchRentMachines(); // call the separate function here
+      setRentMachines(machines);
+    };
+
+    loadMachines();
+  }, []);
 
   const fetchData = async () => {
     try {
-      const [supplierData, categoryData, poData, catRes] = await Promise.all([
-        getAllSuppliers(),
-        getCategories(),
-        purchaseOrderByPoId(poId),
-        categoryPurchaseOrderByPoId(poId),
-      ]);
+      const [supplierData, categoryData, poData, renewalRes] =
+        await Promise.all([
+          getAllSuppliers(),
+          getCategories(),
+          purchaseOrderByPoId(poId),
+          getRenewalPurchaseOrderMachinesByPoId(poId),
+        ]);
 
       setSuppliers(supplierData.suppliers);
       setCategories(categoryData.categories);
 
+      // ✅ Set PO details
       if (poData && poData.purchaseOrder) {
         const po = poData.purchaseOrder;
 
@@ -92,9 +128,9 @@ const PurchaseOrderEdit = () => {
         else if (po.is_vat) setTaxOption("VAT");
       }
 
-      // ✅ Map categoryPurchaseOrders into table rows
-      if (catRes.success && Array.isArray(catRes.categoryPurchaseOrders)) {
-        const mappedRows = catRes.categoryPurchaseOrders.map((item) => {
+      // ✅ Map RenewalPurchaseOrderMachines into table rows
+      if (renewalRes.success && Array.isArray(renewalRes.poMachineRenewals)) {
+        const mappedRows = renewalRes.poMachineRenewals.map((item) => {
           const days =
             item.from_date && item.to_date
               ? Math.max(
@@ -107,27 +143,30 @@ const PurchaseOrderEdit = () => {
               : 1;
 
           const total =
-            (item.Qty || 0) *
-            (item.PerDay_Cost || 0) *
+            (item.qty || 0) *
+            (item.perday_cost || 0) *
             days *
             (1 - (item.d_percent || 0) / 100);
 
           return {
-            cpo_id: item.cpo_id, // ✅ Keep reference for Delete
-            category: item.cat_id,
+            mr_id: item.mr_id, // ✅ keep reference for delete
+            category: item.RentMachine?.cat_id || "",
             description: item.description || "",
-            machines: item.Qty || 0,
-            costPerDay: item.PerDay_Cost || 0,
+            machines: item.qty || 0,
+            costPerDay: item.perday_cost || 0,
             discount: item.d_percent || 0,
             fromDate: item.from_date || "",
             toDate: item.to_date || "",
             total,
+            rent_item_id: item.rent_item_id, // keep machine reference
+            serialNo: item.RentMachine?.serial_no || "",
+            machineName: item.RentMachine?.name || "",
           };
         });
 
         setRows(mappedRows); // ✅ this fills your table
       } else {
-        throw new Error(catRes.message || "Failed to fetch category items.");
+        throw new Error(renewalRes.message || "Failed to fetch renewal items.");
       }
     } catch (err) {
       console.error("❌ Failed to fetch PO data:", err);
@@ -136,32 +175,17 @@ const PurchaseOrderEdit = () => {
 
   // ---------------- Form Handlers ----------------
   const handlePOChange = (field, value) => {
-    //console.log("field:",field,"value:",value);
     setPurchaseOrder((prev) => ({ ...prev, [field]: value }));
   };
 
   // ---------------- Table Handlers ----------------
   const addRow = () => {
-    setRows((prev) => [
-      ...prev,
-      {
-        category: "",
-        description: "",
-        machines: 0,
-        costPerDay: 0,
-        discount: 0,
-        fromDate: "",
-        toDate: "",
-        total: 0,
-      },
-    ]);
+    setShowPopup(true);
   };
-
   const handleChange = (index, field, value) => {
     const updatedRows = [...rows];
     updatedRows[index][field] = value;
 
-    // Recalculate total when relevant fields change
     if (
       ["machines", "costPerDay", "discount", "fromDate", "toDate"].includes(
         field
@@ -170,8 +194,6 @@ const PurchaseOrderEdit = () => {
       const from = new Date(updatedRows[index].fromDate);
       const to = new Date(updatedRows[index].toDate);
 
-      // Calculate days. Ensure 'days' is at least 1 if valid dates are selected
-      // and 'from' date is not after 'to' date.
       const days =
         isNaN(from) || isNaN(to) || from > to
           ? 0
@@ -180,13 +202,13 @@ const PurchaseOrderEdit = () => {
       const rawCost =
         updatedRows[index].machines * updatedRows[index].costPerDay * days;
       const discountAmount =
-        (Number(updatedRows[index].discount) / 100) * rawCost; // Ensure discount is treated as number
+        (Number(updatedRows[index].discount) / 100) * rawCost;
       updatedRows[index].total = rawCost - discountAmount;
     }
 
     setRows(updatedRows);
   };
-  // Calculate overall total for all rows
+
   const totalSum = rows.reduce((sum, row) => sum + Number(row.total || 0), 0);
 
   // ---------------- Submit Handler ----------------
@@ -195,7 +217,6 @@ const PurchaseOrderEdit = () => {
 
     setIsSubmitting(true);
     try {
-      // 1️⃣ Update main purchase order (entire update)
       const payloadPO = {
         ...purchaseOrder,
         poId,
@@ -205,7 +226,6 @@ const PurchaseOrderEdit = () => {
         status: "Pending",
       };
 
-      console.log("Payload Print", payloadPO);
       const poUpdateRes = await updateEntirePurchaseOrderbyPoId(
         poId,
         payloadPO
@@ -217,101 +237,65 @@ const PurchaseOrderEdit = () => {
         return;
       }
 
-      // 2️⃣ Prepare bulk category purchase orders payload
       const bulkPayload = rows.map((row) => ({
-        ...(row.cpo_id ? { cpo_id: row.cpo_id } : {}), // include cpo_id if exists
-        PO_id: poId,
-        cat_id: row.category,
-        Qty: row.machines,
-        PerDay_Cost: row.costPerDay,
-        d_percent: row.discount,
+        ...(row.mr_id ? { mr_id: row.mr_id } : {}), // only include mr_id if it's an update
+        po_id: poId, // matches your Postman payload
+        rent_item_id: row.rent_item_id, // instead of cat_id
         from_date: row.fromDate,
         to_date: row.toDate,
+        qty: row.machines,
+        perday_cost: row.costPerDay,
+        d_percent: row.discount,
         description: row.description,
       }));
 
       if (bulkPayload.length > 0) {
-        const res = await bulkCategoryPurchaseOrderUpdateCreate(bulkPayload);
+        const res = await bulkRenewalPurchaseOrderUpdateCreate(bulkPayload);
 
         if (res.success) {
-          alert("✅ Purchase Order and Category Items updated successfully!");
-          window.location.reload(); // optional: refresh to see updated data
+          alert("✅ Purchase Order and Renewal Items updated successfully!");
+          window.location.reload();
         } else {
-          alert("⚠️ Failed to update category items: " + res.message);
+          alert("⚠️ Failed to update Renewal items: " + res.message);
         }
       } else {
         alert("✅ Purchase Order updated successfully!");
         navigate(`/rentmachines/poreports/${encodeURIComponent(poId)}`);
       }
     } catch (err) {
-      console.error("❌ Failed to update PO and category items:", err);
+      console.error("❌ Failed to update PO and Renewal items:", err);
       alert("❌ Error updating PO. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Delete from DB + UI
-  const handleDelete = async (cpo_id, index) => {
+  const handleDelete = async (mr_id, index) => {
     try {
       if (!window.confirm("❌ Are you sure you want to delete this item?"))
         return;
 
-      const res = await deleteCategoryPurchaseOrder(cpo_id);
+      const res = await deleteRenewalPurchaseOrderMachine(mr_id);
 
       if (res.success) {
-        // Remove the row from state
         setRows((prev) => prev.filter((_, i) => i !== index));
-        alert("✅ Category Purchase Order deleted successfully!");
+        alert("✅ Renewal Purchase Order Machine deleted successfully!");
       } else {
         alert("⚠️ Failed to delete: " + res.message);
       }
     } catch (err) {
-      console.error("❌ Failed to delete Category Purchase Order:", err);
-      alert("❌ Error deleting Category Purchase Order. Please try again.");
+      console.error("❌ Failed to delete Renewal Purchase Order Machine:", err);
+      alert(
+        "❌ Error deleting Renewal Purchase Order Machine. Please try again."
+      );
     }
   };
 
-  // Save new row to DB
-  const handleSave = async (row, index) => {
-    // try {
-    //   // Prepare payload based on your API requirements
-    //   const payload = {
-    //     PO_id: poId, // Make sure purchaseOrder is in scope
-    //     cat_id: row.category,
-    //     Qty: row.machines,
-    //     PerDay_Cost: row.costPerDay,
-    //     d_percent: row.discount,
-    //     from_date: row.fromDate,
-    //     to_date: row.toDate,
-    //     description: row.description,
-    //   };
-
-    //   const res = await createCategoryPurchaseOrder(payload);
-
-    //   if (res.success) {
-    //     // Update the row with returned cpo_id
-    //     setRows((prev) => {
-    //       const updated = [...prev];
-    //       updated[index] = { ...row, cpo_id: res.data?.cpo_id };
-    //       return updated;
-    //     });
-
-    //     alert("✅ Category Purchase Order saved successfully!");
-    //     // Refresh the page
-    //     window.location.reload();
-    //   } else {
-    //     alert("⚠️ Failed to save Category Purchase Order: " + res.message);
-    //   }
-    // } catch (err) {
-    //   console.error("❌ Failed to save Category Purchase Order:", err);
-    //   alert("❌ Error saving Category Purchase Order. Please try again.");
-    // }
+  const handleSave = async () => {
     if (!purchaseOrder) return;
 
     setIsSubmitting(true);
     try {
-      // 1️⃣ Update main purchase order (entire update)
       const payloadPO = {
         ...purchaseOrder,
         poId,
@@ -321,7 +305,6 @@ const PurchaseOrderEdit = () => {
         status: "Saved",
       };
 
-      console.log("Payload Print", payloadPO);
       const poUpdateRes = await updateEntirePurchaseOrderbyPoId(
         poId,
         payloadPO
@@ -333,54 +316,78 @@ const PurchaseOrderEdit = () => {
         return;
       }
 
-      // 2️⃣ Prepare bulk category purchase orders payload
       const bulkPayload = rows.map((row) => ({
-        ...(row.cpo_id ? { cpo_id: row.cpo_id } : {}), // include cpo_id if exists
-        PO_id: poId,
-        cat_id: row.category,
-        Qty: row.machines,
-        PerDay_Cost: row.costPerDay,
-        d_percent: row.discount,
+        ...(row.mr_id ? { mr_id: row.mr_id } : {}), // only include mr_id if it's an update
+        po_id: poId, // matches your Postman payload
+        rent_item_id: row.rent_item_id, // instead of cat_id
         from_date: row.fromDate,
         to_date: row.toDate,
+        qty: row.machines,
+        perday_cost: row.costPerDay,
+        d_percent: row.discount,
         description: row.description,
       }));
 
       if (bulkPayload.length > 0) {
-        const res = await bulkCategoryPurchaseOrderUpdateCreate(bulkPayload);
+        const res = await bulkRenewalPurchaseOrderUpdateCreate(bulkPayload);
 
         if (res.success) {
-          alert("✅ Purchase Order and Category Items updated successfully!");
-          window.location.reload(); // optional: refresh to see updated data
+          alert("✅ Purchase Order and Renewal Items updated successfully!");
+          window.location.reload();
         } else {
-          alert("⚠️ Failed to update category items: " + res.message);
+          alert("⚠️ Failed to update Renewal items: " + res.message);
         }
       } else {
         alert("✅ Purchase Order updated successfully!");
-        navigate(`/rentmachines/poreports/${encodeURIComponent(poId)}`);
+        navigate(`/rentmachines/renewalporeports/${encodeURIComponent(poId)}`);
       }
     } catch (err) {
-      console.error("❌ Failed to update PO and category items:", err);
+      console.error("❌ Failed to update PO and Renewal  items:", err);
       alert("❌ Error updating PO. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const handleAddMachine = (machine) => {
+    // Prevent duplicates
+    if (rows.some((r) => r.rent_item_id === machine.id)) return;
+
+    const newRow = {
+      category: machine.rawData.RentMachine?.cat_id || "",
+      description: "",
+      machines: 1,
+      costPerDay: machine.perDayCost || 0,
+      discount: 0,
+      fromDate: "",
+      toDate: "",
+      total: 0,
+      rent_item_id: machine.id,
+      serialNo: machine.serial_no,
+      machineName: machine.name,
+    };
+
+    setRows((prev) => [...prev, newRow]);
+    setShowPopup(false);
+  };
+
+  const handleClearRow = (index) => {
+    setRows((prev) => prev.filter((_, i) => i !== index));
+  };
   if (!purchaseOrder) return <p>Loading PO details...</p>;
 
   return (
-    <div className="po-edit-wrapper">
-      <div className="po-edit-top-section">
+    <div className="renewal-po-edit-wrapper">
+      <div className="renewal-po-edit-top-section">
         <form
-          className="po-edit-form-grid"
+          className="renewal-po-edit-form-grid"
           onSubmit={(e) => e.preventDefault()}
         >
           {/* Supplier */}
-          <div className="po-edit-field-group">
-            <label className="po-edit-label">Supplier</label>
+          <div className="renewal-po-edit-field-group">
+            <label className="renewal-po-edit-label">Supplier</label>
             <select
-              className="po-edit-input"
+              className="renewal-po-edit-input"
               value={purchaseOrder.supplier}
               onChange={(e) => handlePOChange("supplier", e.target.value)}
               required
@@ -395,11 +402,11 @@ const PurchaseOrderEdit = () => {
           </div>
 
           {/* PO Date */}
-          <div className="po-edit-field-group">
-            <label className="po-edit-label">PO Date</label>
+          <div className="renewal-po-edit-field-group">
+            <label className="renewal-po-edit-label">PO Date</label>
             <input
               type="date"
-              className="po-edit-input"
+              className="renewal-po-edit-input"
               value={purchaseOrder.poDate}
               onChange={(e) => handlePOChange("poDate", e.target.value)}
               required
@@ -407,21 +414,21 @@ const PurchaseOrderEdit = () => {
           </div>
 
           {/* Delivery Date */}
-          <div className="po-edit-field-group">
-            <label className="po-edit-label">Delivery Date</label>
+          <div className="renewal-po-edit-field-group">
+            <label className="renewal-po-edit-label">Delivery Date</label>
             <input
               type="date"
-              className="po-edit-input"
+              className="renewal-po-edit-input"
               value={purchaseOrder.deliveryDate}
               onChange={(e) => handlePOChange("deliveryDate", e.target.value)}
             />
           </div>
 
           {/* Deliver To */}
-          <div className="po-edit-field-group">
-            <label className="po-edit-label">Deliver To</label>
+          <div className="renewal-po-edit-field-group">
+            <label className="renewal-po-edit-label">Deliver To</label>
             <select
-              className="po-edit-input"
+              className="renewal-po-edit-input"
               value={purchaseOrder.deliverTo}
               onChange={(e) => handlePOChange("deliverTo", e.target.value)}
             >
@@ -435,10 +442,10 @@ const PurchaseOrderEdit = () => {
           </div>
 
           {/* Invoice To */}
-          <div className="po-edit-field-group">
-            <label className="po-edit-label">Invoice To</label>
+          <div className="renewal-po-edit-field-group">
+            <label className="renewal-po-edit-label">Invoice To</label>
             <select
-              className="po-edit-input"
+              className="renewal-po-edit-input"
               value={purchaseOrder.invoiceTo}
               onChange={(e) => handlePOChange("invoiceTo", e.target.value)}
             >
@@ -452,10 +459,10 @@ const PurchaseOrderEdit = () => {
           </div>
 
           {/* Payment Method */}
-          <div className="po-edit-field-group">
-            <label className="po-edit-label">Payment Method</label>
+          <div className="renewal-po-edit-field-group">
+            <label className="renewal-po-edit-label">Payment Method</label>
             <select
-              className="po-edit-select"
+              className="renewal-po-edit-select"
               value={purchaseOrder.paymentMethod}
               onChange={(e) => handlePOChange("paymentMethod", e.target.value)}
             >
@@ -467,32 +474,32 @@ const PurchaseOrderEdit = () => {
           </div>
 
           {/* Attention */}
-          <div className="po-edit-field-group">
-            <label className="po-edit-label">Attention</label>
+          <div className="renewal-po-edit-field-group">
+            <label className="renewal-po-edit-label">Attention</label>
             <input
               type="text"
-              className="po-edit-input"
+              className="renewal-po-edit-input"
               value={purchaseOrder.attention}
               onChange={(e) => handlePOChange("attention", e.target.value)}
             />
           </div>
 
           {/* Payment Term */}
-          <div className="po-edit-field-group">
-            <label className="po-edit-label">Payment Term</label>
+          <div className="renewal-po-edit-field-group">
+            <label className="renewal-po-edit-label">Payment Term</label>
             <input
               type="text"
-              className="po-edit-input"
+              className="renewal-po-edit-input"
               value={purchaseOrder.paymentTerm}
               onChange={(e) => handlePOChange("paymentTerm", e.target.value)}
             />
           </div>
 
           {/* Instruction */}
-          <div className="po-edit-field-group">
-            <label className="po-edit-label">Instruction</label>
+          <div className="renewal-po-edit-field-group">
+            <label className="renewal-po-edit-label">Instruction</label>
             <textarea
-              className="po-edit-textarea"
+              className="renewal-po-edit-textarea"
               rows={1}
               value={purchaseOrder.instruction}
               onChange={(e) => handlePOChange("instruction", e.target.value)}
@@ -500,19 +507,19 @@ const PurchaseOrderEdit = () => {
           </div>
 
           {/* PR Nos */}
-          <div className="po-edit-field-group">
-            <label className="po-edit-label">PR Nos</label>
+          <div className="renewal-po-edit-field-group">
+            <label className="renewal-po-edit-label">PR Nos</label>
             <input
               type="text"
-              className="po-edit-input"
+              className="renewal-po-edit-input"
               value={purchaseOrder.prNos}
               onChange={(e) => handlePOChange("prNos", e.target.value)}
             />
           </div>
 
           {/* Tax Option */}
-          <div className="po-edit-field-group">
-            <label className="po-edit-label">Tax Option</label>
+          <div className="renewal-po-edit-field-group">
+            <label className="renewal-po-edit-label">Tax Option</label>
             <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
               {(() => {
                 const selectedSupplier = suppliers.find(
@@ -529,44 +536,39 @@ const PurchaseOrderEdit = () => {
             </div>
           </div>
         </form>
-
-        {/* Update Button */}
-        {/* <div className="po-edit-button-row">
-          <button className="po-edit-button-submit" onClick={handleSubmit}>
-            💾 Update
-          </button>
-        </div> */}
       </div>
 
       {/* ---------------- Table Section ---------------- */}
-      <div className="po-edit-form-card">
-        <div className="po-edit-header-row">
-          <div className="po-edit-action-buttons">
-            {/* Left side */}
-            <button className="po-edit-button-add" onClick={addRow}>
+      <div className="renewal-po-edit-form-card">
+        <div className="renewal-po-edit-header-row">
+          <div className="renewal-po-edit-action-buttons">
+            <button className="renewal-po-edit-button-add" onClick={addRow}>
               ➕ Add Row
             </button>
 
-            {/* Right side */}
-            <div className="po-edit-right-buttons">
+            <div className="renewal-po-edit-right-buttons">
               <button
-                className="po-edit-button-approval"
+                className="renewal-po-edit-button-approval"
                 onClick={handleSubmit}
               >
                 📨 Send To Approval
               </button>
-              <button className="po-edit-button-save" onClick={handleSave}>
+              <button
+                className="renewal-po-edit-button-save"
+                onClick={handleSave}
+              >
                 💾 Save
               </button>
             </div>
           </div>
         </div>
 
-        <div className="po-edit-table-container">
-          <table className="po-edit-table">
+        <div className="renewal-po-edit-table-container">
+          <table className="renewal-po-edit-table">
             <thead>
               <tr>
-                <th>Category</th>
+                <th>Serial No</th>
+                <th>Machine</th>
                 <th>Description</th>
                 <th>No. of Machines</th>
                 <th>Per Day Cost</th>
@@ -581,7 +583,7 @@ const PurchaseOrderEdit = () => {
               {rows.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={9}
+                    colSpan={11}
                     style={{ textAlign: "center", color: "#666" }}
                   >
                     No items to display
@@ -590,21 +592,8 @@ const PurchaseOrderEdit = () => {
               ) : (
                 rows.map((row, i) => (
                   <tr key={i}>
-                    <td>
-                      <select
-                        value={row.category}
-                        onChange={(e) =>
-                          handleChange(i, "category", parseInt(e.target.value))
-                        }
-                      >
-                        <option value="">Select</option>
-                        {categories.map((cat) => (
-                          <option key={cat.cat_id} value={cat.cat_id}>
-                            {cat.cat_name}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
+                    <td>{row.serialNo}</td>
+                    <td>{row.machineName}</td>
                     <td>
                       <input
                         type="text"
@@ -661,15 +650,22 @@ const PurchaseOrderEdit = () => {
                     </td>
                     <td>LKR {row.total.toFixed(2)}</td>
                     <td>
-                      {row.cpo_id ? (
+                      {row.mr_id ? (
                         <button
-                          className="po-edit-btn po-edit-btn-delete"
-                          onClick={() => handleDelete(row.cpo_id, i)}
+                          className="renewal-po-edit-btn renewal-po-edit-btn-delete"
+                          onClick={() => handleDelete(row.mr_id, i)}
                         >
-                          Delete
+                          ❌ Delete
                         </button>
                       ) : (
-                        ""
+                        <>
+                          <button
+                            className="renewal-po-edit-btn renewal-po-edit-btn-clear"
+                            onClick={() => handleClearRow(i)}
+                          >
+                            🧹 Clear
+                          </button>
+                        </>
                       )}
                     </td>
                   </tr>
@@ -679,16 +675,91 @@ const PurchaseOrderEdit = () => {
           </table>
         </div>
 
-        <div className="purchaseorder-button-row">
-          <div className="purchaseorder-total">
+        <div className="renewal-purchaseorder-button-row">
+          <div className="renewal-purchaseorder-total">
             Total: LKR {totalSum.toFixed(2)}
           </div>
         </div>
       </div>
       {isSubmitting && (
-        <div className="po-edit-loading-overlay">
-          <div className="po-edit-loading-spinner">
+        <div className="renewal-po-edit-loading-overlay">
+          <div className="renewal-po-edit-loading-spinner">
             <p>Updating...</p>
+          </div>
+        </div>
+      )}
+
+      {/* 🔲 Popup for selecting rent machines */}
+      {showPopup && (
+        <div className="renewalPurchaseOrder-loading-overlay">
+          <div className="renewalPurchaseOrder-loading-spinner">
+            <h3>Select Rent Machine</h3>
+
+            {/* 🔍 Search Bar */}
+            <input
+              type="text"
+              placeholder="Search by name or serial no"
+              className="renewalPurchaseOrder-input"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{ marginBottom: "1rem", width: "100%", padding: "0.5rem" }}
+            />
+
+            <table className="renewalPurchaseOrder-table">
+              <thead>
+                <tr>
+                  <th>RENT ID</th>
+                  <th>Machine</th>
+                  <th>Serial No</th>
+                  <th>Exp Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rentMachines
+                  .filter(
+                    (rm) =>
+                      rm.name
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase()) ||
+                      rm.serial_no
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase()) ||
+                      rm.id.toLowerCase().includes(searchTerm.toLowerCase())
+                  )
+                  .map((rm) => {
+                    const alreadyInPO = rows.some(
+                      (row) => row.rent_item_id === rm.id
+                    );
+
+                    return (
+                      <tr key={rm.id}>
+                        <td>{rm.id}</td>
+                        <td>{rm.name}</td>
+                        <td>{rm.serial_no}</td>
+                        <td>{rm.rawData.to_date}</td>
+                        <td>
+                          <button
+                            onClick={() => handleAddMachine(rm)}
+                            className="renewalPurchaseOrder-button-submit"
+                            disabled={alreadyInPO}
+                          >
+                            {alreadyInPO ? "Already Added" : "Select"}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+
+            <button
+              onClick={() => setShowPopup(false)}
+              className="renewalPurchaseOrder-button-submit"
+              style={{ marginTop: "1rem" }}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
@@ -696,4 +767,4 @@ const PurchaseOrderEdit = () => {
   );
 };
 
-export default PurchaseOrderEdit;
+export default RenewalPurchaseOrderEdit;

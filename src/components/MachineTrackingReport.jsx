@@ -9,6 +9,9 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { usePageTitle } from "../utility/usePageTitle";
 import { FaFilePdf } from "react-icons/fa";
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
+import { FaFileExcel } from "react-icons/fa";
 
 const branches = [
   "All",
@@ -203,7 +206,13 @@ const MachineTrackingReport = () => {
     let initialTableStartY;
 
     // --- Header for the First Page Only (Drawn outside autoTable) ---
-    const companyName = "New Universe Corporate Clothing Pvt Ltd";
+    // --- Header for the First Page Only (Drawn outside autoTable) ---
+    let companyName = "New Universe Corporate Clothing H (Pvt) Ltd";
+
+    // Replace "H" with "SL" when branch is Welioya, Mathara, or Piliyandala
+    if (["Welioya", "Mathara", "Piliyandala"].includes(selectedBranch)) {
+      companyName = companyName.replace(" H ", " SL ");
+    }
     doc.setTextColor(0, 51, 102); // Dark blue RGB
     doc.setFontSize(14);
     doc.text(companyName, doc.internal.pageSize.width / 2, 15, {
@@ -341,6 +350,103 @@ const MachineTrackingReport = () => {
 
     doc.save("Machine_Tracking_Report.pdf");
   };
+
+  const downloadExcel = () => {
+    if (filteredMachines.length === 0) {
+      alert("No machines to export.");
+      return;
+    }
+
+    // Prepare the data (similar to PDF tableBody)
+    const data = filteredMachines.map((machine) => {
+      const lastScanned = getLastScannedBranch(
+        machine.item_code,
+        machine.branch
+      );
+      const lastScanDate = getLastScannedDate(
+        machine.item_code,
+        machine.branch
+      );
+
+      return {
+        "Item Code": machine.item_code || "N/A",
+        "Serial No": machine.serial_no || "N/A",
+        Name: machine.name || "N/A",
+        Description: machine.description || "N/A",
+        Branch: machine.branch || "N/A",
+        "Last Scanned Branch": lastScanned,
+        "Last Scanned Date": lastScanDate,
+        "Model No": machine.model_no || "N/A",
+        "Box No": machine.box_no || "N/A",
+      };
+    });
+
+    // Create worksheet
+    const worksheet = XLSX.utils.json_to_sheet(data);
+
+    // Get range for styling
+    const range = XLSX.utils.decode_range(worksheet["!ref"]);
+
+    // Apply header styles (first row)
+    const headerRow = Object.keys(data[0]);
+    headerRow.forEach((header, colIndex) => {
+      const cellRef = XLSX.utils.encode_cell({ r: 0, c: colIndex });
+
+      if (!worksheet[cellRef]) worksheet[cellRef] = {};
+
+      worksheet[cellRef].s = {
+        font: { bold: true, sz: 12 },
+        fill: { fgColor: { rgb: "2A80B9" } }, // same as PDF header blue
+        alignment: { horizontal: "center", vertical: "center" },
+        border: {
+          top: { style: "thin", color: { rgb: "000000" } },
+          bottom: { style: "thin", color: { rgb: "000000" } },
+          left: { style: "thin", color: { rgb: "000000" } },
+          right: { style: "thin", color: { rgb: "000000" } },
+        },
+        color: { rgb: "FFFFFF" },
+      };
+    });
+
+    // Apply border to all cells
+    for (let R = range.s.r; R <= range.e.r; R++) {
+      for (let C = range.s.c; C <= range.e.c; C++) {
+        const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
+
+        if (!worksheet[cellRef]) worksheet[cellRef] = {};
+
+        worksheet[cellRef].s = {
+          border: {
+            top: { style: "thin", color: { rgb: "000000" } },
+            bottom: { style: "thin", color: { rgb: "000000" } },
+            left: { style: "thin", color: { rgb: "000000" } },
+            right: { style: "thin", color: { rgb: "000000" } },
+          },
+        };
+
+        // Highlight rows with "No Scan Found"
+        if (R > 0 && data[R - 1]["Last Scanned Branch"] === "No Scan Found") {
+          worksheet[cellRef].s.fill = { fgColor: { rgb: "FF0000" } };
+          worksheet[cellRef].s.font = { color: { rgb: "FFFFFF" }, bold: true };
+        }
+      }
+    }
+
+    // Create workbook
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Machine Report");
+
+    // Export file
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+
+    saveAs(blob, "Machine_Tracking_Report.xlsx");
+  };
   return (
     <div className="machintrackingreport-container">
       {/* <h2 className="machintrackingreport-heading">
@@ -410,6 +516,10 @@ const MachineTrackingReport = () => {
         <button onClick={downloadPDF} className="pdf-button">
           <FaFilePdf size={18} />
           PDF
+        </button>
+        <button onClick={downloadExcel} className="excel-button">
+          <FaFileExcel size={18} />
+          Excel
         </button>
       </div>
 

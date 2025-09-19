@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 const userEmail = localStorage.getItem("userEmail");
 
 const userName = localStorage.getItem("name");
-
+const userBranch = localStorage.getItem("userBranch");
 const initialRow = {
   category: "",
   description: "",
@@ -40,7 +40,7 @@ const PurchaseOrder = () => {
     deliverTo: "",
     attention: "",
     poDate: new Date().toISOString().split("T")[0], // Sets current date by default
-    deliveryDate: "",
+    deliveryDate: new Date().toISOString().split("T")[0], // Sets current date by default,
     paymentMethod: "",
     paymentTerm: "",
     instruction: "",
@@ -53,7 +53,7 @@ const PurchaseOrder = () => {
     deliverTo: "",
     attention: "",
     poDate: new Date().toISOString().split("T")[0],
-    deliveryDate: "",
+    deliveryDate: new Date().toISOString().split("T")[0],
     paymentMethod: "",
     paymentTerm: "",
     instruction: "",
@@ -63,14 +63,26 @@ const PurchaseOrder = () => {
 
   const invoiceOptions = [
     "New Universe Corporate Head Office Borella",
-    "New Universe Bakamuna01 Factory",
-    "New Universe Bakamuna02 Factory",
+    "New Universe Bakamuna1 Factory",
+    "New Universe Bakamuna2 Factory",
     "New Universe Hettipola Factory",
     "New Universe Piliyandala Factory",
     "New Universe Mathara Factory",
     "New Universe Welioya Factory",
     "New Universe Kaduwela Stores",
   ];
+
+  // 🔍 Match branch inside option string
+  const filteredOptions = invoiceOptions.filter((option) =>
+    option.toLowerCase().includes(userBranch?.toLowerCase())
+  );
+  // ✅ Ensure default value is set
+  useEffect(() => {
+    if (filteredOptions.length > 0) {
+      handlePurchaseOrderChange("deliverTo", filteredOptions[0]);
+    }
+  }, [userBranch]);
+
   const handlePurchaseOrderChange = (field, value) => {
     setNewPurchaseOrder((prev) => ({ ...prev, [field]: value }));
     if (field === "supplier") {
@@ -133,6 +145,7 @@ const PurchaseOrder = () => {
 
   const handleSubmit = async () => {
     const userBranch = localStorage.getItem("userBranch");
+    const userBranchId = localStorage.getItem("userBranchId");
     const userId = localStorage.getItem("userid");
     setIsSubmitting(true); // Start loading
     console.log("User Branch", userBranch);
@@ -188,10 +201,143 @@ const PurchaseOrder = () => {
       pr_nos: newPurchaseOrder.prNos,
       created_by: userId,
       supplier_id: supplier,
+      branch_id: userBranchId,
       branch: userBranch,
       delivery_date: newPurchaseOrder.deliveryDate,
       is_vat: taxOption === "VAT" ? true : false,
       is_svat: taxOption === "SVAT" ? true : false,
+    };
+
+    console.log("✅ Final payload:", payload);
+
+    try {
+      // First: create the purchase order
+      const poResponse = await createPurchaseOrder(payload);
+      //console.log("✅ Purchase Order response:", poResponse);
+
+      // Extract PO_id from the response
+      const PO_id =
+        poResponse.purchaseOrder?.POID || poResponse.purchaseOrder?.POID;
+      console.log("returned Po Id ", PO_id);
+      if (!PO_id) {
+        throw new Error("PO_id not returned from the server.");
+      }
+
+      // Then: prepare bulk category rows
+      const categoryData = rows.map((row) => ({
+        PO_id,
+        cat_id: row.category,
+        description: row.description,
+        Qty: row.machines,
+        PerDay_Cost: row.costPerDay,
+        d_percent: row.discount || 0,
+        from_date: row.fromDate,
+        to_date: row.toDate,
+      }));
+
+      //prepare puchaseorder approval data
+      const approvalData = {
+        po_no: PO_id,
+        approval1: false,
+        approval1_by: null,
+        approved1_date: null,
+        approval2: false,
+        approval2_by: null,
+        approved2_date: null,
+      };
+
+      console.log("📦 Sending bulk category data:", categoryData);
+
+      // Finally: send the bulk category purchase orders
+      try {
+        console.log("📦 Sending bulk category data:", categoryData);
+
+        await bulkcreateCategoryPurchaseOrders(categoryData);
+        await createPurchaseOrderApproval(approvalData);
+
+        alert("Purchase Order and category allocations created successfully!");
+        navigate(`/rentmachines/poreports/${encodeURIComponent(PO_id)}`);
+      } catch (error) {
+        console.error(
+          "❌ Error creating purchase order or category allocations:",
+          error
+        );
+        alert("Failed to create Purchase Order. Please try again.");
+      }
+      //window.location.reload();
+      // Optionally reset state here
+    } catch (error) {
+      console.error("❌ Error in handleSubmit:", error);
+      alert("Failed to create Purchase Order. Please try again.");
+    } finally {
+      setIsSubmitting(false); // End loading
+    }
+  };
+
+  const handleSave = async () => {
+    const userBranch = localStorage.getItem("userBranch");
+    const userBranchId = localStorage.getItem("userBranchId");
+    const userId = localStorage.getItem("userid");
+    setIsSubmitting(true); // Start loading
+    console.log("User Branch", userBranch);
+    const {
+      supplier,
+      poDate,
+      deliverTo,
+      invoiceTo,
+      attention,
+      paymentMethod,
+      paymentTerm,
+    } = newPurchaseOrder;
+
+    // Basic required fields validation
+    if (
+      !supplier ||
+      !poDate ||
+      !deliverTo ||
+      !invoiceTo ||
+      !attention ||
+      !paymentMethod ||
+      !paymentTerm
+    ) {
+      alert("Please fill in all required fields.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Validate item rows
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      if (
+        !row.category ||
+        row.machines <= 0 ||
+        row.costPerDay <= 0 ||
+        !row.fromDate ||
+        !row.toDate
+      ) {
+        alert(`Please complete all fields in row ${i + 1}`);
+        return;
+      }
+    }
+
+    // Construct payload
+    const payload = {
+      date: poDate,
+      invoice_to: invoiceTo,
+      deliver_to: deliverTo,
+      attention: attention,
+      payment_mode: paymentMethod,
+      payment_term: paymentTerm,
+      instruction: newPurchaseOrder.instruction,
+      pr_nos: newPurchaseOrder.prNos,
+      created_by: userId,
+      supplier_id: supplier,
+      branch_id: userBranchId,
+      branch: userBranch,
+      delivery_date: newPurchaseOrder.deliveryDate,
+      is_vat: taxOption === "VAT" ? true : false,
+      is_svat: taxOption === "SVAT" ? true : false,
+      status: "Saved",
     };
 
     console.log("✅ Final payload:", payload);
@@ -348,8 +494,7 @@ const PurchaseOrder = () => {
                 handlePurchaseOrderChange("deliverTo", e.target.value)
               }
             >
-              <option value="">Select Delivery Location</option>
-              {invoiceOptions.map((option, index) => (
+              {filteredOptions.map((option, index) => (
                 <option key={index} value={option}>
                   {option}
                 </option>
@@ -469,13 +614,18 @@ const PurchaseOrder = () => {
             <button className="po-button-add" onClick={addRow}>
               ➕
             </button>
-            <button
-              className="po-button-submit"
-              onClick={handleSubmit}
-              disabled={loggedUserBranch === "Head Office"}
-            >
-              📤 Submit
-            </button>
+            <div className="po-right-buttons">
+              <button
+                className="po-button-submit"
+                onClick={handleSubmit}
+                disabled={loggedUserBranch === "Head Office"}
+              >
+                📨 Send To Approval
+              </button>
+              <button className="po-button-save" onClick={handleSave}>
+                💾 Save
+              </button>
+            </div>
           </div>
         </div>
         <div className="po-table-container">

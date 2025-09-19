@@ -214,8 +214,8 @@
   background: transparent;
 }
 
-/* Modal styles */
-.modal-backdrop {
+/* GRN Modal styles */
+.grn-modal-backdrop {
   position: fixed;
   top: 0;
   left: 0;
@@ -228,7 +228,7 @@
   z-index: 2000;
 }
 
-.modal {
+.grn-modal {
   background: white;
   padding: 20px;
   border-radius: 6px;
@@ -237,24 +237,24 @@
   overflow-y: auto;
 }
 
-.modal h4 {
+.grn-modal h4 {
   margin-bottom: 10px;
 }
 
-.search-box {
+.grn-search-box {
   display: flex;
   gap: 8px;
   margin-bottom: 10px;
 }
 
-.search-box input {
+.grn-search-box input {
   flex: 1;
   padding: 6px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
-.search-box button {
+.grn-search-box button {
   padding: 6px 12px;
   background: #1976d2;
   color: white;
@@ -263,7 +263,7 @@
   cursor: pointer;
 }
 
-.select-btn {
+.grn-select-btn {
   background: #43a047;
   color: white;
   border: none;
@@ -272,7 +272,7 @@
   cursor: pointer;
 }
 
-.primary-btn {
+.grn-primary-btn {
   background: #1976d2;
   color: white;
   border: none;
@@ -280,7 +280,7 @@
   border-radius: 4px;
 }
 
-.secondary-btn {
+.grn-secondary-btn {
   background: #43a047;
   color: white;
   border: none;
@@ -288,14 +288,14 @@
   border-radius: 4px;
 }
 
-.cancel-btn {
-  background: #ccc;
+.grn-cancel-btn {
+  background: #fb0328;
   border: none;
   padding: 6px 12px;
   border-radius: 4px;
 }
 
-.modal-actions {
+.grn-modal-actions {
   margin-top: 15px;
   display: flex;
   gap: 10px;

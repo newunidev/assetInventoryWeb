@@ -169,3 +169,21 @@
     color: transparent;
   }
 }
+
+.excel-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #217346; /* Excel green */
+  color: #fff;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.excel-button:hover {
+  background-color: #1a5a34;
+}

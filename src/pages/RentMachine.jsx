@@ -457,14 +457,17 @@ import { getCategories } from "../controller/CategoryController";
 import { getAllSuppliers } from "../controller/RentMachineController";
 import { getAllRentMachines } from "../controller/RentMachineController";
 import { createRentMachines } from "../controller/RentMachineController";
+import { getAllBranches } from "../controller/EmployeeController";
 // Inside your RentMachine.jsx (or relevant component)
 import { BRANCHES } from "../utility/common"; // Adjust the path if needed
 import { usePageTitle } from "../utility/usePageTitle";
 
 const RentMachine = () => {
   const userBranch = localStorage.getItem("userBranch");
+
   const [selectedBranch, setSelectedBranch] = useState("");
-  const [branches] = useState(BRANCHES);
+  //const [branches] = useState(BRANCHES);
+  const [branches, setBranches] = useState([]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("");
@@ -494,10 +497,25 @@ const RentMachine = () => {
     setPageTitle("🛠️🏗️ Rent Machine Manager");
   }, [setPageTitle]);
   //use effect for fecth machines
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await getAllBranches();
+        if (response.success) {
+          setBranches(response.branches); // store API branches
+        }
+      } catch (err) {
+        console.error("Failed to fetch branches:", err);
+      }
+    };
+    fetchBranches();
+  }, []);
   useEffect(() => {
     const fetchRentMachines = async () => {
       try {
         const response = await getAllRentMachines();
+        console.log("response",response);
         if (response.success) {
           setRentMachines(response.machines);
         } else {
@@ -564,7 +582,7 @@ const RentMachine = () => {
       serial_no: newMachine.serial_no, // note: 'serail_no' intentionally uses typo to match backend
       name: newMachine.name,
       description: newMachine.description,
-      rented_by: "NA", // You can make this dynamic later
+      rented_by: null, // You can make this dynamic later
       box_no: newMachine.box_no,
       model_no: newMachine.model_no,
       motor_no: newMachine.motor_no,
@@ -657,16 +675,49 @@ const RentMachine = () => {
   };
 
   //method to filter the machines
+  // const filteredMachines = rentMachines
+  //   .filter((machine) => {
+  //     // Always include machines with rented_by "NA"
+
+  //     if (machine.rented_by === null) return true;
+
+  //     if (userBranch === "Head Office") {
+  //       return selectedBranch ? machine.rented_by === selectedBranch : true;
+  //     } else {
+  //       return machine.rented_by === userBranch;
+  //     }
+  //   })
+  //   .filter((machine) => {
+  //     const q = searchQuery.toLowerCase();
+  //     return (
+  //       machine.serial_no?.toLowerCase().includes(q) ||
+  //       machine.name?.toLowerCase().includes(q) ||
+  //       machine.brand?.toLowerCase().includes(q) ||
+  //       machine.box_no?.toLowerCase().includes(q) ||
+  //       machine.model_no?.toLowerCase().includes(q) ||
+  //       machine.motor_no?.toLowerCase().includes(q) ||
+  //       machine.condition?.toLowerCase().includes(q) ||
+  //       machine.Category?.cat_name?.toLowerCase().includes(q) ||
+  //       machine.rented_by?.toLowerCase().includes(q) ||
+  //       machine.Supplier?.name?.toLowerCase().includes(q)
+  //     );
+  //   });
   const filteredMachines = rentMachines
     .filter((machine) => {
-      // Always include machines with rented_by "NA"
-
-      if (machine.rented_by === "NA") return true;
+      // Always include machines with rented_by "NA" (or null)
+      if (!machine.rented_by || machine.rented_by === "NA") return true;
 
       if (userBranch === "Head Office") {
-        return selectedBranch ? machine.rented_by === selectedBranch : true;
+        return selectedBranch
+          ? machine.rented_by === parseInt(selectedBranch)
+          : true;
       } else {
-        return machine.rented_by === userBranch;
+        // For non-HO users, only show machines for their branch
+        // Find branch_id of user's branch
+        const userBranchObj = branches.find(
+          (b) => b.branch_name === userBranch
+        );
+        return machine.rented_by === userBranchObj?.branch_id;
       }
     })
     .filter((machine) => {
@@ -680,7 +731,12 @@ const RentMachine = () => {
         machine.motor_no?.toLowerCase().includes(q) ||
         machine.condition?.toLowerCase().includes(q) ||
         machine.Category?.cat_name?.toLowerCase().includes(q) ||
-        machine.rented_by?.toLowerCase().includes(q) ||
+        (
+          branches.find((b) => b.branch_id === machine.rented_by)
+            ?.branch_name || ""
+        )
+          .toLowerCase()
+          .includes(q) ||
         machine.Supplier?.name?.toLowerCase().includes(q)
       );
     });
@@ -853,9 +909,9 @@ const RentMachine = () => {
                 disabled={userBranch !== "Head Office"}
               >
                 <option value="">Select Branch</option>
-                {branches.map((branch, index) => (
-                  <option key={index} value={branch}>
-                    {branch}
+                {branches.map((branch) => (
+                  <option key={branch.branch_id} value={branch.branch_id}>
+                    {branch.branch_name}
                   </option>
                 ))}
               </select>
@@ -879,6 +935,7 @@ const RentMachine = () => {
             <table className="rentmachine-table">
               <thead>
                 <tr>
+                  <th>Rent ID</th>
                   <th>Serial No</th>
                   <th>Name</th>
                   <th>Brand</th>
@@ -889,6 +946,7 @@ const RentMachine = () => {
                   <th>Category</th>
                   <th>Rented By</th>
                   <th>Supplier</th>
+                  <th>Machine Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -896,6 +954,7 @@ const RentMachine = () => {
                 {filteredMachines.length > 0 ? (
                   filteredMachines.map((machine, index) => (
                     <tr key={machine.rent_item_id}>
+                      <td>{machine.rent_item_id}</td>
                       <td>{machine.serial_no}</td>
                       <td>{machine.name}</td>
                       <td>{machine.brand}</td>
@@ -904,8 +963,9 @@ const RentMachine = () => {
                       <td>{machine.motor_no}</td>
                       <td>{machine.condition}</td>
                       <td>{machine.Category?.cat_name || "N/A"}</td>
-                      <td>{machine.rented_by}</td>
+                      <td>{machine.Branch?.branch_name}</td>
                       <td>{machine.Supplier?.name || "N/A"}</td>
+                      <td>{machine.machine_status || "N/A"}</td>
                       <td>
                         <button onClick={() => handleEdit(index)}>✏️</button>
                         <button onClick={() => handleDelete(index)}>🗑️</button>

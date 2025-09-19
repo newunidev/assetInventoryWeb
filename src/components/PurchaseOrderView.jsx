@@ -28,10 +28,10 @@ const PurchaseOrderView = () => {
       const response = await getAllPoApprovals();
       if (response.success && response.approvals) {
         const approvals = response.approvals;
-        
+
         const mappedData = approvals.map((approval) => {
           const po = approval.PurchaseOrder;
-          console.log("Po Approval data",po);
+          console.log("Po Approval data", po);
           return {
             poNumber: po?.POID || "N/A",
             poId: po?.POID || "",
@@ -42,6 +42,7 @@ const PurchaseOrderView = () => {
             status: po?.status || "N/A",
             approval1: approval.approval1,
             approval2: approval.approval2,
+            is_renew_po: po?.is_renew_po,
           };
         });
 
@@ -232,9 +233,14 @@ const PurchaseOrderView = () => {
                     <td>
                       <button
                         onClick={() => {
-                          const url = `/rentmachines/poreportsall/${encodeURIComponent(
-                            item.poNumber
-                          )}`;
+                          console.log("Is po renewal chaeck",item.is_renew_po);
+                          const url = item.is_renew_po
+                            ? `/rentmachines/renewalporeportsall/${encodeURIComponent(
+                                item.poNumber
+                              )}`
+                            : `/rentmachines/poreportsall/${encodeURIComponent(
+                                item.poNumber
+                              )}`;
                           window.open(url, "_blank"); // Opens in a new tab/window
                         }}
                         className="purchase-order-view-action-button"
