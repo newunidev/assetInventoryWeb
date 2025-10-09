@@ -3,6 +3,7 @@ import "./PurchaseOrderView.css";
 import { BRANCHES } from "../utility/common";
 import { usePageTitle } from "../utility/usePageTitle";
 import { getAllPoApprovals } from "../controller/PurchaseOrderController";
+import { useNavigate } from "react-router-dom";
 
 const PurchaseOrderView = () => {
   const [searchText, setSearchText] = useState("");
@@ -11,6 +12,7 @@ const PurchaseOrderView = () => {
   const [originalData, setOriginalData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [approvalFilter, setApprovalFilter] = useState("all");
+  const navigate = useNavigate();
 
   useEffect(() => {
     setPageTitle("Rent Machine All Purchase Orders");
@@ -124,7 +126,7 @@ const PurchaseOrderView = () => {
         <div className="purchase-order-view-quick-links">
           <div
             className="quick-link-button"
-            onClick={() => handleQuickFilter("idle")}
+            onClick={() => window.open("/reports/idle", "_blank")}
             title="Idle Rent Machines"
           >
             <div className="quick-link-circle">
@@ -134,7 +136,7 @@ const PurchaseOrderView = () => {
           </div>
           <div
             className="quick-link-button"
-            onClick={() => handleQuickFilter("expired")}
+            onClick={() => window.open("/rentmachines/summary", "_blank")}
             title="Expired Machines"
           >
             <div className="quick-link-circle">
@@ -142,6 +144,7 @@ const PurchaseOrderView = () => {
             </div>
             <span className="quick-link-label">Expired</span>
           </div>
+          
           <div
             className="quick-link-button"
             onClick={() => handleQuickFilter("new")}
@@ -233,7 +236,7 @@ const PurchaseOrderView = () => {
                     <td>
                       <button
                         onClick={() => {
-                          console.log("Is po renewal chaeck",item.is_renew_po);
+                          console.log("Is po renewal chaeck", item.is_renew_po);
                           const url = item.is_renew_po
                             ? `/rentmachines/renewalporeportsall/${encodeURIComponent(
                                 item.poNumber

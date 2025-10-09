@@ -98,7 +98,7 @@ export const getAllMachineAvailableToGrn = async (branch) => {
   try {
     const token = localStorage.getItem("token"); // Step 1: Get token
     //console.log("Branch:",branch);
-    const response = await apiClient.get(`rentmachines-avaialable-to-grn?rented_by=&machine_status=${"Available To Grn"}`, {
+    const response = await apiClient.get(`rentmachines-avaialable-to-grn?rented_by=&machine_status=${"Returned"}`, {
       headers: {
         Authorization: `Bearer ${token}`, // Step 2: Attach token
       },
@@ -113,10 +113,34 @@ export const getAllMachineAvailableToGrn = async (branch) => {
   }
 };
 
+//new Method to get Grn Items from RETURNED and AVailable TO Grn
+export const getAllMachineAvailableToGrnAndReturned = async () => {
+  try {
+    const token = localStorage.getItem("token"); // Step 1: Get token
+    //console.log("Branch:",branch);
+    const response = await apiClient.get(`rentmachines-avaialable-to-grn-all`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Step 2: Attach token
+      },
+    });
+
+
+    //console.log("Rent Machines",response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching Not Active Rent Machines:", error);
+    throw error;
+  }
+};
+
+
+
 export default {
   getAllSuppliers,
   getAllRentMachines,
   createRentMachines,
   createRentTimeAllocation,
   getAllMachineAvailableToGrn,
+  getAllMachineAvailableToGrnAndReturned,
+  
 };

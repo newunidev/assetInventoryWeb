@@ -67,10 +67,14 @@ import RenewalPurchaseOrderReport from "./components/RenewalPurchaseOrderReport"
 import RenewalPurchaseOrderReportAll from "./components/RenewalPurchaseOrderReportAll";
 import RentMachinePrintCard from "./components/RentMachinePrintCard";
 import RentMachineReturn from "./components/RentMachineReturn";
-
+import GatePass from "./components/GatePass";
+import GatePassReport from "./components/GatePassReport";
+import GatePassView from "./components/GatePassView";
+import GatePassEdit from "./components/GatePassEdit";
 //test
 import UserCreationForm from "./pages/UserCreationForm";
 import UnderDevelopment from "./pages/UnderMaintanance";
+import DashboardNew from "./components/DashboardNew";
 import UserManagementDashboard from "./components/UserManagementDashboard";
 
 function App() {
@@ -83,6 +87,7 @@ function App() {
 
         {/* 🔒 Private (Protected) Routes */}
         <Route path="/dashboard" element={<PrivateRoute><Dashboard><div className="dashboard-content">Welcome to Dashboard</div></Dashboard></PrivateRoute>} />
+        <Route path="/dashboardnew" element={<PrivateRoute><Dashboard><DashboardNew /></Dashboard></PrivateRoute>} />
         <Route path="/machine" element={<PrivateRoute><Dashboard><Machine /></Dashboard></PrivateRoute>} />
         <Route path="/scans" element={<PrivateRoute><Dashboard><ScanDashboard /></Dashboard></PrivateRoute>} />
         <Route path="/reports/inventoryreport" element={<PrivateRoute><Dashboard><InventoryReport /></Dashboard></PrivateRoute>} />
@@ -103,6 +108,12 @@ function App() {
         <Route path="/rentmachines/summary" element={<PrivateRoute><Dashboard><RentMachineSummary /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/return" element={<PrivateRoute><Dashboard><RentMachineReturn /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/renewal" element={<PrivateRoute><Dashboard><RentMachineRenewal /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/gatepass" element={<PrivateRoute><Dashboard><GatePass /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/gatepass-report/:gpNo" element={<PrivateRoute><Dashboard><GatePassReport /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/gatepass-view" element={<PrivateRoute><Dashboard><GatePassView /></Dashboard></PrivateRoute>} />
+       <Route path="/rentmachines/gatepass-edit/:gpNo" element={<PrivateRoute><Dashboard><GatePassEdit /></Dashboard></PrivateRoute>
+  }
+/>
 
         <Route path="/rentmachines/po" element={<PrivateRoute><Dashboard><PurchaseOrder /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/porenewal" element={<PrivateRoute><Dashboard><RenewalPurchaseOrder /></Dashboard></PrivateRoute>} />

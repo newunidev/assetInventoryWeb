@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Bar, Line, Pie } from "react-chartjs-2";
 import "./RentMachineSummary.css";
 import { usePageTitle } from "../utility/usePageTitle";
-import { getAllLatestMachineLifeActiveAndExpired } from "../controller/RentMachineLifeController";
+import {
+  getAllLatestMachineLifeActiveAndExpired,
+  getRentMachineLifeRecordByItemId,
+} from "../controller/RentMachineLifeController";
 
 import {
   Chart as ChartJS,
@@ -35,6 +38,10 @@ const RentMachineSummary = () => {
   const [selectedBranch, setSelectedBranch] = useState(""); // ✅ branch filter
   const [searchTerm, setSearchTerm] = useState(""); // ✅ search filter
 
+  const [selectedMachineId, setSelectedMachineId] = useState(null);
+  const [machineHistory, setMachineHistory] = useState([]);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+
   // ✅ Define stable colors for known branches
   const branchColors = {
     Bakamuna1: "#4caf50", // green
@@ -53,7 +60,7 @@ const RentMachineSummary = () => {
   // ✅ Local function inside component
   const fetchMachines = async () => {
     const res = await getAllLatestMachineLifeActiveAndExpired();
-    console.log("Response", res);
+    console.log("Response New", res);
     if (res.success && res.data) {
       const mapped = res.data.map((item) => ({
         id: item.rent_item_id,
@@ -62,9 +69,25 @@ const RentMachineSummary = () => {
         status: item.isExpired ? "Expired" : "Active",
         from_date: item.from_date,
         to_date: item.to_date,
-        machine_status:item.RentMachine?.machine_status,
+        machine_status: item.RentMachine?.machine_status,
       }));
       setRentMachines(mapped);
+    }
+  };
+
+  const handleRowClick = async (rent_item_id) => {
+    try {
+      const res = await getRentMachineLifeRecordByItemId(rent_item_id);
+      if (res.success && res.data) {
+        setMachineHistory(res.data);
+        setShowHistoryModal(true);
+        setSelectedMachineId(rent_item_id);
+      } else {
+        alert(res.message || "No history found");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error fetching machine history");
     }
   };
 
@@ -229,6 +252,8 @@ const RentMachineSummary = () => {
                       className={
                         machine.status === "Expired" ? "expired-row" : ""
                       }
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleRowClick(machine.id)}
                     >
                       <td>{machine.id}</td>
                       <td>{machine.name}</td>
@@ -289,6 +314,103 @@ const RentMachineSummary = () => {
           </div>
         </div>
       </div>
+      {showHistoryModal && (
+        <div className="rent-summery-modal-backdrop rent-summery-show-modal">
+          <div className="rent-summery-modal-content-wrapper">
+            <div className="rent-summery-modal-header">
+              <h3 className="rent-summery-modal-title">
+                Machine Life History - {selectedMachineId || "-"}
+              </h3>
+              <button
+                className="rent-summery-modal-close-button"
+                onClick={() => setShowHistoryModal(false)}
+              >
+                &times;
+              </button>
+            </div>
+
+            <div className="rent-summery-modal-body">
+              <table className="rent-summery-modal-table">
+                <thead>
+                  <tr>
+                    <th>PO ID</th>
+                    <th>Description</th>
+                    <th>PO TYPE</th>
+                    <th>PerDay Cost</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Supplier</th>
+                    <th>Additional Info</th>
+                    <th>Action</th> {/* Added Action column header */}
+                  </tr>
+                </thead>
+                <tbody>
+                  {machineHistory.map((record) => {
+                    const perDayCost = record.CategoryPurchaseOrder
+                      ? record.CategoryPurchaseOrder.PerDay_Cost
+                      : record.renewal?.perday_cost || 0;
+
+                    const description = record.CategoryPurchaseOrder
+                      ? record.CategoryPurchaseOrder.description
+                      : record.renewal?.description || "-";
+
+                    const poType = record.PurchaseOrder?.is_renew_po
+                      ? "Renew PO"
+                      : "Normal PO";
+
+                    const transferInfo = record.RentMachine_Transfer
+                      ? `Transferred from ${record.RentMachine_Transfer.FromBranch?.branch_name} to ${record.RentMachine_Transfer.ToBranch?.branch_name}`
+                      : null;
+
+                    const returnInfo = record.RentMachine_Return
+                      ? `Returned on ${record.RentMachine_Return.return_date}`
+                      : null;
+
+                    const additionalInfo =
+                      transferInfo ||
+                      returnInfo ||
+                      record.GRN?.additional ||
+                      "-";
+
+                    const poNumber = record.po_id || record.PurchaseOrder?.POID;
+                    const isRenew = record.PurchaseOrder?.is_renew_po;
+
+                    return (
+                      <tr key={record.id}>
+                        <td>{poNumber}</td>
+                        <td>{description}</td>
+                        <td>{poType}</td>
+                        <td>{perDayCost}</td>
+                        <td>{record.from_date}</td>
+                        <td>{record.to_date}</td>
+                        <td>{record.RentMachine?.Supplier?.name}</td>
+                        <td>{additionalInfo}</td>
+                        <td>
+                          <button
+                            onClick={() => {
+                              const url = isRenew
+                                ? `/rentmachines/renewalporeportsall/${encodeURIComponent(
+                                    poNumber
+                                  )}`
+                                : `/rentmachines/poreportsall/${encodeURIComponent(
+                                    poNumber
+                                  )}`;
+                              window.open(url, "_blank"); // Opens in new tab
+                            }}
+                            className="purchase-order-view-action-button"
+                          >
+                            View PO
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

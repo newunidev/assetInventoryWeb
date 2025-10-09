@@ -700,7 +700,7 @@ const PurchaseOrderReportAll = () => {
         </div>
       </div>
       <div className="purchase-order-report-all-sticky-buttons">
-        {hasApprovalPermission && (
+        {/* {hasApprovalPermission && (
           <>
             {poDetails?.status === "Pending" && (
               <button
@@ -717,24 +717,7 @@ const PurchaseOrderReportAll = () => {
               </button>
             )}
 
-            {/* <button
-              onClick={handleReject}
-              className="purchase-order-report-all-reject-button"
-              disabled={
-                !!(
-                  poApproval?.FirstApprover?.name &&
-                  poApproval?.SecondApprover?.name
-                )
-              }
-              title={
-                poApproval?.FirstApprover?.name &&
-                poApproval?.SecondApprover?.name
-                  ? "Both approvals already completed"
-                  : "Reject PO"
-              }
-            >
-              <FaTimesCircle /> Reject
-            </button> */}
+             
             {poDetails?.status === "Pending" && (
               <button
                 onClick={handleReject}
@@ -755,6 +738,52 @@ const PurchaseOrderReportAll = () => {
                 <FaTimesCircle /> Reject
               </button>
             )}
+          </>
+        )} */}
+        {hasApprovalPermission && poDetails?.status === "Pending" && (
+          <>
+            <button
+              onClick={handleApprove}
+              className="purchase-order-report-all-approve-button"
+              disabled={
+                // Disable if Approval1 is already done AND user only has PERM003
+                (permissions.includes("PERM003") &&
+                  !permissions.includes("PERM004") &&
+                  poApproval?.FirstApprover?.name) ||
+                // Or disable if both approvals already done
+                (poApproval?.FirstApprover?.name &&
+                  poApproval?.SecondApprover?.name)
+              }
+              title={
+                poApproval?.FirstApprover?.name &&
+                poApproval?.SecondApprover?.name
+                  ? "Both approvals already completed"
+                  : poApproval?.FirstApprover?.name
+                  ? "Approval 1 already done"
+                  : "Approve PO"
+              }
+            >
+              <FaCheckCircle /> Approve
+            </button>
+
+            <button
+              onClick={handleReject}
+              className="purchase-order-report-all-reject-button"
+              disabled={
+                !!(
+                  poApproval?.FirstApprover?.name &&
+                  poApproval?.SecondApprover?.name
+                )
+              }
+              title={
+                poApproval?.FirstApprover?.name &&
+                poApproval?.SecondApprover?.name
+                  ? "Both approvals already completed"
+                  : "Reject PO"
+              }
+            >
+              <FaTimesCircle /> Reject
+            </button>
           </>
         )}
 

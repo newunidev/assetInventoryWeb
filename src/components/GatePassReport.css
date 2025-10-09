@@ -1,0 +1,338 @@
+.gp-report-wrapper {
+  margin: 20px auto;
+  padding: 0 50px;
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+.gp-report-container {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 10px 5px;
+  max-width: 1000px;
+  margin: 20px auto; /* added top/bottom margin for spacing */
+  background: #ffffff; /* white background */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  color: #333;
+
+  min-height: calc(100vh - 70px);
+  border: 2px solid #ddd; /* added subtle border */
+}
+
+.gp-report-header {
+  margin-bottom: 25px;
+}
+
+.gp-report-header-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+}
+
+.gp-barcode-container {
+  margin-top: 30px;
+  margin-right: 1px;
+  margin-left: 10px;
+  padding: 0;
+}
+
+.gp-company-details {
+  text-align: center;
+  flex-grow: 1;
+}
+
+.gp-report-header h2 {
+  font-size: 28px;
+  color: #003366;
+  margin-bottom: 5px;
+}
+
+.gp-report-labels {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px 40px;
+  margin-bottom: 25px;
+  padding-left: 50px;
+}
+
+.gp-label {
+  font-weight: 600;
+  color: #444;
+  font-size: 12px;
+}
+
+.gp-label span {
+  font-weight: normal;
+  color: #000;
+}
+
+.gp-label-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 6px;
+  align-items: flex-start;
+  font-weight: bold;
+}
+
+.gp-label-row strong {
+  min-width: 100px;
+  font-weight: bold;
+}
+
+.gp-label-value {
+  flex: 1;
+  white-space: pre-line;
+}
+
+.gp-divider {
+  border: 0;
+  border-top: 2px solid #ddd;
+  margin: 15px 0 20px;
+}
+
+.gp-report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.gp-report-table th,
+.gp-report-table td {
+  border: 1px solid #ccc;
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 10px;
+}
+
+.gp-report-table th {
+  background-color: #003366;
+  color: #fff;
+  font-weight: 600;
+}
+
+.gp-report-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.gp-report-footer {
+  margin-top: 40px;
+  font-weight: 500;
+  color: #555;
+}
+
+.gp-download-button {
+  background-color: #003366;
+  color: #fff;
+  padding: 10px 20px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.gp-download-button:hover {
+  background-color: #005599;
+}
+
+.gp-signatures {
+  margin-top: 50px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.gp-signature-box {
+  flex: 1;
+  text-align: center;
+}
+
+.gp-signature-box strong {
+  display: block;
+  margin-bottom: 40px;
+  font-size: 14px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.gp-signature-label {
+  font-size: 13px;
+  color: #333;
+}
+
+/* Scrollbar styling */
+.gp-report-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.gp-report-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.gp-report-wrapper::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.gp-report-wrapper::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+.gp-report-wrapper {
+  scrollbar-width: thin;
+  scrollbar-color: #888 transparent;
+}
+
+/* Top right buttons */
+.gp-top-right-corner {
+  text-align: right;
+  font-weight: bold;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.gp-icon-button {
+  background-color: red;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.gp-print-button {
+  background-color: white;
+  color: black;
+  border: 4px solid black;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+@media print {
+  /* Ensure scrollable content prints entirely */
+  html, body, .gp-print-content {
+    height: auto !important;
+    overflow: visible !important; /* Show all content */
+  }
+
+  /* Hide scrollbars */
+  * {
+    -ms-overflow-style: none !important; /* IE & Edge */
+    scrollbar-width: none !important; /* Firefox */
+  }
+
+  *::-webkit-scrollbar {
+    display: none !important; /* Chrome, Safari, Opera */
+  }
+
+  @page {
+    size: A4 portrait; /* or landscape if needed */
+    margin: 5mm; /* narrow margins */
+  }
+
+  body, .gp-print-content {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 10pt;
+    line-height: 1.15;
+    color: black;
+    width: 100%;
+  }
+
+  .gp-print-content {
+    padding: 0;
+    margin: 0;
+  }
+
+  table.gp-report-table {
+    font-size: 10pt;
+    border-collapse: collapse;
+    width: 100%;
+    color: #000;
+  }
+
+  table.gp-report-table th,
+  table.gp-report-table td {
+    border: 1px solid black;
+    padding: 2px 4px;
+  }
+
+  table.gp-report-table th {
+    font-size: 10.5pt;
+    color: #000;
+    background-color: #ccc !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Hide UI elements that shouldn't be printed */
+  button, .navbar, .sidebar {
+    display: none !important;
+  }
+
+  /* Barcodes */
+  canvas {
+    max-width: 120px !important;
+    max-height: 40px !important;
+  }
+}
+
+
+/*for stick buttons*/
+.gp-report-all-sticky-buttons {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Common styles for both buttons */
+.gp-report-all-approve-button,
+.gp-report-all-reject-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+  transform: scale(1);
+}
+
+/* Approve button styling */
+.gp-report-all-approve-button {
+  background: linear-gradient(135deg, #4caf50, #2e7d32);
+}
+
+.gp-report-all-approve-button:hover {
+  background: linear-gradient(135deg, #43a047, #1b5e20);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+}
+
+/* Reject button styling */
+.gp-report-all-reject-button {
+  background: linear-gradient(135deg, #e53935, #b71c1c);
+}
+
+.gp-report-all-reject-button:hover {
+  background: linear-gradient(135deg, #d32f2f, #7f0000);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(229, 57, 53, 0.4);
+}

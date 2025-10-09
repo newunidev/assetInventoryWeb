@@ -28,7 +28,7 @@ const RenewalPurchaseOrder = () => {
   const [taxOption, setTaxOption] = useState(""); // 'VAT' or 'SVAT'
   const [newPurchaseOrder, setNewPurchaseOrder] = useState({
     supplier: "",
-    deliverTo: "",
+    deliverTo: `New Universe ${localStorage.getItem("userBranch")} Factory`,
     attention: "",
     poDate: new Date().toISOString().split("T")[0],
     deliveryDate: "",
@@ -54,11 +54,16 @@ const RenewalPurchaseOrder = () => {
   const fetchRentMachines = async (selectedSupplierId) => {
     try {
       const res = await getAllRentMachineLifeExpired();
+      console.log("test branch response of expired", res);
       if (res.success && Array.isArray(res.data)) {
         return res.data
           .filter(
             (item) =>
-              item.RentMachine && item.RentMachine.sup_id === selectedSupplierId // ✅ filter supplier
+              item.RentMachine &&
+              item.RentMachine.sup_id === selectedSupplierId && // ✅ Filter by supplier
+              item.Branch &&
+              item.Branch.branch_id ===
+                Number(localStorage.getItem("userBranchId")) // ✅ Filter by branch // ✅ filter supplier
           )
           .map((item) => ({
             id: item.RentMachine.rent_item_id,
@@ -424,6 +429,7 @@ const RenewalPurchaseOrder = () => {
               type="date"
               className="renewalPurchaseOrder-input"
               value={newPurchaseOrder.poDate}
+               min={new Date().toISOString().split("T")[0]} // cannot be backdated
               onChange={(e) =>
                 handlePurchaseOrderChange("poDate", e.target.value)
               }
@@ -436,6 +442,8 @@ const RenewalPurchaseOrder = () => {
             <input
               type="date"
               className="renewalPurchaseOrder-input"
+              disabled = {!newPurchaseOrder.poDate}
+              min={newPurchaseOrder.poDate || new Date().toISOString().split("T")[0]} // after PO Date
               value={newPurchaseOrder.deliveryDate}
               onChange={(e) =>
                 handlePurchaseOrderChange("deliveryDate", e.target.value)
@@ -446,7 +454,16 @@ const RenewalPurchaseOrder = () => {
           {/* Deliver To */}
           <div className="renewalPurchaseOrder-field-group">
             <label className="renewalPurchaseOrder-label">Deliver To</label>
-            <select
+
+            <input
+              type="text"
+              className="po-input"
+              value={`New Universe ${localStorage.getItem(
+                "userBranch"
+              )} Factory`}
+              readOnly
+            />
+            {/* <select
               className="renewalPurchaseOrder-input"
               value={newPurchaseOrder.deliverTo}
               onChange={(e) =>
@@ -459,12 +476,13 @@ const RenewalPurchaseOrder = () => {
                   {opt}
                 </option>
               ))}
-            </select>
+            </select> */}
           </div>
 
           {/* Invoice To */}
           <div className="renewalPurchaseOrder-field-group">
             <label className="renewalPurchaseOrder-label">Invoice To</label>
+
             <select
               className="renewalPurchaseOrder-input"
               value={newPurchaseOrder.invoiceTo}
@@ -648,6 +666,7 @@ const RenewalPurchaseOrder = () => {
                     <input
                       type="date"
                       value={m.fromDate}
+                      min={new Date().toISOString().split("T")[0]} // today's date in YYYY-MM-DD format
                       onChange={(e) =>
                         handleRowChange(i, "fromDate", e.target.value)
                       }
@@ -657,6 +676,19 @@ const RenewalPurchaseOrder = () => {
                     <input
                       type="date"
                       value={m.toDate}
+                      disabled = {!m.fromDate}
+                      min={m.fromDate || new Date().toISOString().split("T")[0]} // cannot be before fromDate
+                      max={
+                        m.fromDate
+                          ? new Date(
+                              new Date(m.fromDate).setDate(
+                                new Date(m.fromDate).getDate() + 31
+                              )
+                            )
+                              .toISOString()
+                              .split("T")[0]
+                          : ""
+                      } // max 31 days after fromDate
                       onChange={(e) =>
                         handleRowChange(i, "toDate", e.target.value)
                       }

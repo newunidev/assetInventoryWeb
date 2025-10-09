@@ -163,7 +163,7 @@ const PurchaseOrder = () => {
     if (
       !supplier ||
       !poDate ||
-      !deliverTo ||
+       
       !invoiceTo ||
       !attention ||
       !paymentMethod ||
@@ -185,6 +185,7 @@ const PurchaseOrder = () => {
         !row.toDate
       ) {
         alert(`Please complete all fields in row ${i + 1}`);
+        setIsSubmitting(false);
         return;
       }
     }
@@ -316,6 +317,7 @@ const PurchaseOrder = () => {
         !row.toDate
       ) {
         alert(`Please complete all fields in row ${i + 1}`);
+        setIsSubmitting(false);
         return;
       }
     }
@@ -434,6 +436,7 @@ const PurchaseOrder = () => {
       }
     };
     fetchCategories();
+    newPurchaseOrder.deliverTo = `New Universe ${localStorage.getItem("userBranch")} Factory`;
   }, []);
 
   return (
@@ -485,7 +488,7 @@ const PurchaseOrder = () => {
             />
           </div>
 
-          <div className="po-field-group">
+          {/* <div className="po-field-group">
             <label className="po-label">Deliver To</label>
             <select
               className="po-input"
@@ -500,6 +503,15 @@ const PurchaseOrder = () => {
                 </option>
               ))}
             </select>
+          </div> */}
+          <div className="po-field-group">
+            <label className="po-label">Deliver To</label>
+            <input
+              type="text"
+              className="po-input"
+              value={newPurchaseOrder.deliverTo}
+              readOnly
+            />
           </div>
 
           <div className="po-field-group">
@@ -696,7 +708,7 @@ const PurchaseOrder = () => {
                       }
                     />
                   </td>
-                  <td>
+                  {/* <td>
                     <input
                       type="date"
                       value={row.fromDate}
@@ -712,6 +724,40 @@ const PurchaseOrder = () => {
                       onChange={(e) =>
                         handleChange(i, "toDate", e.target.value)
                       }
+                    />
+                  </td> */}
+                  <td>
+                    <input
+                      type="date"
+                      value={row.fromDate}
+                      onChange={(e) =>
+                        handleChange(i, "fromDate", e.target.value)
+                      }
+                      min={new Date().toISOString().split("T")[0]} // no backdates
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="date"
+                      value={row.toDate}
+                      disabled = {!row.fromDate}
+                      onChange={(e) =>
+                        handleChange(i, "toDate", e.target.value)
+                      }
+                      min={
+                        row.fromDate || new Date().toISOString().split("T")[0]
+                      } // at least fromDate
+                      max={
+                        row.fromDate
+                          ? new Date(
+                              new Date(row.fromDate).setDate(
+                                new Date(row.fromDate).getDate() + 31
+                              )
+                            )
+                              .toISOString()
+                              .split("T")[0]
+                          : ""
+                      } // max 31 days from fromDate
                     />
                   </td>
                   <td>LKR {row.total.toFixed(2)}</td>

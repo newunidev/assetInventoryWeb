@@ -54,9 +54,30 @@ export const getAllLatestMachineLifeActiveByRentItemId = async (rent_item_id) =>
   }
 };
 
+//new Method to get Grn Items from RETURNED and AVailable TO Grn
+export const getRentMachineLifeRecordByItemId = async (item_id) => {
+  try {
+    const token = localStorage.getItem("token"); // Step 1: Get token
+    //console.log("Branch:",branch);
+    const response = await apiClient.get(`rentmachinelifehistorybyitemid?rent_item_id=${item_id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Step 2: Attach token
+      },
+    });
+
+
+    //console.log("Rent Machines",response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching Machine life records by item id:", error);
+    throw error;
+  }
+};
+
 
 export default {
  getAllRentMachineLifeActive,
  getAllRentMachineLifeExpired,
  getAllLatestMachineLifeActiveAndExpired,
+ getRentMachineLifeRecordByItemId,
 };

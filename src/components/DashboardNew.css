@@ -1,0 +1,638 @@
+/* dashboardnew.css */
+
+/* ---------------- General Container ---------------- */
+.dashboardnew-container {
+  padding: 15px;
+  background-color: #fafdffe8;
+  min-height: calc(100vh - 50px);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  font-size: 0.9rem; /* smaller base font */
+}
+
+/* ---------------- Summary Cards ---------------- */
+.dashboardnew-summary-cards-compact-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.dashboardnew-compact-dashboard-card {
+  flex: 1;
+  min-width: 180px;
+  background: linear-gradient(135deg, #ffffff, #f0f0f0);
+  padding: 15px 20px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-left: 4px solid;
+}
+
+.dashboardnew-compact-dashboard-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+}
+
+.dashboardnew-compact-card-icon {
+  font-size: 2.2rem;
+  margin-right: 15px;
+  opacity: 0.8;
+}
+
+.dashboardnew-compact-card-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboardnew-compact-card-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 3px;
+}
+
+.dashboardnew-compact-card-title {
+  font-size: 0.85rem;
+  color: #555;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Card colors */
+.dashboardnew-compact-dashboard-card.dashboardnew-card-machines {
+  border-color: #3498db;
+}
+.dashboardnew-compact-dashboard-card.dashboardnew-card-machines
+  .dashboardnew-compact-card-icon {
+  color: #3498db;
+}
+
+.dashboardnew-compact-dashboard-card.dashboardnew-card-assets {
+  border-color: #27ae60;
+}
+.dashboardnew-compact-dashboard-card.dashboardnew-card-assets
+  .dashboardnew-compact-card-icon {
+  color: #27ae60;
+}
+
+.dashboardnew-compact-dashboard-card.dashboardnew-card-users {
+  border-color: #e67e22;
+}
+.dashboardnew-compact-dashboard-card.dashboardnew-card-users
+  .dashboardnew-compact-card-icon {
+  color: #e67e22;
+}
+
+.dashboardnew-compact-dashboard-card.dashboardnew-card-factories {
+  border-color: #9b59b6;
+}
+.dashboardnew-compact-dashboard-card.dashboardnew-card-factories
+  .dashboardnew-compact-card-icon {
+  color: #9b59b6;
+}
+
+/* ---------------- Main Panels ---------------- */
+.dashboardnew-main-content-area {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.dashboardnew-dashboard-panel {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  flex: 1;
+  min-width: 280px;
+  
+  
+  /* Box shadow for depth */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+
+  /* Fix height and enable scrolling */
+   max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* Dashboard Panel Attractive Scrollbar */
+.dashboardnew-dashboard-panel::-webkit-scrollbar {
+  width: 8px;              /* slim scrollbar */
+}
+
+.dashboardnew-dashboard-panel::-webkit-scrollbar-track {
+  background: transparent; /* clean background */
+  border-radius: 10px;
+}
+
+.dashboardnew-dashboard-panel::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #4e73df, #224abe); /* gradient thumb */
+  border-radius: 10px;
+}
+
+.dashboardnew-dashboard-panel::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #5a5c69, #2e59d9); /* hover effect */
+}
+
+/* Firefox support */
+.dashboardnew-dashboard-panel {
+  scrollbar-width: thin;  /* makes scrollbar thinner */
+  scrollbar-color: #4e73df transparent; /* thumb color | track color */
+}
+
+.dashboardnew-factory-list-panel {
+  flex: 2;
+}
+.dashboardnew-it-asset-panel {
+  flex: 1;
+}
+
+.dashboardnew-panel-title {
+  font-size: 1.2rem;
+  color: #2c3e50;
+  margin-top: 0;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.dashboardnew-panel-icon {
+  font-size: 1.5rem;
+  margin-right: 8px; /* space between icons */
+  color: #3498db; /* your preferred color */
+}
+
+.dashboardnew-factory-list-panel .dashboardnew-panel-icon {
+  color: #9b59b6;
+}
+.dashboardnew-it-asset-panel .dashboardnew-panel-icon {
+  color: #15024f;
+}
+
+/* ---------------- Table ---------------- */
+.dashboardnew-table-responsive {
+  overflow-x: auto;
+}
+
+.dashboardnew-dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.dashboardnew-dashboard-table th,
+.dashboardnew-dashboard-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  font-size: 0.8rem;
+   text-align: center;
+    vertical-align: middle;
+}
+
+.dashboardnew-dashboard-table th {
+  background-color: #f8f8f8;
+  color: #555;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.dashboardnew-dashboard-table tbody tr:hover {
+  background-color: #fbfbfb;
+}
+
+.dashboardnew-dashboard-table .count-badge {
+  display: inline-block;
+  background-color: #e0f2f7;
+  color: #2c3e50;
+  padding: 3px 7px;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  
+}
+
+.dashboardnew-quick-links {
+  display: flex;
+  gap: 20px;
+  margin-top: 5px;
+  margin-left: 30px;
+  max-width: 300px; /* adjust to fit your table nicely */
+  
+}
+
+.dashboardnew-quick-link-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+  text-align: center;
+  font-size: 9px;
+}
+
+.dashboardnew-quick-link-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.dashboardnew-quick-link-circle.semore {
+  background: linear-gradient(135deg, #4c0428, #db81e2); /* purple */
+}
+
+.dashboardnew-quick-link-circle.history {
+  background: linear-gradient(135deg, #9affc1, #075835); /* green */
+}
+
+.dashboardnew-quick-link-circle.rent {
+  background: linear-gradient(135deg, #43cea2, #185a9d); /* turquoise-blue */
+}
+
+.dashboardnew-quick-link-icon {
+  font-size: 12px;
+  color: white;
+}
+
+.dashboardnew-quick-link-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.dashboardnew-quick-link-button:hover {
+  transform: translateY(-5px);
+}
+
+/* ---------------- Buttons ---------------- */
+.dashboardnew-action-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.dashboardnew-action-button:hover {
+  background-color: #2980b9;
+  transform: translateY(-1px);
+}
+.dashboardnew-action-button:active {
+  transform: translateY(0);
+}
+
+.dashboardnew-view-details-button {
+  background-color: #2ecc71;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+}
+
+.dashboardnew-view-details-button:hover {
+  background-color: #27ae60;
+}
+
+/* ---------------- IT Asset List ---------------- */
+.dashboardnew-asset-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.dashboardnew-asset-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px dashed #eee;
+}
+
+.dashboardnew-asset-item:last-child {
+  border-bottom: none;
+}
+
+.dashboardnew-asset-name {
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: #444;
+}
+.dashboardnew-asset-count {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+/* No data */
+.dashboardnew-no-data {
+  text-align: center;
+  padding: 15px;
+  color: #777;
+  font-style: italic;
+}
+
+/* ---------------- Modal (Enhanced & Compact Header) ---------------- */
+.dashboardnew-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* slightly darker backdrop */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+/* For Webkit browsers (Chrome, Edge, Safari) */
+.dashboardnew-modal-backdrop::-webkit-scrollbar {
+  width: 8px; /* smaller width */
+}
+
+.dashboardnew-modal-backdrop::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1); /* subtle track */
+  border-radius: 10px;
+}
+
+.dashboardnew-modal-backdrop::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #4e73df, #224abe); /* gradient thumb */
+  border-radius: 10px;
+}
+
+.dashboardnew-modal-backdrop::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #5a5c69, #2e59d9); /* hover effect */
+}
+
+/* For Firefox */
+.dashboardnew-modal-backdrop {
+  scrollbar-width: thin; /* makes it thinner */
+  scrollbar-color: #4e73df rgba(255, 255, 255, 0.1); /* thumb + track */
+}
+.dashboardnew-modal-backdrop.dashboardnew-show-modal {
+  opacity: 1;
+  visibility: visible;
+}
+
+.dashboardnew-modal-content-wrapper {
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25); /* deeper shadow */
+  width: 95%; /* wider on screen */
+  max-width: 800px; /* increased max-width */
+  transform: translateY(-30px);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  overflow: hidden; /* avoid overflow outside rounded corners */
+}
+
+/* Show modal animation */
+.dashboardnew-modal-backdrop.dashboardnew-show-modal
+  .dashboardnew-modal-content-wrapper {
+  transform: translateY(0);
+}
+
+/* Modal Header (Compact & Gradient) */
+.dashboardnew-modal-header {
+  padding: 12px 20px; /* compact height */
+  display: flex;
+  justify-content: space-between; /* keeps title left, button right */
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  background: linear-gradient(135deg, #6a11cb, #2575fc); /* smooth gradient */
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  position: relative; /* for absolute positioning if needed */
+}
+
+/* Header Title */
+.dashboardnew-modal-title {
+  font-size: 1.4rem;
+  color: #fff;
+  margin: 0;
+  font-weight: 700;
+}
+
+/* Close Button (Small & Right Corner) */
+.dashboardnew-modal-close-button {
+  font-size: 1.2rem; /* smaller size */
+  color: #f80000;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%); /* vertically center */
+}
+
+.dashboardnew-modal-close-button:hover {
+  color: #ffdd59; /* subtle hover highlight */
+}
+
+/* Modal Body */
+.dashboardnew-modal-body {
+  padding: 20px 25px; /* slightly reduced padding */
+  overflow-y: auto;
+  flex-grow: 1;
+  background-color: #f9faff; /* subtle background */
+  font-size: 0.95rem;
+  color: #2c3e50;
+}
+
+/* Modal Subtitle */
+.dashboardnew-modal-subtitle {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+/* Modal Footer */
+.dashboardnew-modal-footer {
+  padding: 12px 20px; /* reduced footer height */
+  text-align: right;
+  background-color: #f8f8f8;
+  border-top: 1px solid #eee;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+/* Optional: add subtle shadow line below header */
+.dashboardnew-modal-header::after {
+  content: "";
+  display: block;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.2);
+  width: 100%;
+  margin-top: 2px;
+}
+
+.dashboardnew-close-button {
+  background-color: #95a5a6;
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.dashboardnew-close-button:hover {
+  background-color: #7f8c8d;
+  transform: translateY(-1px);
+}
+
+.dashboardnew-category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.dashboardnew-category-detail-card {
+  background-color: #eaf7ed;
+  border: 1px solid #d4edda;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+}
+
+.dashboardnew-category-detail-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.dashboardnew-category-detail-name {
+  font-size: 1rem;
+  margin-bottom: 5px;
+  color: #2c3e50;
+}
+.dashboardnew-category-detail-count {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #27ae60;
+}
+
+.dashboardnew-close-button {
+  background-color: #95a5a6;
+}
+.dashboardnew-close-button:hover {
+  background-color: #7f8c8d;
+}
+
+/* ---------------- Loading & Error ---------------- */
+.dashboardnew-dashboard-loading,
+.dashboardnew-dashboard-error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 50px);
+  font-size: 1rem;
+}
+
+.dashboardnew-dashboard-error {
+  color: #e74c3c;
+  font-weight: 600;
+}
+
+.dashboardnew-spinner {
+  width: 30px;
+  height: 30px;
+  border-width: 3px;
+}
+
+/* ---------------- Keyframes ---------------- */
+@keyframes dashboardnew-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------------- Responsive ---------------- */
+@media (max-width: 992px) {
+  .dashboardnew-main-content-area {
+    flex-direction: column;
+  }
+  .dashboardnew-factory-list-panel,
+  .dashboardnew-it-asset-panel {
+    flex: none;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboardnew-summary-cards-compact-grid {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .dashboardnew-compact-dashboard-card {
+    width: 100%;
+    min-width: unset;
+  }
+  .dashboardnew-panel-title {
+    font-size: 1.1rem;
+  }
+  .dashboardnew-modal-content-wrapper {
+    width: 95%;
+  }
+  .dashboardnew-modal-title {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboardnew-compact-dashboard-card {
+    padding: 12px;
+  }
+  .dashboardnew-compact-card-icon {
+    font-size: 2rem;
+    margin-right: 10px;
+  }
+  .dashboardnew-compact-card-value {
+    font-size: 1.4rem;
+  }
+  .dashboardnew-compact-card-title {
+    font-size: 0.75rem;
+  }
+  .dashboardnew-panel-title {
+    font-size: 1rem;
+  }
+  .dashboardnew-dashboard-table th,
+  .dashboardnew-dashboard-table td {
+    padding: 6px;
+    font-size: 0.75rem;
+   
+  }
+  .dashboardnew-action-button {
+    padding: 5px 8px;
+    font-size: 0.75rem;
+  }
+  .dashboardnew-category-grid {
+    grid-template-columns: 1fr;
+  }
+}

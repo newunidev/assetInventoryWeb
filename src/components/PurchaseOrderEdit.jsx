@@ -55,6 +55,7 @@ const PurchaseOrderEdit = () => {
     if (poId) {
       fetchData(poId);
     }
+    
   }, [poId]);
   useEffect(() => {
     setPageTitle("Rent Machine PO EDIT");
@@ -77,15 +78,15 @@ const PurchaseOrderEdit = () => {
 
         setPurchaseOrder({
           supplier: po.supplier_id || "",
-          deliverTo: po.deliver_to || "",
+          deliver_to: po.deliver_to || `New Universe ${localStorage.getItem("userBranch")} Factory`,
           attention: po.attention || "",
-          poDate: po.date || "",
-          deliveryDate: po.delivery_date || "",
-          paymentMethod: po.payment_mode || "",
-          paymentTerm: po.payment_term || "",
+          date: po.date || "",
+          delivery_date: po.delivery_date || "",
+          payment_mode: po.payment_mode || "",
+          payment_term: po.payment_term || "",
           instruction: po.instruction || "",
-          invoiceTo: po.invoice_to || "",
-          prNos: po.pr_nos || "",
+          invoice_to: po.invoice_to || "",
+          pr_nos: po.pr_nos || "",
         });
 
         if (po.is_svat) setTaxOption("SVAT");
@@ -102,7 +103,7 @@ const PurchaseOrderEdit = () => {
                   Math.ceil(
                     (new Date(item.to_date) - new Date(item.from_date)) /
                       (1000 * 60 * 60 * 24)
-                  )
+                  ) + 1
                 )
               : 1;
 
@@ -136,7 +137,8 @@ const PurchaseOrderEdit = () => {
 
   // ---------------- Form Handlers ----------------
   const handlePOChange = (field, value) => {
-    //console.log("field:",field,"value:",value);
+    console.log("field:", field, "value:", value);
+
     setPurchaseOrder((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -186,8 +188,11 @@ const PurchaseOrderEdit = () => {
 
     setRows(updatedRows);
   };
+
+  
   // Calculate overall total for all rows
   const totalSum = rows.reduce((sum, row) => sum + Number(row.total || 0), 0);
+
 
   // ---------------- Submit Handler ----------------
   const handleSubmit = async () => {
@@ -274,42 +279,10 @@ const PurchaseOrderEdit = () => {
 
   // Save new row to DB
   const handleSave = async (row, index) => {
-    // try {
-    //   // Prepare payload based on your API requirements
-    //   const payload = {
-    //     PO_id: poId, // Make sure purchaseOrder is in scope
-    //     cat_id: row.category,
-    //     Qty: row.machines,
-    //     PerDay_Cost: row.costPerDay,
-    //     d_percent: row.discount,
-    //     from_date: row.fromDate,
-    //     to_date: row.toDate,
-    //     description: row.description,
-    //   };
-
-    //   const res = await createCategoryPurchaseOrder(payload);
-
-    //   if (res.success) {
-    //     // Update the row with returned cpo_id
-    //     setRows((prev) => {
-    //       const updated = [...prev];
-    //       updated[index] = { ...row, cpo_id: res.data?.cpo_id };
-    //       return updated;
-    //     });
-
-    //     alert("✅ Category Purchase Order saved successfully!");
-    //     // Refresh the page
-    //     window.location.reload();
-    //   } else {
-    //     alert("⚠️ Failed to save Category Purchase Order: " + res.message);
-    //   }
-    // } catch (err) {
-    //   console.error("❌ Failed to save Category Purchase Order:", err);
-    //   alert("❌ Error saving Category Purchase Order. Please try again.");
-    // }
     if (!purchaseOrder) return;
 
     setIsSubmitting(true);
+    console.log("Dispay Purchase Order", purchaseOrder);
     try {
       // 1️⃣ Update main purchase order (entire update)
       const payloadPO = {
@@ -400,8 +373,8 @@ const PurchaseOrderEdit = () => {
             <input
               type="date"
               className="po-edit-input"
-              value={purchaseOrder.poDate}
-              onChange={(e) => handlePOChange("poDate", e.target.value)}
+              value={purchaseOrder.date}
+              onChange={(e) => handlePOChange("date", e.target.value)}
               required
             />
           </div>
@@ -412,15 +385,15 @@ const PurchaseOrderEdit = () => {
             <input
               type="date"
               className="po-edit-input"
-              value={purchaseOrder.deliveryDate}
-              onChange={(e) => handlePOChange("deliveryDate", e.target.value)}
+              value={purchaseOrder.delivery_date}
+              onChange={(e) => handlePOChange("delivery_date", e.target.value)}
             />
           </div>
 
           {/* Deliver To */}
           <div className="po-edit-field-group">
             <label className="po-edit-label">Deliver To</label>
-            <select
+            {/* <select
               className="po-edit-input"
               value={purchaseOrder.deliverTo}
               onChange={(e) => handlePOChange("deliverTo", e.target.value)}
@@ -431,7 +404,15 @@ const PurchaseOrderEdit = () => {
                   {option}
                 </option>
               ))}
-            </select>
+            </select> */}
+            <input
+              type="text"
+              className="po-input"
+              value={`New Universe ${localStorage.getItem(
+                "userBranch"
+              )} Factory`}
+              readOnly
+            />
           </div>
 
           {/* Invoice To */}
@@ -439,8 +420,8 @@ const PurchaseOrderEdit = () => {
             <label className="po-edit-label">Invoice To</label>
             <select
               className="po-edit-input"
-              value={purchaseOrder.invoiceTo}
-              onChange={(e) => handlePOChange("invoiceTo", e.target.value)}
+              value={purchaseOrder.invoice_to}
+              onChange={(e) => handlePOChange("invoice_to", e.target.value)}
             >
               <option value="">Select Invoice To</option>
               {invoiceOptions.map((option, i) => (
@@ -456,8 +437,8 @@ const PurchaseOrderEdit = () => {
             <label className="po-edit-label">Payment Method</label>
             <select
               className="po-edit-select"
-              value={purchaseOrder.paymentMethod}
-              onChange={(e) => handlePOChange("paymentMethod", e.target.value)}
+              value={purchaseOrder.payment_mode}
+              onChange={(e) => handlePOChange("payment_mode", e.target.value)}
             >
               <option value="">Select</option>
               <option value="Cash">Cash</option>
@@ -483,8 +464,8 @@ const PurchaseOrderEdit = () => {
             <input
               type="text"
               className="po-edit-input"
-              value={purchaseOrder.paymentTerm}
-              onChange={(e) => handlePOChange("paymentTerm", e.target.value)}
+              value={purchaseOrder.payment_term}
+              onChange={(e) => handlePOChange("payment_term", e.target.value)}
             />
           </div>
 
@@ -505,8 +486,8 @@ const PurchaseOrderEdit = () => {
             <input
               type="text"
               className="po-edit-input"
-              value={purchaseOrder.prNos}
-              onChange={(e) => handlePOChange("prNos", e.target.value)}
+              value={purchaseOrder.pr_nos}
+              onChange={(e) => handlePOChange("pr_nos", e.target.value)}
             />
           </div>
 
@@ -641,7 +622,7 @@ const PurchaseOrderEdit = () => {
                         }
                       />
                     </td>
-                    <td>
+                    {/* <td>
                       <input
                         type="date"
                         value={row.fromDate}
@@ -654,6 +635,41 @@ const PurchaseOrderEdit = () => {
                       <input
                         type="date"
                         value={row.toDate}
+                        onChange={(e) =>
+                          handleChange(i, "toDate", e.target.value)
+                        }
+                      />
+                    </td> */}
+                    <td>
+                      <input
+                        type="date"
+                        value={row.fromDate}
+                        min={new Date().toISOString().split("T")[0]} // today's date
+                        onChange={(e) =>
+                          handleChange(i, "fromDate", e.target.value)
+                        }
+                      />
+                    </td>
+
+                    <td>
+                      <input
+                        type="date"
+                        value={row.toDate}
+                        disabled = {!row.fromDate}
+                        min={
+                          row.fromDate || new Date().toISOString().split("T")[0]
+                        } // start from selected fromDate
+                        max={
+                          row.fromDate
+                            ? new Date(
+                                new Date(row.fromDate).setDate(
+                                  new Date(row.fromDate).getDate() + 31
+                                )
+                              )
+                                .toISOString()
+                                .split("T")[0]
+                            : ""
+                        } // disable after 31 days
                         onChange={(e) =>
                           handleChange(i, "toDate", e.target.value)
                         }

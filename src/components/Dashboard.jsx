@@ -16,6 +16,7 @@ import {
   FaFolderOpen,
   FaHistory,
 } from "react-icons/fa";
+import { GiTicket } from "react-icons/gi"; // Ticket style, like a gate pass
 
 import "./Dashboard.css"; // Import the CSS file
 
@@ -41,6 +42,7 @@ const Dashboard = ({ children }) => {
   const userBranch = localStorage.getItem("userBranch");
   const userName = localStorage.getItem("name");
   const designation = localStorage.getItem("designation");
+  const [isGatePassOpen, setIsGatePassOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("token"); // ✅ Remove the stored token
@@ -58,6 +60,14 @@ const Dashboard = ({ children }) => {
   const isHeadOffice = branch === "Head Office";
   return (
     <div className="dashboard">
+
+      {/* <div className="snowflakes" aria-hidden="true">
+        {Array.from({ length: 200 }).map((_, i) => (
+          <div key={i} className="snowflake">
+            ❄️
+          </div>
+        ))}
+      </div> */}
       {/* Sidebar */}
 
       <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
@@ -66,7 +76,7 @@ const Dashboard = ({ children }) => {
         </button> */}
         <ul>
           <li>
-            <Link to="/dashboardcontent" className="link">
+            <Link to="/dashboardnew" className="link">
               <FaTachometerAlt className="icon" /> Dashboard
             </Link>
           </li>
@@ -152,7 +162,7 @@ const Dashboard = ({ children }) => {
 
           <li
             className="parentdropdown"
-            onMouseEnter={() => setIsReportsOpen(false)}
+            onMouseEnter={() => setIsReportsOpen(true)}
             onMouseLeave={() => setIsReportsOpen(false)}
           >
             <GiForklift size={40} color="white" className="icon" />
@@ -160,14 +170,35 @@ const Dashboard = ({ children }) => {
             <FaChevronDown className={isReportsOpen ? "rotate" : ""} />
             {isReportsOpen && (
               <ul className="sub-menu-upward">
-                {/* <li>
-                  <Link to="/rentmachines/createrentmachines" className="link">
-                     ⚙️🟢🔴Machines
-                  </Link>
-                </li> */}
+                <li
+                  className="parentdropdown"
+                  onMouseEnter={() => setIsGatePassOpen(true)}
+                  onMouseLeave={() => setIsGatePassOpen(false)}
+                >
+                  <div className="nested-dropdown">
+                    <GiTicket size={20} color="white" className="icon" />
+                    GatePass{" "}
+                    <FaChevronDown className={isGatePassOpen ? "rotate" : ""} />
+                  </div>
+
+                  {isGatePassOpen && (
+                    <ul className="sub-menu">
+                      <li>
+                        <Link to="/rentmachines/gatepass" className="link">
+                          📄 Return/GatePass
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/rentmachines/gatepass-view" className="link">
+                          ✅View Gatepass
+                        </Link>
+                      </li>
+                    </ul>
+                  )}
+                </li>
                 <li>
                   <Link to="/rentmachines/createrentmachines" className="link">
-                    🏭 New Rent Machine
+                    👍 New Rent Machine
                   </Link>
                 </li>
 

@@ -1,0 +1,219 @@
+.gatepass-wrapper {
+  padding: 20px 25px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9faff;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ---------- Form Grid ---------- */
+.gatepass-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  background: #fff;
+  padding: 18px 22px;
+  border-radius: 12px;
+
+    /* 🔹 Add stronger border */
+  border: 2px solid #4a90e2;
+
+  /* Keep shadow for depth */
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+   
+   
+}
+
+.gatepass-field-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.gatepass-field-group label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #333;
+  
+}
+
+.gatepass-field-group input,
+.gatepass-field-group select,
+.gatepass-field-group textarea {
+  padding: 8px 10px;
+  border: 1px solid #d3d8e0;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fafbfc;
+  transition: border-color 0.2s;
+  color: black;
+}
+
+.gatepass-field-group input:focus,
+.gatepass-field-group select:focus,
+.gatepass-field-group textarea:focus {
+  border-color: #4a90e2;
+  outline: none;
+  background: #fff;
+}
+
+/* ---------- Card ---------- */
+.gatepass-form-card {
+  background: #fff;
+  padding: 18px 22px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.gatepass-header-row {
+  display: flex;
+  justify-content: space-between; /* left and right alignment */
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.gatepass-header-right {
+  display: flex;
+  gap: 10px; /* space between buttons */
+}
+/* ---------- Buttons ---------- */
+.gatepass-button-add,
+.gatepass-button-submit,
+.gatepass-button-close,
+.gatepass-button-select {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.gatepass-button-add {
+  background: #4cafef;
+  color: #fff;
+}
+
+.gatepass-button-add:hover {
+  background: #3a7ed5;
+}
+
+.gatepass-button-submit {
+  background: #073311;
+  color: #fff;
+}
+.gatepass-button-save {
+  background: #090232;
+  color: #fff;
+}
+
+.gatepass-button-submit:hover {
+  background: #218838;
+}
+
+.gatepass-button-close {
+  background: #e74c3c;
+  color: #fff;
+  margin-top: 15px;
+}
+
+.gatepass-button-close:hover {
+  background: #c0392b;
+}
+
+.gatepass-button-select {
+  background: #007bff;
+  color: #fff;
+}
+
+.gatepass-button-select:hover {
+  background: #0062cc;
+}
+
+.gatepass-btn-delete {
+  background: transparent;
+  color: #e74c3c;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.gatepass-btn-delete:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Table ---------- */
+.gatepass-table-container {
+  overflow-x: auto;
+}
+
+.gatepass-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.gatepass-table th,
+.gatepass-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e0e6ed;
+  font-size: 14px;
+}
+
+.gatepass-table th {
+  background: #f4f6fa;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ---------- Popup ---------- */
+.gatepass-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.gatepass-popup {
+  background: #fff;
+  padding: 22px 26px;
+  border-radius: 12px;
+  width: 80%;
+  max-width: 750px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.gatepass-popup h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #2a2a3d;
+}
+
+/* Search input inside popup */
+.gatepass-input-search {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  width: 100%;
+}

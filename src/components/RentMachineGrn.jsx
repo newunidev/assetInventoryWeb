@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { FaPlus, FaSearch, FaBoxOpen } from "react-icons/fa";
 import "./RentMachineGrn.css";
 import { categoryPurchaseOrderByPoId } from "../controller/CategoryPurchaseOrderController";
-import { getAllMachineAvailableToGrn } from "../controller/RentMachineController";
+import { getAllMachineAvailableToGrn,getAllMachineAvailableToGrnAndReturned } from "../controller/RentMachineController";
 import { createGrn } from "../controller/GrnController";
 import { createBulkGrnRentMachines } from "../controller/GrnRentMachineController";
 import {
@@ -100,9 +100,7 @@ const RentMachineGrn = () => {
 
     const fetchInactiveMachines = async () => {
       try {
-        const res = await getAllMachineAvailableToGrn(
-          localStorage.getItem("userBranchId")
-        );
+        const res = await getAllMachineAvailableToGrnAndReturned();
         console.log("machine to grn", res);
         if (res.success && res.machines) {
           setAllInactiveMachines(res.machines);
