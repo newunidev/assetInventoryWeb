@@ -19,7 +19,8 @@ import "./PurchaseOrderReportAll.css";
 import { FaCheckCircle, FaTimesCircle, FaTruckLoading } from "react-icons/fa";
 
 const RenewalPurchaseOrderReportAll = () => {
-  const { poId } = useParams();
+  const { poNo } = useParams();
+  const poId = poNo.replace("-", "/");
   const [poDetails, setPoDetails] = useState(null);
   const [renewalDetails, setRenewalDetails] = useState([]); // 🔹 Initialize as []
   const [poApproval, setPoApproval] = useState({});
@@ -62,7 +63,9 @@ const RenewalPurchaseOrderReportAll = () => {
     setLoading(true);
     try {
       const poRes = await purchaseOrderByPoId(id);
+      
       const renewalRes = await getRenewalPurchaseOrderMachinesByPoId(id); // 🔹 Updated
+      console.log("Hello I am here");
       const poApp = await poApprovalByPoId(id);
       const poPrintRes = await getPoPrintPoolByPoId(id);
 
@@ -131,7 +134,6 @@ const RenewalPurchaseOrderReportAll = () => {
     }
   };
 
-  
   const handleApprove = async () => {
     try {
       const approverId = localStorage.getItem("userid");
@@ -214,7 +216,9 @@ const RenewalPurchaseOrderReportAll = () => {
   };
 
   const handleEdit = () => {
-    const url = `/rentmachines/renewalpoedit/${encodeURIComponent(poId)}`;
+    //const url = `/rentmachines/renewalpoedit/${encodeURIComponent(poId)}`;
+    const safePoId = poId.replace("/", "-");
+    const url = `/rentmachines/renewalpoedit/${safePoId}`;
 
     window.open(url, "_blank");
   };

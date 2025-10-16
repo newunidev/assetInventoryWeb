@@ -167,8 +167,13 @@ const RenewalPurchaseOrder = () => {
         setTaxOption("");
       }
     }
+
     // ✅ just update supplierId state
     setSelectedSupplierId(Number(value));
+
+    // Optional: reset fromDate/toDate if you want to force re-selection
+    // ✅ Clear all selected machines when supplier changes
+    setSelectedMachines([]);
   };
 
   const handleSendToApproval = async () => {
@@ -273,7 +278,9 @@ const RenewalPurchaseOrder = () => {
       await createPurchaseOrderApproval(approvalData);
 
       alert("✅ Renewal Purchase Order created & sent for approval!");
-      navigate(`/rentmachines/renewalporeports/${encodeURIComponent(PO_id)}`);
+      //navigate(`/rentmachines/renewalporeports/${encodeURIComponent(PO_id)}`);
+      const safePoId = PO_id.replace("/", "-");
+      navigate(`/rentmachines/renewalporeports/${safePoId}`);
     } catch (error) {
       console.error("❌ Error in handleSendToApproval:", error);
       alert("Failed to send for approval. Please try again.");
@@ -386,13 +393,38 @@ const RenewalPurchaseOrder = () => {
       await createPurchaseOrderApproval(approvalData);
 
       alert("✅ Renewal Purchase Order created & sent for approval!");
-      navigate(`/rentmachines/renewalporeports/${encodeURIComponent(PO_id)}`);
+      //navigate(`/rentmachines/renewalporeports/${encodeURIComponent(PO_id)}`);
+      const safePoId = PO_id.replace("/", "-");
+      navigate(`/rentmachines/renewalporeports/${safePoId}`);
     } catch (error) {
       console.error("❌ Error in handleSendToApproval:", error);
       alert("Failed to send for approval. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleToDateChange = (index, value) => {
+    const selectedSupplier = suppliers.find(
+      (s) => s.supplier_id === Number(newPurchaseOrder.supplier)
+    );
+    if (!selectedSupplier) return;
+
+    const fromDate = new Date(selectedMachines[index].fromDate);
+    const toDate = new Date(value);
+
+    if (selectedSupplier.is_monthly_payment) {
+      const dayDiff = Math.ceil((toDate - fromDate) / (1000 * 3600 * 24)) + 1;
+
+      if (dayDiff !== 15 && dayDiff !== 30) {
+        alert(
+          "For monthly suppliers, 'To Date' must be exactly 15 or 30 days from 'From Date'."
+        );
+        return; // ignore the change
+      }
+    }
+
+    handleRowChange(index, "toDate", value); // update normally
   };
 
   return (
@@ -429,7 +461,7 @@ const RenewalPurchaseOrder = () => {
               type="date"
               className="renewalPurchaseOrder-input"
               value={newPurchaseOrder.poDate}
-               min={new Date().toISOString().split("T")[0]} // cannot be backdated
+              min={new Date().toISOString().split("T")[0]} // cannot be backdated
               onChange={(e) =>
                 handlePurchaseOrderChange("poDate", e.target.value)
               }
@@ -442,8 +474,11 @@ const RenewalPurchaseOrder = () => {
             <input
               type="date"
               className="renewalPurchaseOrder-input"
-              disabled = {!newPurchaseOrder.poDate}
-              min={newPurchaseOrder.poDate || new Date().toISOString().split("T")[0]} // after PO Date
+              disabled={!newPurchaseOrder.poDate}
+              min={
+                newPurchaseOrder.poDate ||
+                new Date().toISOString().split("T")[0]
+              } // after PO Date
               value={newPurchaseOrder.deliveryDate}
               onChange={(e) =>
                 handlePurchaseOrderChange("deliveryDate", e.target.value)
@@ -633,6 +668,7 @@ const RenewalPurchaseOrder = () => {
                 <th>Per Day Cost</th>
                 <th>From Date</th>
                 <th>To Date</th>
+                <th>No Of Days</th>
                 <th>Discount (%)</th>
                 <th>Discount Amount</th>
                 <th>Total</th>
@@ -656,6 +692,7 @@ const RenewalPurchaseOrder = () => {
                   <td>
                     <input
                       type="number"
+                      min={0}
                       value={m.perDayCost}
                       onChange={(e) =>
                         handleRowChange(i, "perDayCost", e.target.value)
@@ -676,23 +713,40 @@ const RenewalPurchaseOrder = () => {
                     <input
                       type="date"
                       value={m.toDate}
-                      disabled = {!m.fromDate}
-                      min={m.fromDate || new Date().toISOString().split("T")[0]} // cannot be before fromDate
-                      max={
-                        m.fromDate
-                          ? new Date(
-                              new Date(m.fromDate).setDate(
-                                new Date(m.fromDate).getDate() + 31
-                              )
-                            )
-                              .toISOString()
-                              .split("T")[0]
-                          : ""
-                      } // max 31 days after fromDate
-                      onChange={(e) =>
-                        handleRowChange(i, "toDate", e.target.value)
-                      }
+                      disabled={!m.fromDate}
+                      min={m.fromDate}
+                      max={(() => {
+                        const selectedSupplier = suppliers.find(
+                          (s) =>
+                            s.supplier_id === Number(newPurchaseOrder.supplier)
+                        );
+                        if (!m.fromDate || !selectedSupplier) return "";
+
+                        const fromDateObj = new Date(m.fromDate);
+
+                        if (selectedSupplier.is_monthly_payment) {
+                          // Max 30 days from fromDate
+                          const max30 = new Date(fromDateObj);
+                          max30.setDate(max30.getDate() + 29);
+                          return max30.toISOString().split("T")[0];
+                        } else {
+                          // Daily supplier, max 31 days
+                          const maxDaily = new Date(fromDateObj);
+                          maxDaily.setDate(maxDaily.getDate() + 31);
+                          return maxDaily.toISOString().split("T")[0];
+                        }
+                      })()}
+                      onChange={(e) => handleToDateChange(i, e.target.value)}
                     />
+                  </td>
+                  <td>
+                    {m.fromDate && m.toDate
+                      ? Math.ceil(
+                          (new Date(m.toDate) - new Date(m.fromDate)) /
+                            (1000 * 60 * 60 * 24) +
+                            1
+                        )
+                      : 0}
                   </td>
                   <td>
                     <input

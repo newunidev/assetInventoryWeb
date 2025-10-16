@@ -1,0 +1,124 @@
+.itassetindetailview-container {
+  padding: 30px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9fbfd;
+  min-height: 100vh;
+}
+
+.itassetindetailview-title {
+  text-align: center;
+  color: #1d3557;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+/* Table container with reduced height and scroll */
+.itassetindetailview-table-wrapper {
+  max-height: 600px; /* adjust height as needed */
+  overflow-y: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Table styling */
+.itassetindetailview-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+}
+
+.itassetindetailview-table th {
+  background-color: #1d3557;
+  color: #ffffff;
+  text-align: left;
+  padding: 14px;
+  font-size: 15px;
+  position: sticky; /* keep header visible on scroll */
+  top: 0;
+  z-index: 1;
+}
+
+.itassetindetailview-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e6e6e6;
+  font-size: 14px;
+  color: #333;
+}
+
+.itassetindetailview-table tr:hover {
+  background-color: #f1f5fb;
+  transition: background-color 0.2s ease;
+}
+
+.itassetindetailview-current-user {
+  color: #007bff;
+  font-weight: 500;
+}
+
+.itassetindetailview-previous-user {
+  color: #555;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .itassetindetailview-table th,
+  .itassetindetailview-table td {
+    font-size: 13px;
+    padding: 10px;
+  }
+}
+
+
+/* Modal backdrop */
+.itassetindetailview-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Modal content */
+.itassetindetailview-modal {
+  background-color: #fff;
+  padding: 25px 30px;
+  border-radius: 10px;
+  width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+.itassetindetailview-modal h3 {
+  text-align: center;
+  color: #1d3557;
+  margin-bottom: 20px;
+}
+
+.modal-section {
+  margin-bottom: 20px;
+}
+
+.modal-section h4 {
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.itassetindetailview-modal-close {
+  background-color: #1d3557;
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.itassetindetailview-modal-close:hover {
+  background-color: #007bff;
+}

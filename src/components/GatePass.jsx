@@ -191,7 +191,9 @@ const Gatepass = () => {
 
       alert("✅ GatePass created successfully!");
       // navigate(`/gatepass/reports/${encodeURIComponent(gp_no)}`);
-      navigate(`/rentmachines/gatepass-report/${encodeURIComponent(gp_no)}`);
+      //navigate(`/rentmachines/gatepass-report/${encodeURIComponent(gp_no)}`);
+      const safeGpNo = gp_no.replace("/", "-");
+      navigate(`/rentmachines/gatepass-report/${safeGpNo}`);
     } catch (error) {
       console.error("❌ Error creating GatePass:", error);
 
@@ -282,7 +284,8 @@ const Gatepass = () => {
 
       alert("✅ GatePass created successfully!");
       // navigate(`/gatepass/reports/${encodeURIComponent(gp_no)}`);
-      navigate(`/rentmachines/gatepass-report/${encodeURIComponent(gp_no)}`);
+      const safeGpNo = gp_no.replace("/", "-");
+      navigate(`/rentmachines/gatepass-report/${safeGpNo}`);
     } catch (error) {
       console.error("❌ Error creating GatePass:", error);
 

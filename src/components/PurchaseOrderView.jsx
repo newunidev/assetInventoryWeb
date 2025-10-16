@@ -144,7 +144,7 @@ const PurchaseOrderView = () => {
             </div>
             <span className="quick-link-label">Expired</span>
           </div>
-          
+
           <div
             className="quick-link-button"
             onClick={() => handleQuickFilter("new")}
@@ -237,13 +237,17 @@ const PurchaseOrderView = () => {
                       <button
                         onClick={() => {
                           console.log("Is po renewal chaeck", item.is_renew_po);
+                          // const url = item.is_renew_po
+                          //   ? `/rentmachines/renewalporeportsall/${encodeURIComponent(
+                          //       item.poNumber
+                          //     )}`
+                          //   : `/rentmachines/poreportsall/${encodeURIComponent(
+                          //       item.poNumber
+                          //     )}`;
+                          const safePoNumber = item.poNumber.replace("/", "-");
                           const url = item.is_renew_po
-                            ? `/rentmachines/renewalporeportsall/${encodeURIComponent(
-                                item.poNumber
-                              )}`
-                            : `/rentmachines/poreportsall/${encodeURIComponent(
-                                item.poNumber
-                              )}`;
+                            ? `/rentmachines/renewalporeportsall/${safePoNumber}`
+                            : `/rentmachines/poreportsall/${safePoNumber}`;
                           window.open(url, "_blank"); // Opens in a new tab/window
                         }}
                         className="purchase-order-view-action-button"

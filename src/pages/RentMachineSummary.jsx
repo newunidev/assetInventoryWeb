@@ -64,12 +64,14 @@ const RentMachineSummary = () => {
     if (res.success && res.data) {
       const mapped = res.data.map((item) => ({
         id: item.rent_item_id,
+        s_no: item.RentMachine?.serial_no,
         name: item.RentMachine?.name || "Unknown",
         branch: item.Branch?.branch_name || "N/A",
         status: item.isExpired ? "Expired" : "Active",
         from_date: item.from_date,
         to_date: item.to_date,
         machine_status: item.RentMachine?.machine_status,
+        sup_name : item.RentMachine?.Supplier?.name,
       }));
       setRentMachines(mapped);
     }
@@ -225,6 +227,8 @@ const RentMachineSummary = () => {
               <thead>
                 <tr>
                   <th>ID</th>
+                  <th>Serial No</th>
+                  <th>Supplier</th>
                   <th>Name</th>
                   <th>Branch</th>
                   <th>From</th>
@@ -256,6 +260,8 @@ const RentMachineSummary = () => {
                       onClick={() => handleRowClick(machine.id)}
                     >
                       <td>{machine.id}</td>
+                      <td>{machine.s_no}</td>
+                      <td>{machine.sup_name}</td>
                       <td>{machine.name}</td>
                       <td>{machine.branch}</td>
                       <td>{machine.from_date}</td>
@@ -388,13 +394,13 @@ const RentMachineSummary = () => {
                         <td>
                           <button
                             onClick={() => {
+                              // Replace '/' with '-' to make the URL safe
+                              const safePoNumber = poNumber.replace("/", "-");
+
                               const url = isRenew
-                                ? `/rentmachines/renewalporeportsall/${encodeURIComponent(
-                                    poNumber
-                                  )}`
-                                : `/rentmachines/poreportsall/${encodeURIComponent(
-                                    poNumber
-                                  )}`;
+                                ? `/rentmachines/renewalporeportsall/${safePoNumber}`
+                                : `/rentmachines/poreportsall/${safePoNumber}`;
+
                               window.open(url, "_blank"); // Opens in new tab
                             }}
                             className="purchase-order-view-action-button"

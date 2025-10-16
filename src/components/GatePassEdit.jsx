@@ -14,7 +14,11 @@ import {
 import { usePageTitle } from "../utility/usePageTitle";
 
 const GatePassEdit = () => {
-  const { gpNo } = useParams();
+   
+  const { gpId } = useParams();
+
+  const gpNo = gpId.replace("-", "/"); // original GP number
+
   const navigate = useNavigate();
   const [, setPageTitle] = usePageTitle();
 
@@ -174,7 +178,9 @@ const GatePassEdit = () => {
       }
 
       alert("✅ GatePass updated !");
-      navigate(`/rentmachines/gatepass-report/${encodeURIComponent(gpNo)}`);
+      //navigate(`/rentmachines/gatepass-report/${encodeURIComponent(gpNo)}`);
+      const safeGpNo = gpNo.replace("/", "-");
+      navigate(`/rentmachines/gatepass-report/${safeGpNo}`);
     } catch (err) {
       console.error("❌ Error updating GatePass:", err);
       alert("Failed to update GatePass.");
@@ -216,7 +222,8 @@ const GatePassEdit = () => {
       await updateGatePassStatus(gpNo, "Pending");
 
       alert("✅ GatePass updated and Send to Approval!");
-      navigate(`/rentmachines/gatepass-report/${encodeURIComponent(gpNo)}`);
+      const safeGpNo = gpNo.replace("/", "-");
+      navigate(`/rentmachines/gatepass-report/${safeGpNo}`);
     } catch (err) {
       console.error("❌ Error updating GatePass:", err);
       alert("Failed to update GatePass.");

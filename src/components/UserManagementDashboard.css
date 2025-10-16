@@ -210,3 +210,155 @@
 .usermanager-save-btn:hover {
   background: #218838;
 }
+
+
+/* ===================== */
+/* ✨ POPUP STYLING ✨ */
+/* ===================== */
+
+.usermanager-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.usermanager-popup {
+  width: 460px;
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  animation: popupSlideUp 0.3s ease;
+}
+
+@keyframes popupSlideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.usermanager-popup-header {
+  background: linear-gradient(90deg, #007bff, #4facfe);
+  padding: 14px 18px;
+  color: white;
+  font-weight: 600;
+  font-size: 17px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.usermanager-close-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.usermanager-close-btn:hover {
+  transform: rotate(90deg);
+}
+
+.usermanager-popup-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Inputs */
+.usermanager-popup-body input[type="text"],
+.usermanager-popup-body input[type="email"],
+.usermanager-popup-body input[type="password"],
+.usermanager-popup-body select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d0d7e2;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #f9fafc;
+  transition: all 0.2s ease;
+  color: black;
+}
+
+.usermanager-popup-body input:focus,
+.usermanager-popup-body select:focus {
+  border-color: #007bff;
+  background-color: #f6f6f6;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+
+/* Dropdown styling */
+.usermanager-popup-body select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #007bff 50%), linear-gradient(135deg, #007bff 50%, transparent 50%);
+  background-position: calc(100% - 20px) calc(1em + 2px), calc(100% - 15px) calc(1em + 2px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+/* Permissions section */
+.usermanager-permissions-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.usermanager-permissions-list label {
+  background: #f0f4ff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.usermanager-permissions-list label:hover {
+  background: #e2ecff;
+}
+
+/* Save button */
+.usermanager-save-btn {
+  background: linear-gradient(90deg, #28a745, #4cd964);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.usermanager-save-btn:hover {
+  background: linear-gradient(90deg, #1f8a3d, #38c25d);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(72, 239, 128, 0.3);
+}

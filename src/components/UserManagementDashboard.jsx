@@ -1,24 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { FaUserPlus, FaShieldAlt, FaCogs, FaTimes } from "react-icons/fa";
 import "./UserManagementDashboard.css";
-import { getAllEmployee } from "../controller/UserMangerController";
+import { getAllEmployee, createEmployee,getAllEmployeeBranches } from "../controller/UserMangerController";
 import { getAllPermissionsAll } from "../controller/EmployeeController";
 
 export default function UserManagementDashboard() {
   const [users, setUsers] = useState([]);
-  const [permissions, setPermissions] = useState([
-    "View Reports",
-    "Edit Data",
-    "Manage Users",
-  ]);
-
+  const [branches, setBranches] = useState([]);
+  const [permissions, setPermissions] = useState(["View Reports", "Edit Data", "Manage Users"]);
   const [popup, setPopup] = useState(null);
-  const [formData, setFormData] = useState({ name: "", permissions: [] });
-  const [searchTerm, setSearchTerm] = useState(""); // Search state
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    branch: "",
+    branch_id: "",
+    address: "",
+    contact: "",
+    designation: "",
+    password: "",
+    permissions: [],
+  });
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Fetch employees and their permissions
   useEffect(() => {
     fetchEmployeesWithPermissions();
+    fetchBranches();
   }, []);
 
   const fetchEmployeesWithPermissions = async () => {
@@ -46,9 +52,29 @@ export default function UserManagementDashboard() {
     }
   };
 
+  const fetchBranches = async () => {
+    try {
+      const res = await getAllEmployeeBranches();
+      if (res.success) setBranches(res.branches);
+    } catch (error) {
+      console.error("Error fetching branches:", error);
+    }
+  };
+
   const handleOpenPopup = (type, user = null) => {
     if (user) setFormData({ ...user });
-    else setFormData({ name: "", permissions: [] });
+    else
+      setFormData({
+        name: "",
+        email: "",
+        branch: "",
+        branch_id: "",
+        address: "",
+        contact: "",
+        designation: "",
+        password: "",
+        permissions: [],
+      });
     setPopup({ type, user });
     document.body.style.overflow = "hidden";
   };
@@ -56,17 +82,6 @@ export default function UserManagementDashboard() {
   const handleClosePopup = () => {
     setPopup(null);
     document.body.style.overflow = "auto";
-  };
-
-  const handleSaveUser = () => {
-    if (popup.user) {
-      setUsers((prev) =>
-        prev.map((u) => (u.id === popup.user.id ? { ...u, ...formData } : u))
-      );
-    } else {
-      setUsers((prev) => [...prev, { id: Date.now(), ...formData }]);
-    }
-    handleClosePopup();
   };
 
   const handlePermissionToggle = (perm) => {
@@ -81,11 +96,37 @@ export default function UserManagementDashboard() {
     });
   };
 
-  // Filter users based on search term
+  const handleSaveUser = async () => {
+    try {
+      const newEmployee = {
+        name: formData.name,
+        email: formData.email,
+        branch: branches.find((b) => b.branch_id === parseInt(formData.branch_id))?.branch_name || "",
+        branch_id: parseInt(formData.branch_id),
+        address: formData.address,
+        contact: formData.contact,
+        designation: formData.designation,
+        password: formData.password,
+      };
+
+      const res = await createEmployee(newEmployee);
+      if (res.success) {
+        alert("✅ Employee created successfully!");
+        fetchEmployeesWithPermissions();
+        handleClosePopup();
+      } else {
+        alert("❌ Failed to create employee");
+      }
+    } catch (error) {
+      console.error("Error saving user:", error);
+      alert("Error saving employee");
+    }
+  };
+
   const filteredUsers = users.filter(
     (u) =>
       u.id.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-      u.email.toLowerCase().includes(searchTerm.toLowerCase())||
+      u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       u.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -95,7 +136,6 @@ export default function UserManagementDashboard() {
         {/* LEFT SIDE - EMPLOYEE CARDS */}
         <div className="usermanager-table-section">
           <h2>Employees</h2>
-          {/* Search bar */}
           <input
             type="text"
             placeholder="Search by Employee ID or Email..."
@@ -103,8 +143,6 @@ export default function UserManagementDashboard() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-
-          {/* Employee Cards Grid */}
           <div className="employee-cards-container">
             {filteredUsers.map((u) => (
               <div key={u.id} className="employee-card">
@@ -114,14 +152,8 @@ export default function UserManagementDashboard() {
                 <p>Branch: {u.branch}</p>
                 <p>Designation: {u.designation}</p>
                 <p>Contact: {u.contact}</p>
-                <p>
-                  Permissions:{" "}
-                  {u.permissions.length > 0 ? u.permissions.join(", ") : "None"}
-                </p>
-                <button
-                  className="usermanager-edit-btn"
-                  onClick={() => handleOpenPopup("editUser", u)}
-                >
+                <p>Permissions: {u.permissions.length > 0 ? u.permissions.join(", ") : "None"}</p>
+                <button className="usermanager-edit-btn" onClick={() => handleOpenPopup("editUser", u)}>
                   Edit
                 </button>
               </div>
@@ -131,24 +163,15 @@ export default function UserManagementDashboard() {
 
         {/* RIGHT SIDE - ACTION CARDS */}
         <div className="usermanager-card-section">
-          <div
-            className="usermanager-card"
-            onClick={() => handleOpenPopup("addUser")}
-          >
+          <div className="usermanager-card" onClick={() => handleOpenPopup("addUser")}>
             <FaUserPlus size={28} className="usermanager-card-icon" />
             <span>Add New User</span>
           </div>
-          <div
-            className="usermanager-card"
-            onClick={() => handleOpenPopup("managePermissions")}
-          >
+          <div className="usermanager-card" onClick={() => handleOpenPopup("managePermissions")}>
             <FaCogs size={28} className="usermanager-card-icon" />
             <span>Manage Permissions</span>
           </div>
-          <div
-            className="usermanager-card"
-            onClick={() => handleOpenPopup("assignPermissions")}
-          >
+          <div className="usermanager-card" onClick={() => handleOpenPopup("assignPermissions")}>
             <FaShieldAlt size={28} className="usermanager-card-icon" />
             <span>Assign Permissions</span>
           </div>
@@ -169,10 +192,7 @@ export default function UserManagementDashboard() {
                   ? "Manage Permissions"
                   : "Assign Permissions"}
               </h3>
-              <button
-                className="usermanager-close-btn"
-                onClick={handleClosePopup}
-              >
+              <button className="usermanager-close-btn" onClick={handleClosePopup}>
                 <FaTimes size={18} />
               </button>
             </div>
@@ -184,58 +204,60 @@ export default function UserManagementDashboard() {
                     type="text"
                     placeholder="Name"
                     value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   />
                   <input
                     type="text"
                     placeholder="Email"
-                    value={formData.email || ""}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   />
+                  <select
+                    value={formData.branch_id}
+                    onChange={(e) => {
+                      const selectedBranch = branches.find(
+                        (b) => b.branch_id === parseInt(e.target.value)
+                      );
+                      setFormData({
+                        ...formData,
+                        branch_id: e.target.value,
+                        branch: selectedBranch?.branch_name || "",
+                      });
+                    }}
+                  >
+                    <option value="">Select Branch</option>
+                    {branches.map((branch) => (
+                      <option key={branch.branch_id} value={branch.branch_id}>
+                        {branch.branch_name}
+                      </option>
+                    ))}
+                  </select>
                   <input
                     type="text"
-                    placeholder="Branch"
-                    value={formData.branch || ""}
-                    onChange={(e) =>
-                      setFormData({ ...formData, branch: e.target.value })
-                    }
-                  />
-                  <input
-                    type="text"
-                    placeholder="Designation"
-                    value={formData.designation || ""}
-                    onChange={(e) =>
-                      setFormData({ ...formData, designation: e.target.value })
-                    }
+                    placeholder="Address"
+                    value={formData.address}
+                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                   />
                   <input
                     type="text"
                     placeholder="Contact"
-                    value={formData.contact || ""}
-                    onChange={(e) =>
-                      setFormData({ ...formData, contact: e.target.value })
-                    }
+                    value={formData.contact}
+                    onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
                   />
-                  <div className="usermanager-permissions-list">
-                    {permissions.map((perm) => (
-                      <label key={perm}>
-                        <input
-                          type="checkbox"
-                          checked={formData.permissions?.includes(perm)}
-                          onChange={() => handlePermissionToggle(perm)}
-                        />
-                        {perm}
-                      </label>
-                    ))}
-                  </div>
-                  <button
-                    className="usermanager-save-btn"
-                    onClick={handleSaveUser}
-                  >
+                  <input
+                    type="text"
+                    placeholder="Designation"
+                    value={formData.designation}
+                    onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
+                  />
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  />
+
+                  <button className="usermanager-save-btn" onClick={handleSaveUser}>
                     Save
                   </button>
                 </>

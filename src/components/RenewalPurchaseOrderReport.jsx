@@ -8,7 +8,8 @@ import JsBarcode from "jsbarcode";
 import "./RenewalPurchaseOrderReport.css";
 
 const RenewalPurchaseOrderReport = () => {
-  const { poId } = useParams();
+  const { poNo } = useParams();
+  const poId = poNo.replace("-", "/"); // converts '2025M-00001' → '2025M/00001'
   const [poDetails, setPoDetails] = useState(null);
   const [renewalItems, setRenewalItems] = useState([]);
   const [error, setError] = useState(null);

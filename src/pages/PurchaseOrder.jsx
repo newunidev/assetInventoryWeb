@@ -100,6 +100,18 @@ const PurchaseOrder = () => {
         setTaxOption("");
       }
     }
+
+    // ✅ Reset all rows' toDate when supplier changes
+    setRows((prevRows) =>
+      prevRows.map((row) => ({
+        ...row,
+        toDate: "", // clear toDate
+      }))
+    );
+  };
+
+  const removeRow = (index) => {
+    setRows((prevRows) => prevRows.filter((_, i) => i !== index));
   };
 
   const handleFormChange = (field, value) => {
@@ -128,6 +140,14 @@ const PurchaseOrder = () => {
 
       const rawCost =
         updatedRows[index].machines * updatedRows[index].costPerDay * days;
+
+      // const effectiveDays =
+      //   days > 12 && days < 30 ? 30 : days < 12 ? days : days;
+
+      // const rawCost =
+      //   updatedRows[index].machines *
+      //   updatedRows[index].costPerDay *
+      //   effectiveDays;
       const discountAmount =
         (Number(updatedRows[index].discount) / 100) * rawCost; // Ensure discount is treated as number
       updatedRows[index].total = rawCost - discountAmount;
@@ -163,7 +183,6 @@ const PurchaseOrder = () => {
     if (
       !supplier ||
       !poDate ||
-       
       !invoiceTo ||
       !attention ||
       !paymentMethod ||
@@ -257,7 +276,8 @@ const PurchaseOrder = () => {
         await createPurchaseOrderApproval(approvalData);
 
         alert("Purchase Order and category allocations created successfully!");
-        navigate(`/rentmachines/poreports/${encodeURIComponent(PO_id)}`);
+        const safePOId = PO_id.replace("/", "-");
+        navigate(`/rentmachines/poreports/${safePOId}`);
       } catch (error) {
         console.error(
           "❌ Error creating purchase order or category allocations:",
@@ -436,8 +456,32 @@ const PurchaseOrder = () => {
       }
     };
     fetchCategories();
-    newPurchaseOrder.deliverTo = `New Universe ${localStorage.getItem("userBranch")} Factory`;
+    newPurchaseOrder.deliverTo = `New Universe ${localStorage.getItem(
+      "userBranch"
+    )} Factory`;
   }, []);
+  const handleToDateChange = (index, value) => {
+    const selectedSupplier = suppliers.find(
+      (s) => s.supplier_id === Number(newPurchaseOrder.supplier)
+    );
+    if (!selectedSupplier) return;
+
+    const fromDate = new Date(rows[index].fromDate);
+    const toDate = new Date(value);
+
+    if (selectedSupplier.is_monthly_payment) {
+      const dayDiff = Math.ceil((toDate - fromDate) / (1000 * 3600 * 24)) + 1;
+
+      if (dayDiff !== 15 && dayDiff !== 30) {
+        alert(
+          "For monthly suppliers, 'To Date' must be exactly 15 or 30 days from 'From Date'"
+        );
+        return;
+      }
+    }
+
+    handleChange(index, "toDate", value);
+  };
 
   return (
     <div className="purchaseorder-wrapper">
@@ -651,7 +695,9 @@ const PurchaseOrder = () => {
                 <th>Discount (%)</th>
                 <th>From Date</th>
                 <th>To Date</th>
+                <th>No. of Days</th>
                 <th>Total</th>
+                <th>Action</th> {/* New column for remove button */}
               </tr>
             </thead>
             <tbody>
@@ -684,6 +730,7 @@ const PurchaseOrder = () => {
                   <td>
                     <input
                       type="number"
+                      min={0}
                       value={row.machines}
                       onChange={(e) =>
                         handleChange(i, "machines", e.target.value)
@@ -693,6 +740,7 @@ const PurchaseOrder = () => {
                   <td>
                     <input
                       type="number"
+                      min={0}
                       value={row.costPerDay}
                       onChange={(e) =>
                         handleChange(i, "costPerDay", e.target.value)
@@ -702,6 +750,7 @@ const PurchaseOrder = () => {
                   <td>
                     <input
                       type="number"
+                      min={0}
                       value={row.discount}
                       onChange={(e) =>
                         handleChange(i, "discount", e.target.value)
@@ -740,27 +789,50 @@ const PurchaseOrder = () => {
                     <input
                       type="date"
                       value={row.toDate}
-                      disabled = {!row.fromDate}
-                      onChange={(e) =>
-                        handleChange(i, "toDate", e.target.value)
-                      }
-                      min={
-                        row.fromDate || new Date().toISOString().split("T")[0]
-                      } // at least fromDate
-                      max={
-                        row.fromDate
-                          ? new Date(
-                              new Date(row.fromDate).setDate(
-                                new Date(row.fromDate).getDate() + 31
-                              )
-                            )
-                              .toISOString()
-                              .split("T")[0]
-                          : ""
-                      } // max 31 days from fromDate
+                      disabled={!row.fromDate}
+                      onChange={(e) => handleToDateChange(i, e.target.value)}
+                      min={row.fromDate}
+                      max={(() => {
+                        const selectedSupplier = suppliers.find(
+                          (s) =>
+                            s.supplier_id === Number(newPurchaseOrder.supplier)
+                        );
+                        if (!row.fromDate || !selectedSupplier) return "";
+
+                        const fromDateObj = new Date(row.fromDate);
+
+                        if (selectedSupplier.is_monthly_payment) {
+                          const max30 = new Date(fromDateObj);
+                          max30.setDate(max30.getDate() + 29);
+                          return max30.toISOString().split("T")[0];
+                        } else {
+                          const maxDaily = new Date(fromDateObj);
+                          maxDaily.setDate(maxDaily.getDate() + 29);
+                          return maxDaily.toISOString().split("T")[0];
+                        }
+                      })()}
                     />
                   </td>
+                  <td>
+                    {row.fromDate && row.toDate
+                      ? Math.ceil(
+                          (new Date(row.toDate) - new Date(row.fromDate)) /
+                            (1000 * 60 * 60 * 24) +
+                            1
+                        )
+                      : 0}
+                  </td>
                   <td>LKR {row.total.toFixed(2)}</td>
+                  <td>
+                    {i !== 0 ? (
+                      <button
+                        className="po-button-remove"
+                        onClick={() => removeRow(i)}
+                      >
+                        Remove
+                      </button>
+                    ) : null}
+                  </td>
                 </tr>
               ))}
             </tbody>

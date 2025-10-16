@@ -10,7 +10,8 @@ import { useRef } from "react";
 import { numberToWords } from "../utility/common";
 
 const PurchaseOrderReport = () => {
-  const { poId } = useParams();
+  const { poNo } = useParams();
+  const poId = poNo.replace("-", "/"); // converts '2025M-00001' → '2025M/00001'
   const [poDetails, setPoDetails] = useState(null);
   const [categoryItems, setCategoryItems] = useState([]);
   const [error, setError] = useState(null);

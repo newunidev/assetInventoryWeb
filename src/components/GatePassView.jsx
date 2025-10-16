@@ -143,7 +143,7 @@ const GatePassView = () => {
                   <td>{gp.status}</td>
                   <td>{gp.branch}</td>
                   <td>{gp.supplierName}</td>
-                  <td>
+                  {/* <td>
                     <button
                       onClick={() =>
                         window.open(
@@ -151,6 +151,20 @@ const GatePassView = () => {
                           "_blank"
                         )
                       }
+                      className="gatepass-view-action-button"
+                    >
+                      View
+                    </button>
+                  </td> */}
+                  <td>
+                    <button
+                      onClick={() => {
+                        const safeGpNo = gp.gpNo.replace("/", "-");
+                        window.open(
+                          `/rentmachines/gatepass-report/${safeGpNo}`,
+                          "_blank"
+                        );
+                      }}
                       className="gatepass-view-action-button"
                     >
                       View

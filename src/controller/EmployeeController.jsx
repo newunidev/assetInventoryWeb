@@ -40,6 +40,7 @@ export const getAllBranches = async () => {
 
 
 
+
 export default {
     getAllPermissions,
     getAllBranches

@@ -12,7 +12,9 @@ import "./GatePassReport.css";
 import { FaCheckCircle, FaTimesCircle, FaTruckLoading } from "react-icons/fa";
 
 const GatePassReport = () => {
-  const { gpNo } = useParams();
+  const { gpId } = useParams();
+
+  const gpNo = gpId.replace("-", "/"); // original GP number
   const [gatePassDetails, setGatePassDetails] = useState(null);
   const [error, setError] = useState(null);
   const barcodeRef = useRef(null);
@@ -541,10 +543,19 @@ const GatePassReport = () => {
         {gatePassDetails?.status === "Saved" &&
           gatePassDetails?.created_by?.toString() ===
             localStorage.getItem("userid") && (
+            // <button
+            //   onClick={() =>
+            //    navigate(`/rentmachines/gatepass-edit/${encodeURIComponent(gpNo)}`)
+            //   }
+            //   className="gp-report-all-edit-button"
+            // >
+            //   ✏️ Edit
+            // </button>
             <button
-              onClick={() =>
-               navigate(`/rentmachines/gatepass-edit/${encodeURIComponent(gpNo)}`)
-              }
+              onClick={() => {
+                const safeGpNo = gpNo.replace("/", "-");
+                navigate(`/rentmachines/gatepass-edit/${safeGpNo}`);
+              }}
               className="gp-report-all-edit-button"
             >
               ✏️ Edit

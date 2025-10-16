@@ -15,7 +15,9 @@ import { usePageTitle } from "../utility/usePageTitle";
 
 const RentMachineGrn = () => {
   const [, setPageTitle] = usePageTitle();
-  const { poId } = useParams();
+  
+  const { poNo } = useParams();
+  const poId = poNo.replace("-", "/");
   const [po, setPo] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");

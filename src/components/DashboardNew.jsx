@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FaCogs, // Total Machines
   FaLaptop, // IT Assets
@@ -54,6 +55,7 @@ const DashboardNew = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [rentMachines, setRentMachines] = useState([]);
+  const navigate = useNavigate();
 
   const [, setPageTitles] = usePageTitle();
 
@@ -180,9 +182,6 @@ const DashboardNew = () => {
     },
     { Active: 0, Expired: 0 }
   );
-  
-
-   
 
   return (
     <div className="dashboardnew-container">
@@ -225,10 +224,7 @@ const DashboardNew = () => {
       <div className="dashboardnew-main-content-area">
         {/* Left Panel: Factory List */}
         <div className="dashboardnew-dashboard-panel dashboardnew-factory-list-panel">
-          <h2 className="dashboardnew-panel-title">
-            📜 Machines by
-            Factory
-          </h2>
+          <h2 className="dashboardnew-panel-title">📜 Machines by Factory</h2>
           <div className="dashboardnew-table-responsive">
             <table className="dashboardnew-dashboard-table dashboardnew-factory-table">
               <thead>
@@ -330,7 +326,7 @@ const DashboardNew = () => {
               IT Asset Allocation
             </div>
           </h2>
-          <ul className="dashboardnew-asset-list">
+          {/* <ul className="dashboardnew-asset-list">
             {itAssetCountDetails.length > 0 ? (
               itAssetCountDetails.map((asset) => (
                 <li key={asset.id} className="dashboardnew-asset-item">
@@ -345,6 +341,44 @@ const DashboardNew = () => {
                 No IT asset data available.
               </p>
             )}
+          </ul> */}
+          <ul className="dashboardnew-asset-list">
+            {itAssetCountDetails.length > 0 ? (
+              itAssetCountDetails.map((asset) => (
+                <li
+                  key={asset.id}
+                  className="dashboardnew-asset-item"
+                  onClick={() => navigate(`/itassetindetailview`)} // navigate to detail view
+                  style={{
+                    cursor: "pointer",
+                    transition: "background 0.2s ease",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.background = "#f0f4ff")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.background = "transparent")
+                  }
+                >
+                  <span className="dashboardnew-asset-name">{asset.name}</span>
+                  <span className="dashboardnew-asset-count">
+                    <strong>{asset.count}</strong>
+                  </span>
+                </li>
+              ))
+            ) : (
+              <p
+                className="dashboardnew-no-data"
+                onClick={() => navigate("/itassetindetailview")}
+                style={{
+                  cursor: "pointer",
+                  color: "#1d3557",
+                  textDecoration: "underline",
+                }}
+              >
+                No IT asset data available. Click here to add assets.
+              </p>
+            )}
           </ul>
         </div>
         <div className="dashboardnew-dashboard-panel dashboardnew-it-asset-panel">
@@ -355,9 +389,12 @@ const DashboardNew = () => {
             </div>
           </h2>
           <div className="rentmachinesummery-alerts">
-            <div className="alert-box alert-expired">⚠️{counts.Expired}  Machines Expired</div>
-            <div className="alert-box alert-active">✅ {counts.Active}  Machines Active</div>
-            
+            <div className="alert-box alert-expired">
+              ⚠️{counts.Expired} Machines Expired
+            </div>
+            <div className="alert-box alert-active">
+              ✅ {counts.Active} Machines Active
+            </div>
           </div>
         </div>
       </div>

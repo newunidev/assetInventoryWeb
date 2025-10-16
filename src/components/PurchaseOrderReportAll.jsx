@@ -19,7 +19,8 @@ import "./PurchaseOrderReportAll.css";
 import { FaCheckCircle, FaTimesCircle, FaTruckLoading } from "react-icons/fa";
 
 const PurchaseOrderReportAll = () => {
-  const { poId } = useParams();
+  const { poNo } = useParams();
+  const poId = poNo.replace("-", "/"); // convert back to original PO number
   const [poDetails, setPoDetails] = useState(null);
   const [categoryItems, setCategoryItems] = useState([]);
   const [poApproval, setPoApproval] = useState({});
@@ -222,13 +223,17 @@ const PurchaseOrderReportAll = () => {
     setShowRejectModal(true); // show popup
   };
   const handleGrn = () => {
-    const url = `/rentmachines/grn/${encodeURIComponent(poId)}`;
+    //const url = `/rentmachines/grn/${encodeURIComponent(poId)}`;
+    const safePoId = poId.replace("/", "-");
+    const url = `/rentmachines/grn/${safePoId}`;
 
     window.open(url, "_blank");
   };
 
   const handleEdit = () => {
-    const url = `/rentmachines/poedit/${encodeURIComponent(poId)}`;
+    //const url = `/rentmachines/poedit/${encodeURIComponent(poId)}`;
+    const safePoId = poId.replace("/", "-");
+    const url = `/rentmachines/poedit/${safePoId}`;
 
     window.open(url, "_blank");
   };

@@ -42,7 +42,8 @@ export const getRenewalPurchaseOrderMachinesByPoId = async (po_id) => {
     return response.data;
   } catch (error) {
     console.error("Error fetching Renewal Purchase Order machines:", error);
-    throw error;
+    // Return a safe response instead of throwing
+    return { success: false, poMachineRenewals: [] };
   }
 };
 

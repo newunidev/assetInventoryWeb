@@ -281,3 +281,43 @@
 .rent-summery-modal-table tr:hover {
   background-color: #dceefb;
 }
+
+
+/* ✅ Responsive Behavior */
+@media (max-width: 1200px) {
+  .rentmachinesummery-left {
+    min-width: 500px;
+  }
+}
+
+@media (max-width: 992px) {
+  .rentmachinesummery-container {
+    flex-wrap: wrap; /* ✅ stack vertically on tablets/phones */
+  }
+
+  .rentmachinesummery-left,
+  .rentmachinesummery-right {
+    flex: 1 1 100%;
+    min-width: 100%;
+    height: auto;
+  }
+
+  .rentmachinesummery-left {
+    height: auto;
+  }
+}
+
+/* Small phones */
+@media (max-width: 600px) {
+  .rentmachinesummery-header h3 {
+    font-size: 16px;
+  }
+  .rentmachinesummery-controls {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .rentmachinesummery-search,
+  .rentmachinesummery-branch-dropdown {
+    width: 100%;
+  }
+}

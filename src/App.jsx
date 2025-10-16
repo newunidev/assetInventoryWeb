@@ -76,6 +76,7 @@ import UserCreationForm from "./pages/UserCreationForm";
 import UnderDevelopment from "./pages/UnderMaintanance";
 import DashboardNew from "./components/DashboardNew";
 import UserManagementDashboard from "./components/UserManagementDashboard";
+import ItAssetIndetailView from "./components/ItAssetIndetailView";
 
 function App() {
   return (
@@ -109,29 +110,29 @@ function App() {
         <Route path="/rentmachines/return" element={<PrivateRoute><Dashboard><RentMachineReturn /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/renewal" element={<PrivateRoute><Dashboard><RentMachineRenewal /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/gatepass" element={<PrivateRoute><Dashboard><GatePass /></Dashboard></PrivateRoute>} />
-        <Route path="/rentmachines/gatepass-report/:gpNo" element={<PrivateRoute><Dashboard><GatePassReport /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/gatepass-report/:gpId" element={<PrivateRoute><Dashboard><GatePassReport /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/gatepass-view" element={<PrivateRoute><Dashboard><GatePassView /></Dashboard></PrivateRoute>} />
-       <Route path="/rentmachines/gatepass-edit/:gpNo" element={<PrivateRoute><Dashboard><GatePassEdit /></Dashboard></PrivateRoute>
+       <Route path="/rentmachines/gatepass-edit/:gpId" element={<PrivateRoute><Dashboard><GatePassEdit /></Dashboard></PrivateRoute>
   }
 />
 
         <Route path="/rentmachines/po" element={<PrivateRoute><Dashboard><PurchaseOrder /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/porenewal" element={<PrivateRoute><Dashboard><RenewalPurchaseOrder /></Dashboard></PrivateRoute>} />
-        <Route path="/rentmachines/poreports/:poId" element={<PrivateRoute><Dashboard><PurchaseOrderReport /></Dashboard></PrivateRoute>} />
-        <Route path="/rentmachines/renewalporeports/:poId" element={<PrivateRoute><Dashboard><RenewalPurchaseOrderReport /></Dashboard></PrivateRoute>} />
-        <Route path="/rentmachines/poedit/:poId" element={<PrivateRoute><Dashboard><PurchaseOrderEdit /></Dashboard></PrivateRoute>} />
-        <Route path="/rentmachines/renewalpoedit/:poId" element={<PrivateRoute><Dashboard><RenewalPurchaseOrderEdit /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/poreports/:poNo" element={<PrivateRoute><Dashboard><PurchaseOrderReport /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/renewalporeports/:poNo" element={<PrivateRoute><Dashboard><RenewalPurchaseOrderReport /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/poedit/:poNo" element={<PrivateRoute><Dashboard><PurchaseOrderEdit /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/renewalpoedit/:poNo" element={<PrivateRoute><Dashboard><RenewalPurchaseOrderEdit /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/poview" element={<PrivateRoute><Dashboard><PurchaseOrderView /></Dashboard></PrivateRoute>} />
-        <Route path="/rentmachines/poreportsall/:poId" element={<PrivateRoute><Dashboard><PurchaseOrderReportAll /></Dashboard></PrivateRoute>} />
-        <Route path="/rentmachines/renewalporeportsall/:poId" element={<PrivateRoute><Dashboard><RenewalPurchaseOrderReportAll /></Dashboard></PrivateRoute>} />
-        <Route path="/rentmachines/grn/:poId" element={<PrivateRoute><Dashboard><RentMachineGrn /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/poreportsall/:poNo" element={<PrivateRoute><Dashboard><PurchaseOrderReportAll /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/renewalporeportsall/:poNo" element={<PrivateRoute><Dashboard><RenewalPurchaseOrderReportAll /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/grn/:poNo" element={<PrivateRoute><Dashboard><RentMachineGrn /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/printcard" element={<PrivateRoute><Dashboard><RentMachinePrintCard /></Dashboard></PrivateRoute>} />
 
         <Route path="/usercreationform" element={<PrivateRoute><Dashboard><UserCreationForm /></Dashboard></PrivateRoute>} />
         <Route path="/undermaintanance" element={<PrivateRoute><Dashboard><UnderDevelopment /></Dashboard></PrivateRoute>} />
 
         <Route path="/usermanagement" element={<PrivateRoute><Dashboard><UserManagementDashboard /></Dashboard></PrivateRoute>} />
-
+        <Route path="/itassetindetailview" element={<PrivateRoute><Dashboard><ItAssetIndetailView /></Dashboard></PrivateRoute>} />
 
 
       </Routes>

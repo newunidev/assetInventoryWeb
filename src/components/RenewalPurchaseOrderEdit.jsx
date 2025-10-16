@@ -30,7 +30,8 @@ const initialRow = {
 };
 
 const RenewalPurchaseOrderEdit = () => {
-  const { poId } = useParams();
+  const { poNo } = useParams();
+  const poId = poNo.replace("-", "/");
   const navigate = useNavigate();
   const [, setPageTitle] = usePageTitle();
   const [rows, setRows] = useState([{ ...initialRow }]);
@@ -66,17 +67,34 @@ const RenewalPurchaseOrderEdit = () => {
   }, [setPageTitle]);
 
   const fetchRentMachines = async () => {
+    // ✅ Get current supplier and user branch
+    const selectedSupplierId = Number(purchaseOrder?.supplier);
+    const userBranchId = Number(localStorage.getItem("userBranchId"));
     try {
       const res = await getAllRentMachineLifeExpired();
       if (res.success && Array.isArray(res.data)) {
-        console.log(res);
-        return res.data.map((item) => ({
-          id: item.RentMachine.rent_item_id,
-          serial_no: item.RentMachine.serial_no,
-          name: item.RentMachine.name,
-          perDayCost: item.RentMachine.rent_cost_per_day || 0, // optional
-          rawData: item, // store full data if needed
-        }));
+        // return res.data.map((item) => ({
+        //   id: item.RentMachine.rent_item_id,
+        //   serial_no: item.RentMachine.serial_no,
+        //   name: item.RentMachine.name,
+        //   perDayCost: item.RentMachine.rent_cost_per_day || 0, // optional
+        //   rawData: item, // store full data if needed
+        // }));
+        return res.data
+          .filter(
+            (item) =>
+              item.RentMachine &&
+              item.RentMachine.sup_id === selectedSupplierId && // filter by supplier
+              item.Branch &&
+              item.Branch.branch_id === userBranchId // filter by branch
+          )
+          .map((item) => ({
+            id: item.RentMachine.rent_item_id,
+            serial_no: item.RentMachine.serial_no,
+            name: item.RentMachine.name,
+            perDayCost: item.RentMachine.rent_cost_per_day || 0,
+            rawData: item,
+          }));
       }
       return [];
     } catch (err) {
@@ -85,14 +103,24 @@ const RenewalPurchaseOrderEdit = () => {
     }
   };
 
+  // useEffect(() => {
+  //   const loadMachines = async () => {
+  //     const machines = await fetchRentMachines(); // call the separate function here
+  //     setRentMachines(machines);
+  //   };
+
+  //   loadMachines();
+  // }, []);
   useEffect(() => {
+    if (!purchaseOrder?.supplier) return;
+
     const loadMachines = async () => {
-      const machines = await fetchRentMachines(); // call the separate function here
+      const machines = await fetchRentMachines();
       setRentMachines(machines);
     };
 
     loadMachines();
-  }, []);
+  }, [purchaseOrder?.supplier]);
 
   const fetchData = async () => {
     try {
@@ -138,7 +166,7 @@ const RenewalPurchaseOrderEdit = () => {
                   Math.ceil(
                     (new Date(item.to_date) - new Date(item.from_date)) /
                       (1000 * 60 * 60 * 24)
-                  )
+                  ) + 1
                 )
               : 1;
 
@@ -176,6 +204,34 @@ const RenewalPurchaseOrderEdit = () => {
   // ---------------- Form Handlers ----------------
   const handlePOChange = (field, value) => {
     setPurchaseOrder((prev) => ({ ...prev, [field]: value }));
+
+    /*this part is for update the suppliers vat option only*/
+    if (field === "supplier") {
+      const selectedSupplier = suppliers.find(
+        (s) => s.supplier_id === Number(value)
+      );
+
+      if (selectedSupplier) {
+        // Update tax option dynamically based on supplier
+        if (selectedSupplier.svatno) {
+          setTaxOption("SVAT");
+        } else if (selectedSupplier.vatno) {
+          setTaxOption("VAT");
+        } else {
+          setTaxOption(""); // no tax option
+        }
+
+        // Optionally, clear any existing 'toDate' values in rows
+        setRows((prevRows) =>
+          prevRows.map((row) => ({
+            ...row,
+            toDate: "",
+          }))
+        );
+      } else {
+        setTaxOption("");
+      }
+    }
   };
 
   // ---------------- Table Handlers ----------------
@@ -260,7 +316,8 @@ const RenewalPurchaseOrderEdit = () => {
         }
       } else {
         alert("✅ Purchase Order updated successfully!");
-        navigate(`/rentmachines/poreports/${encodeURIComponent(poId)}`);
+        const safePoId = poId.replace("/", "-");
+        navigate(`/rentmachines/renewalporeports/${safePoId}`);
       }
     } catch (err) {
       console.error("❌ Failed to update PO and Renewal items:", err);
@@ -305,6 +362,8 @@ const RenewalPurchaseOrderEdit = () => {
         status: "Saved",
       };
 
+      console.log(payloadPO);
+
       const poUpdateRes = await updateEntirePurchaseOrderbyPoId(
         poId,
         payloadPO
@@ -339,7 +398,8 @@ const RenewalPurchaseOrderEdit = () => {
         }
       } else {
         alert("✅ Purchase Order updated successfully!");
-        navigate(`/rentmachines/renewalporeports/${encodeURIComponent(poId)}`);
+        const safePoId = poId.replace("/", "-");
+        navigate(`/rentmachines/renewalporeports/${safePoId}`);
       }
     } catch (err) {
       console.error("❌ Failed to update PO and Renewal  items:", err);
@@ -376,6 +436,30 @@ const RenewalPurchaseOrderEdit = () => {
   };
   if (!purchaseOrder) return <p>Loading PO details...</p>;
 
+  const handleToDateChange = (index, value) => {
+    const selectedSupplier = suppliers.find(
+      (s) => s.supplier_id === Number(purchaseOrder.supplier)
+    );
+    if (!selectedSupplier) return;
+
+    const fromDate = new Date(rows[index].fromDate);
+    const toDate = new Date(value);
+
+    if (selectedSupplier.is_monthly_payment) {
+      const dayDiff = Math.ceil((toDate - fromDate) / (1000 * 3600 * 24)) + 1;
+
+      if (dayDiff !== 15 && dayDiff !== 30) {
+        alert(
+          "For monthly suppliers, 'To Date' must be exactly 15 or 30 days from 'From Date'."
+        );
+        return; // ignore invalid change
+      }
+    }
+
+    // ✅ Update normally if valid
+    handleChange(index, "toDate", value);
+  };
+
   return (
     <div className="renewal-po-edit-wrapper">
       <div className="renewal-po-edit-top-section">
@@ -389,8 +473,14 @@ const RenewalPurchaseOrderEdit = () => {
             <select
               className="renewal-po-edit-input"
               value={purchaseOrder.supplier}
-              onChange={(e) => handlePOChange("supplier", e.target.value)}
+              onChange={(e) => {
+                handlePOChange("supplier", e.target.value);
+
+                // 🧹 If supplier changes, clear all rows
+                setRows([]);
+              }}
               required
+              disabled={rows.length > 0} // 🔒 disable when table has data
             >
               <option value="">Select Supplier</option>
               {suppliers.map((s) => (
@@ -570,11 +660,12 @@ const RenewalPurchaseOrderEdit = () => {
                 <th>Serial No</th>
                 <th>Machine</th>
                 <th>Description</th>
-                <th>No. of Machines</th>
+                 
                 <th>Per Day Cost</th>
                 <th>Discount (%)</th>
                 <th>From Date</th>
                 <th>To Date</th>
+                <th>No Of Days</th>
                 <th>Total</th>
                 <th>Action</th>
               </tr>
@@ -603,7 +694,7 @@ const RenewalPurchaseOrderEdit = () => {
                         }
                       />
                     </td>
-                    <td>
+                    {/* <td>
                       <input
                         type="number"
                         value={row.machines}
@@ -611,10 +702,11 @@ const RenewalPurchaseOrderEdit = () => {
                           handleChange(i, "machines", e.target.value)
                         }
                       />
-                    </td>
+                    </td> */}
                     <td>
                       <input
                         type="number"
+                        min={0}
                         value={row.costPerDay}
                         onChange={(e) =>
                           handleChange(i, "costPerDay", e.target.value)
@@ -624,6 +716,7 @@ const RenewalPurchaseOrderEdit = () => {
                     <td>
                       <input
                         type="number"
+                        min={0}
                         value={row.discount}
                         onChange={(e) =>
                           handleChange(i, "discount", e.target.value)
@@ -634,12 +727,13 @@ const RenewalPurchaseOrderEdit = () => {
                       <input
                         type="date"
                         value={row.fromDate}
+                        min={new Date().toISOString().split("T")[0]} // today's date in YYYY-MM-DD forma
                         onChange={(e) =>
                           handleChange(i, "fromDate", e.target.value)
                         }
                       />
                     </td>
-                    <td>
+                    {/* <td>
                       <input
                         type="date"
                         value={row.toDate}
@@ -648,6 +742,49 @@ const RenewalPurchaseOrderEdit = () => {
                         }
                       />
                     </td>
+                     */}
+
+                    <td>
+                      <input
+                        type="date"
+                        value={row.toDate}
+                        disabled={!row.fromDate}
+                        min={row.fromDate}
+                        max={(() => {
+                          const selectedSupplier = suppliers.find(
+                            (s) =>
+                              s.supplier_id === Number(purchaseOrder.supplier)
+                          );
+                          if (!row.fromDate || !selectedSupplier) return "";
+
+                          const fromDateObj = new Date(row.fromDate);
+
+                          if (selectedSupplier.is_monthly_payment) {
+                            // Max 30 days from fromDate
+                            const max30 = new Date(fromDateObj);
+                            max30.setDate(max30.getDate() + 29);
+                            return max30.toISOString().split("T")[0]; // ✅ string
+                          } else {
+                            // Daily supplier, max 31 days
+                            const maxDaily = new Date(fromDateObj);
+                            maxDaily.setDate(maxDaily.getDate() + 31);
+                            return maxDaily.toISOString().split("T")[0]; // ✅ string
+                          }
+                        })()}
+                        onChange={(e) => handleToDateChange(i, e.target.value)}
+                      />
+                    </td>
+
+                    <td>
+                      {row.fromDate && row.toDate
+                        ? Math.ceil(
+                            (new Date(row.toDate) - new Date(row.fromDate)) /
+                              (1000 * 60 * 60 * 24) +
+                              1
+                          )
+                        : 0}
+                    </td>
+
                     <td>LKR {row.total.toFixed(2)}</td>
                     <td>
                       {row.mr_id ? (
