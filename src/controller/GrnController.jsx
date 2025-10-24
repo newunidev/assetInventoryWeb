@@ -103,6 +103,19 @@ export const getGrnDetailsWithGrnRentMachinesByPoId = async (po_id) => {
   }
 };
 
+export const getGrnExits = async (po_id) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await apiClient.get(`grnexists?po_id=${encodeURIComponent(po_id)}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching GRN by ID:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export default {
   getAllGrns,
   createGrn,

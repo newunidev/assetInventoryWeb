@@ -9,6 +9,18 @@ export const BRANCHES = [
   // Add more branches as needed
 ];
 
+export const branchAddresses = {
+  1: "New Universe Corporate Clothing H (PVT) Ltd,Nuwangala Junction, Ththiripitigama, Hettipola", // Hettipola
+  2: "New Universe Clothing SL (PVT) Ltd.,Sampath Nuwara, Welioya.", // Welioya
+  3: "New Universe Clothing- Kamburupitiya, Kamburupitiya Sri Lanka", // Mathar
+  4: "New Universe Clothing SL (PVT) Ltd., No:9/6, Kahapola, Madapatha.", // Piliyandala
+  5: "New Universe Corporate Clothing H (PVT) Ltd., Circular Rd, Bakamuna",// Bakamuna 01 
+  6: "New Universe Corporate Clothing H (PVT) Ltd., Circular Rd, Bakamuna",// Bakamuna 02
+  7: "21/4, Polhengoda Gardens Colombo 05",// Head Office
+  8: "Head Office, 10 Main Road, Colombo 03",// Head Office Sample ROom
+  // add more branches as needed
+};
+
 export const CommonStore = {
   pageTitle: "Dashboard", // default page title
 };

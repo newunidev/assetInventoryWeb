@@ -1,446 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import "./RentMachine.css";
-// import jsPDF from "jspdf";
-// import "jspdf-autotable";
-// import * as XLSX from "xlsx";
-// import { saveAs } from "file-saver";
-
-// import { GiForklift } from "react-icons/gi";
-
-// const dummyRentMachines = [
-//   {
-//     rent_item_id: "RM001",
-//     serial_no: "SN1001",
-//     name: "Excavator",
-//     description: "Large excavator for construction",
-//     rented_by: "Company A",
-//     box_no: "BX001",
-//     model_no: "EX200",
-//     motor_no: "MTR12345",
-//     cat_id: "CAT001",
-//     brand: "Caterpillar",
-//     condition: "Good",
-//     sup_id: "SUP100",
-//     additional: "",
-//   },
-//   {
-//     rent_item_id: "RM002",
-//     serial_no: "SN1002",
-//     name: "Forklift",
-//     description: "Electric forklift for warehouse",
-//     rented_by: "Company B",
-//     box_no: "BX002",
-//     model_no: "FK100",
-//     motor_no: "MTR67890",
-//     cat_id: "CAT002",
-//     brand: "Toyota",
-//     condition: "New",
-//     sup_id: "SUP101",
-//     additional: "",
-//   },
-// ];
-
-// const RentMachine = () => {
-//   const [rentMachines, setRentMachines] = useState([]);
-//   const [searchTerm, setSearchTerm] = useState("");
-//   const [loading, setLoading] = useState(true);
-//   const [errorMessage, setErrorMessage] = useState("");
-//   const [showModal, setShowModal] = useState(false);
-//   const [permissions, setPermissions] = useState(["PERM_RENT_MACHINE_ADD"]); // for testing
-
-//   const [newMachine, setNewMachine] = useState({
-//     rent_item_id: "",
-//     serial_no: "",
-//     name: "",
-//     description: "",
-//     rented_by: "",
-//     box_no: "",
-//     model_no: "",
-//     motor_no: "",
-//     cat_id: "",
-//     brand: "",
-//     condition: "",
-//     sup_id: "",
-//     additional: "",
-//   });
-
-//   useEffect(() => {
-//     setTimeout(() => {
-//       setRentMachines(dummyRentMachines);
-//       setLoading(false);
-//     }, 500);
-//   }, []);
-
-//   // Filter
-//   const filteredMachines = rentMachines.filter((machine) => {
-//     const term = searchTerm.toLowerCase();
-//     return (
-//       machine.rent_item_id.toLowerCase().includes(term) ||
-//       machine.serial_no.toLowerCase().includes(term) ||
-//       machine.name.toLowerCase().includes(term) ||
-//       machine.brand.toLowerCase().includes(term) ||
-//       machine.condition.toLowerCase().includes(term)
-//     );
-//   });
-
-//   const handleInputChange = (e) => {
-//     setNewMachine({ ...newMachine, [e.target.name]: e.target.value });
-//   };
-
-//   const handleSaveMachine = () => {
-//     // Basic validation example (check required fields)
-//     if (
-//       !newMachine.rent_item_id ||
-//       !newMachine.serial_no ||
-//       !newMachine.name ||
-//       !newMachine.brand ||
-//       !newMachine.condition
-//     ) {
-//       setErrorMessage("⚠️ Please fill in all required fields.");
-//       return;
-//     }
-
-//     setRentMachines((prev) => [...prev, newMachine]);
-
-//     alert("✅ Rent Machine added successfully!");
-//     setErrorMessage("");
-//     setShowModal(false);
-
-//     setNewMachine({
-//       rent_item_id: "",
-//       serial_no: "",
-//       name: "",
-//       description: "",
-//       rented_by: "",
-//       box_no: "",
-//       model_no: "",
-//       motor_no: "",
-//       cat_id: "",
-//       brand: "",
-//       condition: "",
-//       sup_id: "",
-//       additional: "",
-//     });
-//   };
-
-//   // PDF download
-//   const downloadPDF = () => {
-//     const doc = new jsPDF();
-//     doc.setFontSize(18);
-//     doc.text("Rent Machine Report", 14, 15);
-//     doc.setFontSize(12);
-//     doc.text(`Total Machines: ${filteredMachines.length}`, 14, 25);
-
-//     doc.autoTable({
-//       startY: 35,
-//       head: [
-//         [
-//           "Rent Item ID",
-//           "Serial No",
-//           "Name",
-//           "Brand",
-//           "Condition",
-//           "Rented By",
-//           "Box No",
-//           "Model No",
-//           "Motor No",
-//           "Cat ID",
-//           "Sup ID",
-//           "Additional",
-//         ],
-//       ],
-//       body: filteredMachines.map((m) => [
-//         m.rent_item_id,
-//         m.serial_no,
-//         m.name,
-//         m.brand,
-//         m.condition,
-//         m.rented_by,
-//         m.box_no,
-//         m.model_no,
-//         m.motor_no,
-//         m.cat_id,
-//         m.sup_id,
-//         m.additional,
-//       ]),
-//       theme: "striped",
-//     });
-
-//     doc.save("RentMachine_Report.pdf");
-//   };
-
-//   // Excel download
-//   const downloadExcel = () => {
-//     const data = filteredMachines.map((m) => ({
-//       "Rent Item ID": m.rent_item_id,
-//       "Serial No": m.serial_no,
-//       Name: m.name,
-//       Brand: m.brand,
-//       Condition: m.condition,
-//       "Rented By": m.rented_by,
-//       "Box No": m.box_no,
-//       "Model No": m.model_no,
-//       "Motor No": m.motor_no,
-//       "Cat ID": m.cat_id,
-//       "Sup ID": m.sup_id,
-//       Additional: m.additional,
-//       Description: m.description,
-//     }));
-
-//     const worksheet = XLSX.utils.json_to_sheet(data);
-//     const workbook = XLSX.utils.book_new();
-//     XLSX.utils.book_append_sheet(workbook, worksheet, "Rent Machines");
-
-//     const excelBuffer = XLSX.write(workbook, {
-//       bookType: "xlsx",
-//       type: "array",
-//     });
-//     const blob = new Blob([excelBuffer], {
-//       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-//     });
-//     saveAs(blob, "RentMachine_Report.xlsx");
-//   };
-
-//   return (
-//     <div className="rentmachine-container">
-//       <h2> <GiForklift size={40} color="brown" className="icon" /> Rent Machines</h2>
-
-//       <div className="rentmachine-search-panel">
-//         <input
-//           type="text"
-//           placeholder="Search Rent Machines..."
-//           value={searchTerm}
-//           onChange={(e) => setSearchTerm(e.target.value)}
-//         />
-
-//         <div className="rentmachine-download-add">
-//           <div className="rentmachine-download-dropdown">
-//             <button className="download-btn">📥 Download ▼</button>
-//             <div className="download-content">
-//               <button onClick={downloadPDF}>📄 PDF Download</button>
-//               <button onClick={downloadExcel}>📊 Excel Download</button>
-//             </div>
-//           </div>
-
-//           {permissions.includes("PERM_RENT_MACHINE_ADD") && (
-//             <button className="add-btn" onClick={() => setShowModal(true)}>
-//               ➕ Add Rent Machine
-//             </button>
-//           )}
-//         </div>
-//       </div>
-
-//       <div className="rentmachine-table-container">
-//         {loading ? (
-//           <p style={{ textAlign: "center" }}>Loading...</p>
-//         ) : (
-//           <table className="rentmachine-table">
-//             <thead>
-//               <tr>
-//                 <th>Rent Item ID</th>
-//                 <th>Serial No</th>
-//                 <th>Name</th>
-//                 <th>Brand</th>
-//                 <th>Condition</th>
-//                 <th>Rented By</th>
-//                 <th>Box No</th>
-//                 <th>Model No</th>
-//                 <th>Motor No</th>
-//                 <th>Cat ID</th>
-//                 <th>Sup ID</th>
-//                 <th>Additional</th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {filteredMachines.length > 0 ? (
-//                 filteredMachines.map((machine) => (
-//                   <tr key={machine.rent_item_id}>
-//                     <td>{machine.rent_item_id}</td>
-//                     <td>{machine.serial_no}</td>
-//                     <td>{machine.name}</td>
-//                     <td>{machine.brand}</td>
-//                     <td>{machine.condition}</td>
-//                     <td>{machine.rented_by}</td>
-//                     <td>{machine.box_no}</td>
-//                     <td>{machine.model_no}</td>
-//                     <td>{machine.motor_no}</td>
-//                     <td>{machine.cat_id}</td>
-//                     <td>{machine.sup_id}</td>
-//                     <td>{machine.additional}</td>
-//                   </tr>
-//                 ))
-//               ) : (
-//                 <tr>
-//                   <td colSpan="12" style={{ textAlign: "center" }}>
-//                     No rent machines found
-//                   </td>
-//                 </tr>
-//               )}
-//             </tbody>
-//           </table>
-//         )}
-//       </div>
-
-//       {showModal && (
-//         <div className="modal-overlay">
-//           <div className="modal">
-//             <h2>Add New Rent Machine</h2>
-
-//             {errorMessage && <p className="error-message">{errorMessage}</p>}
-
-//             <form
-//               className="modal-form"
-//               onSubmit={(e) => {
-//                 e.preventDefault();
-//                 handleSaveMachine();
-//               }}
-//             >
-//               {/* Row 1 */}
-//               <div className="form-row">
-//                 <label>
-//                   Serial No: <span className="required">*</span>
-//                   <input
-//                     type="text"
-//                     name="serial_no"
-//                     value={newMachine.serial_no}
-//                     onChange={handleInputChange}
-//                   />
-//                 </label>
-
-//                 <label>
-//                   Name: <span className="required">*</span>
-//                   <input
-//                     type="text"
-//                     name="name"
-//                     value={newMachine.name}
-//                     onChange={handleInputChange}
-//                   />
-//                 </label>
-//                 <label>
-//                   Brand: <span className="required">*</span>
-//                   <input
-//                     type="text"
-//                     name="brand"
-//                     value={newMachine.brand}
-//                     onChange={handleInputChange}
-//                   />
-//                 </label>
-//               </div>
-
-//               {/* Row 2 */}
-//               <div className="form-row">
-//                 <label>
-//                   Box No:
-//                   <input
-//                     type="text"
-//                     name="box_no"
-//                     value={newMachine.box_no}
-//                     onChange={handleInputChange}
-//                   />
-//                 </label>
-
-//                 <label>
-//                   Model No:
-//                   <input
-//                     type="text"
-//                     name="model_no"
-//                     value={newMachine.model_no}
-//                     onChange={handleInputChange}
-//                   />
-//                 </label>
-
-//                 <label>
-//                   Motor No:
-//                   <input
-//                     type="text"
-//                     name="motor_no"
-//                     value={newMachine.motor_no}
-//                     onChange={handleInputChange}
-//                   />
-//                 </label>
-//               </div>
-
-//               {/*Row No 3 */}
-
-//               <div className="form-row condition-row">
-//                 <label>
-//                   Condition: <span className="required">*</span>
-//                   <select
-//                     name="condition"
-//                     value={newMachine.condition}
-//                     onChange={handleInputChange}
-//                   >
-//                     <option value="">Select Condition</option>
-//                     <option value="New">New</option>
-//                     <option value="Good">Good</option>
-//                     <option value="Fair">Fair</option>
-//                     <option value="Poor">Poor</option>
-//                   </select>
-//                 </label>
-//               </div>
-
-//               {/* Row 4 */}
-//               <div className="form-row">
-//                 <label>
-//                   Cat ID: <span className="required">*</span>
-//                   <input
-//                     type="text"
-//                     name="cat_id"
-//                     value={newMachine.cat_id}
-//                     onChange={handleInputChange}
-//                   />
-//                 </label>
-
-//                 <label>
-//                   Sup ID: <span className="required">*</span>
-//                   <input
-//                     type="text"
-//                     name="sup_id"
-//                     value={newMachine.sup_id}
-//                     onChange={handleInputChange}
-//                   />
-//                 </label>
-
-//                 <label>
-//                   Additional:
-//                   <input
-//                     type="text"
-//                     name="additional"
-//                     value={newMachine.additional}
-//                     onChange={handleInputChange}
-//                   />
-//                 </label>
-//               </div>
-
-//               {/* Row 5: Description full width */}
-//               <div className="form-row full-width">
-//                 <label>
-//                   Description:
-//                   <textarea
-//                     name="description"
-//                     value={newMachine.description}
-//                     onChange={handleInputChange}
-//                   />
-//                 </label>
-//               </div>
-
-//               {/* Buttons full width */}
-//               <div className="modal-buttons">
-//                 <button type="submit">Save</button>
-//                 <button type="button" onClick={() => setShowModal(false)}>
-//                   Cancel
-//                 </button>
-//               </div>
-//             </form>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default RentMachine;
-
 import React, { useState, useEffect } from "react";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -454,7 +11,10 @@ import { FaFileExcel } from "react-icons/fa";
 
 //importing required controller methods
 import { getCategories } from "../controller/CategoryController";
-import { getAllSuppliers } from "../controller/RentMachineController";
+import {
+  getAllSuppliers,
+  createBulkRentMachines,
+} from "../controller/RentMachineController";
 import { getAllRentMachines } from "../controller/RentMachineController";
 import { createRentMachines } from "../controller/RentMachineController";
 import { getAllBranches } from "../controller/EmployeeController";
@@ -493,6 +53,11 @@ const RentMachine = () => {
   const [editingIndex, setEditingIndex] = useState(null);
   const [, setPageTitle] = usePageTitle();
 
+  const [showPopup, setShowPopup] = useState(false);
+  const [excelData, setExcelData] = useState([]);
+  const [selectedSupplier, setSelectedSupplier] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+
   useEffect(() => {
     setPageTitle("🛠️🏗️ Rent Machine Manager");
   }, [setPageTitle]);
@@ -515,7 +80,7 @@ const RentMachine = () => {
     const fetchRentMachines = async () => {
       try {
         const response = await getAllRentMachines();
-        console.log("response",response);
+        console.log("response", response);
         if (response.success) {
           setRentMachines(response.machines);
         } else {
@@ -741,6 +306,65 @@ const RentMachine = () => {
       );
     });
 
+  const handleExcelUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const data = new Uint8Array(event.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+      setExcelData(jsonData);
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  const handleBulkCreate = async () => {
+    if (!selectedSupplier || !selectedCategory) {
+      alert("Please select both Supplier and Category before uploading.");
+      return;
+    }
+    if (excelData.length === 0) {
+      alert("Please upload a valid Excel file first.");
+      return;
+    }
+
+    const formattedData = {
+      machines: excelData.map((m) => ({
+        serial_no: m.serial_no,
+        name: m.name,
+        description: m.description,
+        rented_by: null,
+        box_no: m.box_no,
+        model_no: m.model_no,
+        motor_no: m.motor_no,
+        cat_id: parseInt(selectedCategory),
+        brand: m.brand,
+        condition: m.condition,
+        sup_id: parseInt(selectedSupplier),
+        additional: m.additional,
+        machine_status: "Available To Grn",
+      })),
+    };
+
+    try {
+      const response = await createBulkRentMachines(formattedData);
+      if (response.success) {
+        alert("Bulk Rent Machines added successfully!");
+        setExcelData([]);
+        setShowPopup(false);
+      } else {
+        alert("Failed to upload machines.");
+      }
+    } catch (error) {
+      console.error("Bulk upload failed:", error);
+      alert("Error occurred during upload.");
+    }
+  };
+
   return (
     <div className="rentmachine-container">
       {/* <h2>
@@ -757,6 +381,7 @@ const RentMachine = () => {
             }}
           >
             <h3 className="form-heading">Add / Update Rent Machine</h3>
+
             <div className="form-row">
               <label>
                 Serial No *
@@ -927,6 +552,13 @@ const RentMachine = () => {
                 <FaFileExcel size={18} />
                 Excel
               </button>
+              <button
+                onClick={() => setShowPopup(true)}
+                className="excel-button"
+              >
+                <FaFileExcel size={18} />
+                BULK
+              </button>
             </div>
           </div>
 
@@ -984,6 +616,98 @@ const RentMachine = () => {
           </div>
         </div>
       </div>
+      {showPopup && (
+        <div className="rentmachine-popup-overlay">
+          <div className="rentmachine-popup-content">
+            <button
+              className="rentmachine-popup-close"
+              onClick={() => setShowPopup(false)}
+            >
+              &times;
+            </button>
+
+            <h3 className="rentmachine-popup-title">
+              Upload Rent Machines via Excel
+            </h3>
+
+            <div className="rentmachine-popup-form">
+              <div className="rentmachine-popup-input-group">
+                <label>Supplier:</label>
+                <select
+                  value={selectedSupplier}
+                  onChange={(e) => setSelectedSupplier(e.target.value)}
+                >
+                  <option value="">Select Supplier</option>
+                  {suppliers.map((sup) => (
+                    <option key={sup.supplier_id} value={sup.supplier_id}>
+                      {sup.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="rentmachine-popup-input-group">
+                <label>Category:</label>
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((cat) => (
+                    <option key={cat.cat_id} value={cat.cat_id}>
+                      {cat.cat_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="rentmachine-popup-input-group">
+                <label>Upload Excel:</label>
+                <input
+                  type="file"
+                  accept=".xlsx, .xls"
+                  onChange={handleExcelUpload}
+                />
+              </div>
+
+              <div className="rentmachine-popup-buttons">
+                <button
+                  className="rentmachine-popup-upload-btn"
+                  onClick={handleBulkCreate}
+                >
+                  Upload
+                </button>
+              </div>
+            </div>
+
+            {excelData.length > 0 && (
+              <div className="rentmachine-excel-preview">
+                <h4>Preview ({excelData.length} rows)</h4>
+                <div className="rentmachine-excel-table-container">
+                  <table className="rentmachine-excel-table">
+                    <thead>
+                      <tr>
+                        {Object.keys(excelData[0]).map((key) => (
+                          <th key={key}>{key}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {excelData.map((row, idx) => (
+                        <tr key={idx}>
+                          {Object.values(row).map((val, i) => (
+                            <td key={i}>{val}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

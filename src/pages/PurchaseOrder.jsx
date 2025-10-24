@@ -3,6 +3,7 @@ import "./PurchaseOrder.css";
 import { getAllSuppliers } from "../controller/RentMachineController";
 import { usePageTitle } from "../utility/usePageTitle";
 import { getCategories } from "../controller/CategoryController";
+import { branchAddresses } from "../utility/common"; // adjust the path if needed
 import {
   createPurchaseOrder,
   createPurchaseOrderApproval,
@@ -456,9 +457,15 @@ const PurchaseOrder = () => {
       }
     };
     fetchCategories();
-    newPurchaseOrder.deliverTo = `New Universe ${localStorage.getItem(
-      "userBranch"
-    )} Factory`;
+    // newPurchaseOrder.deliverTo = `New Universe ${localStorage.getItem(
+    //   "userBranch"
+    // )} Factory`;
+    // const branchId = Number(localStorage.getItem("userBranchId"));
+    // const branchName = localStorage.getItem("userBranch"); // e.g., "Hettipola"
+    // const branchAddress = branchAddresses[branchId] || "Unknown Branch Address";
+
+    // newPurchaseOrder.deliverTo = `New Universe ${branchName} Factory, ${branchAddress}`;
+    //newPurchaseOrder.invoiceTo = `${branchAddress}`;
   }, []);
   const handleToDateChange = (index, value) => {
     const selectedSupplier = suppliers.find(
@@ -483,6 +490,26 @@ const PurchaseOrder = () => {
     handleChange(index, "toDate", value);
   };
 
+  useEffect(() => {
+    const branchId = Number(localStorage.getItem("userBranchId"));
+    const branchName = localStorage.getItem("userBranch");
+    const branchAddress = branchAddresses[branchId] || "Unknown Branch Address";
+     
+
+    // Determine suffix based on branchId
+    const suffix = [2, 3, 4].includes(branchId)
+      ? "SL (Pvt) Ltd."
+      : "H (Pvt) Ltd.";
+
+    // Construct invoiceTo
+    const branchAddressInvoiceTo = `${ branchAddresses[7] || "Unknown Branch Address"}, ${suffix}`;
+
+    setNewPurchaseOrder((prev) => ({
+      ...prev,
+      deliverTo: `${branchAddress}`,
+      invoiceTo: `${branchAddressInvoiceTo}`,
+    }));
+  }, []);
   return (
     <div className="purchaseorder-wrapper">
       <div className="purchaseorder-top-section">
@@ -560,6 +587,16 @@ const PurchaseOrder = () => {
 
           <div className="po-field-group">
             <label className="po-label">Invoice To</label>
+            <input
+              type="text"
+              className="po-input"
+              value={newPurchaseOrder.invoiceTo}
+              readOnly
+            />
+          </div>
+
+          {/*<div className="po-field-group">
+            <label className="po-label">Invoice To</label>
             <select
               className="po-input"
               value={newPurchaseOrder.invoiceTo}
@@ -574,7 +611,7 @@ const PurchaseOrder = () => {
                 </option>
               ))}
             </select>
-          </div>
+          </div>*/}
 
           <div className="po-field-group">
             <label className="po-label">Payment Method</label>

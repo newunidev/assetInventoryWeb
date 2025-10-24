@@ -4,6 +4,7 @@ import { getAllSuppliers } from "../controller/RentMachineController";
 import { getCategories } from "../controller/CategoryController";
 import { usePageTitle } from "../utility/usePageTitle";
 import { useNavigate } from "react-router-dom";
+import { branchAddresses } from "../utility/common"; // adjust the path if needed
 
 import { getAllRentMachineLifeExpired } from "../controller/RentMachineLifeController";
 //import { bulkCreateRenewalPurchaseOrderMachines } from "../controller/RenewPurchaseOrderController";
@@ -427,6 +428,27 @@ const RenewalPurchaseOrder = () => {
     handleRowChange(index, "toDate", value); // update normally
   };
 
+  useEffect(() => {
+    const branchId = Number(localStorage.getItem("userBranchId"));
+    const branchName = localStorage.getItem("userBranch");
+    const branchAddress = branchAddresses[branchId] || "Unknown Branch Address";
+
+    // Determine suffix based on branchId
+    const suffix = [2, 3, 4].includes(branchId)
+      ? "SL (Pvt) Ltd."
+      : "H (Pvt) Ltd.";
+
+    // Construct invoiceTo
+    const branchAddressInvoiceTo = `${
+      branchAddresses[7] || "Unknown Branch Address"
+    }, ${suffix}`;
+
+    setNewPurchaseOrder((prev) => ({
+      ...prev,
+      deliverTo: `${branchAddress}`,
+      invoiceTo: `${branchAddressInvoiceTo}`,
+    }));
+  }, []);
   return (
     <div className="renewalPurchaseOrder-wrapper">
       {/* 🔝 top section */}
@@ -493,9 +515,10 @@ const RenewalPurchaseOrder = () => {
             <input
               type="text"
               className="po-input"
-              value={`New Universe ${localStorage.getItem(
-                "userBranch"
-              )} Factory`}
+              // value={`New Universe ${localStorage.getItem(
+              //   "userBranch"
+              // )} Factory`}
+              value={newPurchaseOrder.deliverTo}
               readOnly
             />
             {/* <select
@@ -518,7 +541,17 @@ const RenewalPurchaseOrder = () => {
           <div className="renewalPurchaseOrder-field-group">
             <label className="renewalPurchaseOrder-label">Invoice To</label>
 
-            <select
+            <input
+              type="text"
+              className="po-input"
+              // value={`New Universe ${localStorage.getItem(
+              //   "userBranch"
+              // )} Factory`}
+              value={newPurchaseOrder.invoiceTo}
+              readOnly
+            />
+
+            {/* <select
               className="renewalPurchaseOrder-input"
               value={newPurchaseOrder.invoiceTo}
               onChange={(e) =>
@@ -531,7 +564,7 @@ const RenewalPurchaseOrder = () => {
                   {opt}
                 </option>
               ))}
-            </select>
+            </select> */}
           </div>
 
           {/* Payment Method */}

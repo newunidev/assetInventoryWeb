@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./PurchaseOrderEdit.css";
 import { useParams, useNavigate } from "react-router-dom";
-
+import { branchAddresses } from "../utility/common";  
 import {
   purchaseOrderByPoId,
   updateEntirePurchaseOrderbyPoId,
@@ -216,6 +216,11 @@ const PurchaseOrderEdit = () => {
       updatedRows[index].total = rawCost - discountAmount;
     }
 
+    // ✅ Clear toDate when fromDate changes
+    if (field === "fromDate") {
+      updatedRows[index].toDate = "";
+    }
+
     setRows(updatedRows);
   };
 
@@ -394,6 +399,28 @@ const PurchaseOrderEdit = () => {
 
     handleChange(index, "toDate", value);
   };
+
+  // useEffect(() => {
+  //   const branchId = Number(localStorage.getItem("userBranchId"));
+  //   const branchName = localStorage.getItem("userBranch");
+  //   const branchAddress = branchAddresses[branchId] || "Unknown Branch Address";
+
+  //   // Determine suffix based on branchId
+  //   const suffix = [2, 3, 4].includes(branchId)
+  //     ? "SL (Pvt) Ltd."
+  //     : "H (Pvt) Ltd.";
+
+  //   // Construct invoiceTo
+  //   const branchAddressInvoiceTo = `${
+  //     branchAddresses[7] || "Unknown Branch Address"
+  //   }, ${suffix}`;
+
+  //   setPurchaseOrder((prev) => ({
+  //     ...prev,
+  //     deliverTo: `${branchAddress}`,
+  //     invoiceTo: `${branchAddressInvoiceTo}`,
+  //   }));
+  // }, []);
   return (
     <div className="po-edit-wrapper">
       <div className="po-edit-top-section">
@@ -460,9 +487,7 @@ const PurchaseOrderEdit = () => {
             <input
               type="text"
               className="po-input"
-              value={`New Universe ${localStorage.getItem(
-                "userBranch"
-              )} Factory`}
+              value={`${purchaseOrder.deliver_to}`}
               readOnly
             />
           </div>
@@ -470,7 +495,13 @@ const PurchaseOrderEdit = () => {
           {/* Invoice To */}
           <div className="po-edit-field-group">
             <label className="po-edit-label">Invoice To</label>
-            <select
+            <input
+              type="text"
+              className="po-input"
+              value={`${purchaseOrder.invoice_to}`}
+              readOnly
+            />
+            {/* <select
               className="po-edit-input"
               value={purchaseOrder.invoice_to}
               onChange={(e) => handlePOChange("invoice_to", e.target.value)}
@@ -481,7 +512,7 @@ const PurchaseOrderEdit = () => {
                   {option}
                 </option>
               ))}
-            </select>
+            </select> */}
           </div>
 
           {/* Payment Method */}
@@ -739,7 +770,11 @@ const PurchaseOrderEdit = () => {
                         onChange={(e) =>
                           handleChange(i, "fromDate", e.target.value)
                         }
-                        min={new Date().toISOString().split("T")[0]} // no backdates
+                        min={
+                          new Date(Date.now() - 86400000)
+                            .toISOString()
+                            .split("T")[0]
+                        } // ✅ yesterday
                       />
                     </td>
                     <td>

@@ -73,6 +73,27 @@ export const createRentMachines = async (assetData) => {
   }
 };
 
+export const createBulkRentMachines = async (assetData) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await apiClient.post("rentmachines-bulk", assetData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("Rent Machine bulk Created Success", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error creating rent Machines:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
 export const createRentTimeAllocation = async (allocationData) => {
   try {
     const token = localStorage.getItem("token");

@@ -10,13 +10,21 @@ import {
   createPoPrintPool,
   getPoPrintPoolByPoId,
   createPurchaseOrderReturn,
+  createPurchaseOrderRevision,
+  getLatestPoRevisionByPoId,
 } from "../controller/PurchaseOrderController";
 import { categoryPurchaseOrderByPoId } from "../controller/CategoryPurchaseOrderController";
 import { useParams } from "react-router-dom";
 import "./PurchaseOrderReport.css";
 import JsBarcode from "jsbarcode";
 import "./PurchaseOrderReportAll.css";
-import { FaCheckCircle, FaTimesCircle, FaTruckLoading } from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaTimesCircle,
+  FaTruckLoading,
+  FaRedo,
+} from "react-icons/fa";
+import { getGrnExits } from "../controller/GrnController";
 
 const PurchaseOrderReportAll = () => {
   const { poNo } = useParams();
@@ -31,6 +39,10 @@ const PurchaseOrderReportAll = () => {
 
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
+  const [grnExists, setGrnExists] = useState(null); // null = loading, true/false = response
+
+  const [showRevisionDialog, setShowRevisionDialog] = useState(false);
+  const [revisionReason, setRevisionReason] = useState("");
 
   const permissions = useMemo(
     () => JSON.parse(localStorage.getItem("permissions") || "[]"),
@@ -42,6 +54,15 @@ const PurchaseOrderReportAll = () => {
   console.log("Approve permission check :", hasApprovalPermission);
 
   const hasGrnPermission = permissions.includes("PERM004");
+
+  const [revisionNotification, setRevisionNotification] = useState(null);
+  const [showNotification, setShowNotification] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    // Show popup on initial page load
+    setShowNotification(true);
+  }, []);
 
   useEffect(() => {
     if (poId && barcodeRef.current) {
@@ -238,6 +259,24 @@ const PurchaseOrderReportAll = () => {
     window.open(url, "_blank");
   };
 
+  const handleRevice = async (reason) => {
+    const revisionData = {
+      po_id: poId,
+      requested_by: Number(localStorage.getItem("userid")), // current logged user
+      date: new Date().toISOString().split("T")[0], // current date YYYY-MM-DD
+      reason: reason,
+    };
+
+    try {
+      const result = await createPurchaseOrderRevision(revisionData);
+      alert("Purchase Order Revision Created Successfully!");
+      // ✅ Reload the page after success
+      window.location.reload();
+    } catch (error) {
+      alert("Failed to create Purchase Order Revision!");
+    }
+  };
+
   const submitReject = async () => {
     if (!rejectReason.trim()) {
       alert("❌ Please provide a reject reason.");
@@ -270,6 +309,46 @@ const PurchaseOrderReportAll = () => {
     }
   };
 
+  const fetchGrnStatus = async () => {
+    try {
+      const res = await getGrnExits(poId);
+      setGrnExists(res.exists);
+    } catch (error) {
+      console.error("Error fetching GRN existence:", error);
+      setGrnExists(false); // fallback
+    }
+  };
+
+  useEffect(() => {
+    if (poId) {
+      fetchGrnStatus();
+    }
+  }, [poId]);
+
+  useEffect(() => {
+    const fetchLatestRevision = async () => {
+      try {
+        const res = await getLatestPoRevisionByPoId(poId);
+        if (res.success && res.data) {
+          setRevisionNotification({
+            employee: res.data.Employee?.name,
+            reason: res.data.reason,
+          });
+          setShowNotification(true);
+
+          // Auto-collapse after 10 seconds
+          setTimeout(() => {
+            setCollapsed(true);
+          }, 10000);
+        }
+      } catch (err) {
+        console.error("Failed to fetch latest PO revision:", err);
+      }
+    };
+
+    if (poId) fetchLatestRevision();
+  }, [poId]);
+
   return (
     <div className="purchase-order-report-all-print-content">
       <div className="purchase-order-report-all-wrapper">
@@ -288,11 +367,19 @@ const PurchaseOrderReportAll = () => {
               </div>
 
               <div className="purchase-order-report-all-company-details">
-                <h2>New Universe Corporate Clothing H Pvt Ltd</h2>
+                <h2>
+                  New Universe Corporate Clothing{" "}
+                  {["Welioya", "Piliyandala", "Mathara"].includes(
+                    poDetails?.branch
+                  )
+                    ? "SL"
+                    : "H"}{" "}
+                  Pvt Ltd
+                </h2>
                 <p>21/4, Polhengoda Gardens, Colombo 05, Sri Lanka</p>
                 <p>Tel: +94 702250093 &nbsp; | &nbsp; Fax: 11282336</p>
                 <p>
-                  Email: newunive@gmail.com &nbsp; | &nbsp; Web:
+                  Email: newuniverse@gmail.com &nbsp; | &nbsp; Web:
                   www.newuniverse.lk
                 </p>
                 <h3>PURCHASE ORDER</h3>
@@ -822,6 +909,35 @@ const PurchaseOrderReportAll = () => {
         >
           <FaTruckLoading /> Edit
         </button>
+
+        {/* <button
+          onClick={handleRevice}
+          disabled={
+            !(
+              poDetails?.status === "Approved" &&
+              poDetails?.branch_id ===
+                Number(localStorage.getItem("userBranchId")) &&
+              grnExists === false
+            )
+          }
+          className="purchase-order-report-all-revice-button"
+        >
+          <FaRedo /> REVICE
+        </button> */}
+        <button
+          onClick={() => setShowRevisionDialog(true)} // open popup
+          disabled={
+            !(
+              poDetails?.status === "Approved" &&
+              poDetails?.branch_id ===
+                Number(localStorage.getItem("userBranchId")) &&
+              grnExists === false
+            )
+          }
+          className="purchase-order-report-all-revice-button"
+        >
+          <FaRedo /> REVICE
+        </button>
       </div>
       {showRejectModal && (
         <div className="purchase-order-report-all-modal-overlay">
@@ -846,6 +962,70 @@ const PurchaseOrderReportAll = () => {
                 style={{ backgroundColor: "red", color: "#fff" }}
               >
                 Reject
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* righ side popup message notification */}
+      {showNotification &&
+        revisionNotification &&
+        (poDetails?.status === "Pending" || poDetails?.status === "Saved") && (
+          <div className={`po-notification ${collapsed ? "collapsed" : ""}`}>
+            <div className="po-notification-header">
+              <strong>Hi 👋</strong>
+              <button
+                className="po-notification-toggle"
+                onClick={() => setCollapsed(!collapsed)}
+              >
+                {collapsed ? "Show" : "Hide"}
+              </button>
+              <button
+                className="po-notification-close"
+                onClick={() => setShowNotification(false)}
+              >
+                ✕
+              </button>
+            </div>
+            {!collapsed && (
+              <div className="po-notification-body">
+                🔄This PO has been revised by{" "}
+                <strong>{revisionNotification?.employee}</strong>.<br />
+                <strong>💬 Reason:</strong> {revisionNotification?.reason}
+              </div>
+            )}
+          </div>
+        )}
+
+      {/*revice reason dialog box */}
+      {showRevisionDialog && (
+        <div className="revice-popup-overlay">
+          <div className="revice-popup">
+            <h3>Provide Revision Reason</h3>
+            <textarea
+              value={revisionReason}
+              onChange={(e) => setRevisionReason(e.target.value)}
+              placeholder="Enter reason for revision..."
+              className="revice-popup-textarea"
+            ></textarea>
+
+            <div className="revice-popup-buttons">
+              <button
+                className="revice-popup-submit"
+                onClick={() => {
+                  handleRevice(revisionReason); // pass reason
+                  setShowRevisionDialog(false); // close popup
+                  setRevisionReason(""); // reset
+                }}
+              >
+                Submit
+              </button>
+              <button
+                className="revice-popup-cancel"
+                onClick={() => setShowRevisionDialog(false)}
+              >
+                Cancel
               </button>
             </div>
           </div>

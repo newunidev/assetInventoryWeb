@@ -6,7 +6,7 @@
 }
 
 .purchase-order-report-all-container {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   padding: 10px 5px;
   max-width: 1000px;
   margin: auto;
@@ -130,8 +130,6 @@
   background-color: #005599;
 }
 
- 
-
 .purchase-order-report-all-signatures-row {
   margin-top: 50px;
   display: flex;
@@ -210,13 +208,17 @@
   * {
     -ms-overflow-style: none !important;
     scrollbar-width: none !important;
+    .po-notification {
+      display: none !important;
+    }
   }
 
   *::-webkit-scrollbar {
     display: none !important;
   }
 
-  html, body {
+  html,
+  body {
     overflow: visible !important;
   }
 
@@ -268,7 +270,6 @@
   }
 }
 
-
 /*for stick buttons*/
 .purchase-order-report-all-sticky-buttons {
   position: fixed;
@@ -282,6 +283,7 @@
 
 /* Common styles for both buttons */
 .purchase-order-report-all-approve-button,
+.purchase-order-report-all-revice-button,
 .purchase-order-report-all-reject-button {
   display: flex;
   align-items: center;
@@ -309,6 +311,24 @@
   background: linear-gradient(135deg, #43a047, #1b5e20);
   transform: scale(1.05);
   box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+}
+
+/* Revice button styling */
+.purchase-order-report-all-revice-button {
+  background: linear-gradient(135deg, #fb6908, #ffc851);
+}
+
+.purchase-order-report-all-revice-button:hover {
+  background: linear-gradient(135deg, #43a047, #1b5e20);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+}
+/* Disabled state styling */
+.purchase-order-report-all-revice-button:disabled {
+  background: #ccc; /* greyed out */
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Reject button styling */
@@ -363,15 +383,13 @@
   }
 }
 
-
-
 .purchase-order-report-all-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -384,5 +402,160 @@
   border-radius: 8px;
   width: 400px;
   max-width: 90%;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* ========== Notification Popup ========== */
+.po-notification {
+  position: fixed;
+  right: 20px;
+  top: 80%;
+  transform: translateY(-50%);
+  background-color: #f0f9ff;
+  border: 1px solid #90cdf4;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  width: 280px;
+  transition: all 0.4s ease;
+  animation: slideInRight 0.6s ease;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.po-notification.collapsed {
+  height: 60px;
+  width: 100px;
+  overflow: hidden;
+}
+
+.po-notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background-color: #005822;
+  color: #fff;
+  font-size: 14px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.po-notification-body {
+  padding: 12px;
+  color: #2d3748;
+  background-color: #ebf8ff;
+  font-size: 13px;
+}
+
+.po-notification-toggle,
+.po-notification-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  margin-left: 6px;
+}
+
+.po-notification-toggle:hover,
+.po-notification-close:hover {
+  opacity: 0.8;
+}
+
+.po-notification-toggle {
+  background-color: #000;
+}
+
+@keyframes slideInRight {
+  from {
+    right: -320px;
+    opacity: 0;
+  }
+  to {
+    right: 20px;
+    opacity: 1;
+  }
+}
+
+
+.revice-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.revice-popup {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 380px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.revice-popup h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #1d3557;
+}
+
+.revice-popup-textarea {
+  width: 100%;
+  height: 100px;
+  resize: none;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.revice-popup-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.revice-popup-submit {
+  background-color: #1d3557;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.revice-popup-submit:hover {
+  background-color: #457b9d;
+}
+
+.revice-popup-cancel {
+  background-color: #ccc;
+  color: black;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.revice-popup-cancel:hover {
+  background-color: #bbb;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

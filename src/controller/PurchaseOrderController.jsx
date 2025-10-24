@@ -319,6 +319,54 @@ export const createPurchaseOrderReturn = async (poReject) => {
   }
 };
 
+
+export const createPurchaseOrderRevision= async (poRevision) => {
+  try {
+    const token = localStorage.getItem("token");
+    console.log(poRevision);
+    const response = await apiClient.post("porevisions", poRevision, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("PO Revision Created Success ", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error creating Purchase Order revision:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+
+export const getLatestPoRevisionByPoId = async (poid) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await apiClient.get(
+      `porevisionsbypoid?po_id=${encodeURIComponent(poid)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    //console.log("PO Controller id",response);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching  PO Revision Pool by POID:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+
+
 //======================methods for po print pool END ============================//
 
 export default {
@@ -332,5 +380,6 @@ export default {
   updatePoStatus,
   updateEntirePurchaseOrderbyPoId,
   createPurchaseOrderReturn,
-  updateRenewalPurchaseOrderApproval2
+  updateRenewalPurchaseOrderApproval2,
+  getLatestPoRevisionByPoId
 };
