@@ -322,6 +322,25 @@
   background-repeat: no-repeat;
 }
 
+
+.assign-permission-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.assign-permission-list {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.permission-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
 /* Permissions section */
 .usermanager-permissions-list {
   display: grid;

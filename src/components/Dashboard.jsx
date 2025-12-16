@@ -3,9 +3,10 @@ import { FaBars, FaChevronDown } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { FiLogOut } from "react-icons/fi";
 import { FaUser } from "react-icons/fa"; // Font Awesome user icon
-import { FaTachometerAlt, FaCogs, FaQrcode } from "react-icons/fa";
+import { FaTachometerAlt, FaCogs, FaQrcode,FaDollarSign  } from "react-icons/fa";
 import { MdAssessment } from "react-icons/md";
 import { MdDevices } from "react-icons/md";
+import { MdInventory } from "react-icons/md";
 import { GiFactory } from "react-icons/gi";
 import { GiForklift } from "react-icons/gi";
 import { useEffect } from "react";
@@ -19,6 +20,7 @@ import {
 import { GiTicket } from "react-icons/gi"; // Ticket style, like a gate pass
 
 import "./Dashboard.css"; // Import the CSS file
+import Snowfall from "react-snowfall";
 
 const Dashboard = ({ children }) => {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -60,6 +62,19 @@ const Dashboard = ({ children }) => {
   const isHeadOffice = branch === "Head Office";
   return (
     <div className="dashboard">
+
+      {/* Snowfall effect */}
+      <Snowfall 
+        snowflakeCount={80} 
+        style={{
+          position: "fixed",
+          width: "100vw",
+          height: "100vh",
+          zIndex: 99999,
+          pointerEvents: "none"
+        }}
+      />
+
 
       {/* <div className="snowflakes" aria-hidden="true">
         {Array.from({ length: 200 }).map((_, i) => (
@@ -165,7 +180,7 @@ const Dashboard = ({ children }) => {
             onMouseEnter={() => setIsReportsOpen(true)}
             onMouseLeave={() => setIsReportsOpen(false)}
           >
-            <GiForklift size={40} color="white" className="icon" />
+            <FaDollarSign  size={30} color="white" className="icon" />
             Rent Machines{" "}
             <FaChevronDown className={isReportsOpen ? "rotate" : ""} />
             {isReportsOpen && (
@@ -321,6 +336,36 @@ const Dashboard = ({ children }) => {
               </ul>
             )}
           </li>
+
+          <li
+            className="parentdropdown"
+            onMouseEnter={() => setIsReportsOpen(true)}
+            onMouseLeave={() => setIsReportsOpen(false)}
+          >
+            <MdInventory size={27} color="white" className="icon" />
+            Fixed Assets{" "}
+            <FaChevronDown className={isReportsOpen ? "rotate" : ""} />
+            {isReportsOpen && (
+              <ul className="sub-menu">
+                <li>
+                  <Link to="/undermaintanance" className="link">
+                    📋 Fixed Asset Manage
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/undermaintanance" className="link">
+                    📌 Fixed Asset Reports
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/undermaintanance" className="link">
+                    📊 ---------
+                  </Link>
+                </li>
+              </ul>
+            )}
+          </li>
+
 
           <li>
             <Link

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { loginUser, loginUserWithCookie } from "../utility/api"; // Import login API method
 import { getAllPermissions } from "../controller/EmployeeController";
 import "./Login.css"; // Import CSS file
+import Snowfall from "react-snowfall";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -119,6 +120,19 @@ const LoginPage = () => {
 
   return (
     <div className="login-container">
+      {/* Snowfall effect */}
+      <Snowfall
+        snowflakeCount={80}
+        
+        style={{
+          position: "fixed",
+          width: "100vw",
+          height: "100vh",
+          zIndex: 99999,
+          pointerEvents: "none",
+        }}
+      />
+
       {/* Left Column: Info / Background */}
       <div className="login-left">
         <img src="/nu.png" alt="User Profile" className="user-profile-img" />
@@ -140,8 +154,6 @@ const LoginPage = () => {
       {/* Right Column: Login Form */}
       <div className="login-right">
         <div className="login-box">
-          
-
           {error && <p className="error-message">{error}</p>}
 
           {/* Login Form */}
@@ -171,8 +183,6 @@ const LoginPage = () => {
               {loading ? <div className="spinner"></div> : "Login"}
             </button>
           </form>
-
-          
 
           {/* Notes / Info */}
           <div className="login-notes">

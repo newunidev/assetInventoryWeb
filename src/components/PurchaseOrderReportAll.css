@@ -204,69 +204,114 @@
 }
 
 /* PRINT STYLES */
+/* ================= PRINT STYLES ================= */
 @media print {
+  /* Remove scrollbars, hide unwanted UI */
   * {
     -ms-overflow-style: none !important;
     scrollbar-width: none !important;
-    .po-notification {
-      display: none !important;
-    }
   }
 
   *::-webkit-scrollbar {
     display: none !important;
   }
 
-  html,
-  body {
-    overflow: visible !important;
+  button,
+  .navbar,
+  .sidebar,
+  .po-notification,
+  .purchase-order-report-all-sticky-buttons {
+    display: none !important;
   }
 
+  html, body {
+    overflow: visible !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Page setup */
   @page {
     size: A4 portrait;
     margin: 5mm;
   }
 
+  /* Print container */
+  .purchase-order-report-all-print-content,
+  .purchase-order-report-all-wrapper,
+  .purchase-order-report-all-container {
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+  }
+
   body,
   .purchase-order-report-all-print-content {
-    font-family: "Courier New", Courier, monospace;
-    font-size: 10pt;
-    line-height: 1.15;
-    color: black;
+    font-family: "Courier New", Courier, monospace !important;
+    font-size: 10pt !important;
+    line-height: 1.15 !important;
+    color: black !important;
   }
 
-  .purchase-order-report-all-print-content {
-    width: 100%;
-    padding: 0;
-    margin: 0;
-  }
-
+  /* Tables */
   table.purchase-order-report-all-table {
-    border-collapse: collapse;
-    border: 1px solid black;
-    font-size: 10pt;
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 10pt !important;
+    page-break-inside: auto !important;
+    border: 1px solid black !important;
+  }
+
+  table.purchase-order-report-all-table thead {
+    display: table-header-group !important; /* Repeat header on every page */
+  }
+
+  table.purchase-order-report-all-table tfoot {
+    display: table-footer-group !important; /* Repeat footer if needed */
+  }
+
+  table.purchase-order-report-all-table tr {
+    page-break-inside: avoid !important; /* Avoid splitting rows */
+    page-break-after: auto !important;
   }
 
   table.purchase-order-report-all-table th,
   table.purchase-order-report-all-table td {
-    border: 1px solid black;
-    padding: 2px 4px;
+    border: 1px solid black !important;
+    padding: 4px 6px !important;
+    font-size: 10pt !important;
+    color: black !important;
+    white-space: normal !important;
   }
 
-  table.purchase-order-report-all-table th {
-    font-size: 10pt;
-    color: #000;
+  /* Text content */
+  .purchase-order-report-all-label,
+  .purchase-order-report-all-label-row,
+  .purchase-order-report-all-label-value,
+  .purchase-order-report-all-header,
+  .purchase-order-report-all-footer,
+  .purchase-order-report-all-signatures-row,
+  .purchase-order-report-all-signature-box,
+  .purchase-order-report-all-company-details {
+    page-break-inside: avoid !important; /* Prevent breaking inside small blocks */
+    overflow: visible !important;
   }
 
-  button,
-  .navbar,
-  .sidebar {
-    display: none !important;
-  }
-
+  /* Canvas / Charts */
   canvas {
     max-width: 120px !important;
     max-height: 40px !important;
+  }
+
+  /* Remove all fixed positioning */
+  .purchase-order-report-all-sticky-buttons {
+    position: static !important;
   }
 }
 

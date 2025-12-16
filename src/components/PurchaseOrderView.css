@@ -242,7 +242,7 @@
 
 .purchase-order-view-table thead th {
   padding: 10px 8px;
-  text-align: left;
+  text-align: center;
   border-bottom: 3px solid #2c3e50;
   white-space: nowrap;
 }
@@ -274,19 +274,52 @@
 
 /* ==================== ACTION BUTTON ==================== */
 .purchase-order-view-action-button {
-  background-color: #28a745;
+  background: linear-gradient(135deg, #28a745, #5cd97a);
   color: white;
   border: none;
   padding: 6px 12px;
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
+  margin-right: 10px;
+}
+
+/* style only the second button in that cell */
+td .purchase-order-view-action-button:nth-child(2) {
+  background: linear-gradient(135deg, #8d0000, #ff1e1e);
+  color: #fff;
+  border: none;
+  font-weight: 600;
+}
+
+/* optional hover effect */
+td .purchase-order-view-action-button:nth-child(2):hover {
+  background: linear-gradient(135deg, #ff1e1e, #8d0000);
+  transform: scale(1.05);
+}
+
+.purchase-order-view-action-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .purchase-order-view-action-button:hover {
   background-color: #218838;
 }
 
+/* ==================== THIRD BUTTON (GRN) ==================== */
+td .purchase-order-view-action-button:nth-child(3) {
+  background: linear-gradient(135deg, #004b8d, #007bff); /* deep to bright blue */
+  color: #fff;
+  border: none;
+  font-weight: 600;
+}
+
+/* Hover animation */
+td .purchase-order-view-action-button:nth-child(3):hover {
+  background: linear-gradient(135deg, #007bff, #004b8d);
+  transform: scale(1.05);
+}
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 600px) {
   .purchase-order-view-top-section {

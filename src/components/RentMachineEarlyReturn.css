@@ -1,0 +1,189 @@
+/* .rentmachine-earlyreturn-wrapper {
+  padding: 25px;
+} */
+ .rentmachine-earlyreturn-wrapper {
+  padding: 25px;
+  background-color: #f9fafc;
+  border-radius: 12px;
+  height: calc(100vh - 120px); /* Fixed visible height (responsive to screen size) */
+  overflow-y: auto;            /* Enables vertical scrolling */
+  box-sizing: border-box;
+}
+
+/* For smaller devices, adjust height and padding */
+@media (max-width: 1024px) {
+  .rentmachine-earlyreturn-wrapper {
+    height: calc(100vh - 100px);
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .rentmachine-earlyreturn-wrapper {
+    height: calc(100vh - 80px);
+    padding: 15px;
+  }
+}
+
+/* Optional — smooth scrolling effect */
+.rentmachine-earlyreturn-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+.rentmachine-earlyreturn-wrapper::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 6px;
+}
+.rentmachine-earlyreturn-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+/* HEADER */
+.rentmachine-earlyreturn-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.rentmachine-earlyreturn-main-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: 8px;
+  color: #0d6efd;
+}
+
+.rentmachine-earlyreturn-sub {
+  font-size: 14px;
+  color: #666;
+  margin-top: 3px;
+}
+
+.rentmachine-earlyreturn-po-badge {
+  display: inline-block;
+  padding: 8px 19px;
+  background: #0d6efd;
+  color: #fff;
+  border-radius: 22px;
+  font-weight: 600;
+}
+
+/* CARD BLOCKS */
+.rentmachine-earlyreturn-category-card {
+  background: #ffffff;
+  padding: 22px;
+  border-radius: 14px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0 0 18px;
+  margin-bottom: 35px;
+}
+
+.rentmachine-earlyreturn-table-wrapper {
+  background: #d4d4d4;
+  padding: 22px;
+  border-radius: 14px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0 0 18px;
+  margin-bottom: 35px;
+
+  max-height: calc(100vh - 390px); /* scrollable area */
+  overflow-y: auto;
+
+  display: block; /* ensure wrapper behaves as block for scroll */
+}
+
+
+.rentmachine-earlyreturn-table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.rentmachine-earlyreturn-table-wrapper thead th {
+  position: sticky;
+  top: 0;
+  background: #f9f9f9;
+  z-index: 2;
+}
+
+@media (max-width: 768px) {
+  /* mobile view */
+  .rentmachine-earlyreturn-table-wrapper {
+    max-height: 65vh; /* more height in mobile */
+  }
+}
+
+.rentmachine-earlyreturn-section-title {
+  margin: 0;
+  margin-bottom: 15px;
+  font-size: 19px;
+  font-weight: 600;
+  text-align: center;
+  color: #0d6efd;
+}
+
+.rentmachine-earlyreturn-note {
+  text-align: center;
+  color: #666;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+/* TABLES */
+.rentmachine-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.rentmachine-table th {
+  text-align: center;
+  padding: 10px;
+  font-weight: 600;
+  background: #f1f8ff;
+  color: #0d6efd;
+  border-bottom: 2px solid #ddd;
+}
+
+.rentmachine-table td {
+  padding: 11px 8px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.rentmachine-table tbody tr:hover {
+  background: #f8fbff;
+  transition: 0.25s;
+}
+
+/* BUTTON */
+.rentmachine-earlyreturn-btn {
+  padding: 6px 14px;
+  background: #05bc48;
+  color: #d31c1c;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+/* SEARCH BAR */
+.rentmachine-earlyreturn-search {
+  width: 100%;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: flex-end; /* move to right side */
+}
+
+.rentmachine-earlyreturn-search-input {
+  width: 280px;
+  padding: 9px 14px;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.rentmachine-earlyreturn-search-input:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 6px rgba(13, 110, 253, 0.3);
+}
+
+.rentmachine-earlyreturn-btn:hover {
+  background: #07ae58;
+  transition: 0.2s;
+}

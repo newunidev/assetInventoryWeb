@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { usePageTitle } from "../utility/usePageTitle";
 import {
   purchaseOrderByPoId,
   updatePurchaseOrderApproval1,
@@ -17,6 +18,7 @@ import "./PurchaseOrderReport.css";
 import JsBarcode from "jsbarcode";
 import "./PurchaseOrderReportAll.css";
 import { FaCheckCircle, FaTimesCircle, FaTruckLoading } from "react-icons/fa";
+import { getAllRenewalRentMachineEarlyReturnByPoId } from "../controller/RentMachineEarlyReturnController";
 
 const RenewalPurchaseOrderReportAll = () => {
   const { poNo } = useParams();
@@ -32,6 +34,10 @@ const RenewalPurchaseOrderReportAll = () => {
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
 
+  //const for the early return
+  const [earlyReturns, setEarlyReturns] = useState([]);
+  const [earlyReturnQtyMap, setEarlyReturnQtyMap] = useState({});
+
   const permissions = useMemo(
     () => JSON.parse(localStorage.getItem("permissions") || "[]"),
     []
@@ -39,6 +45,46 @@ const RenewalPurchaseOrderReportAll = () => {
   const hasApprovalPermission =
     permissions.includes("PERM003") || permissions.includes("PERM004");
   const hasGrnPermission = permissions.includes("PERM004");
+
+  const [, setPageTitles] = usePageTitle();
+  
+    useEffect(() => {
+      setPageTitles("RENEW PO REPORT");
+    }, [setPageTitles]);
+
+  useEffect(() => {
+    const fetchEarlyReturns = async () => {
+      if (!poId) return;
+
+      try {
+        const res = await getAllRenewalRentMachineEarlyReturnByPoId(poId);
+
+        if (res.success && Array.isArray(res.data)) {
+          setEarlyReturns(res.data);
+
+          // build qty map
+          const qtyMap = {};
+          res.data.forEach((item) => {
+            const id = item.mr_id;
+            if (!qtyMap[id]) qtyMap[id] = 0;
+            qtyMap[id] += 1; // count each returned rent item
+          });
+
+          setEarlyReturnQtyMap(qtyMap); // store map here ✅
+          console.log("Early Return Map :", qtyMap);
+        } else {
+          setEarlyReturns([]);
+          setEarlyReturnQtyMap({});
+        }
+      } catch (err) {
+        console.error("Error fetching early returns:", err);
+        setEarlyReturns([]);
+        setEarlyReturnQtyMap({});
+      }
+    };
+
+    fetchEarlyReturns();
+  }, [poId]);
 
   useEffect(() => {
     if (poId && barcodeRef.current) {
@@ -63,9 +109,9 @@ const RenewalPurchaseOrderReportAll = () => {
     setLoading(true);
     try {
       const poRes = await purchaseOrderByPoId(id);
-      
+
       const renewalRes = await getRenewalPurchaseOrderMachinesByPoId(id); // 🔹 Updated
-      console.log("Hello I am here");
+      //console.log("Hello I am here");
       const poApp = await poApprovalByPoId(id);
       const poPrintRes = await getPoPrintPoolByPoId(id);
 
@@ -443,7 +489,7 @@ const RenewalPurchaseOrderReportAll = () => {
                         <th>Total</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    {/* <tbody>
                       {renewalDetails.map((item, index) => {
                         const qty = Number(item.qty) || 0;
                         const cost = Number(item.perday_cost) || 0;
@@ -475,6 +521,64 @@ const RenewalPurchaseOrderReportAll = () => {
                           </tr>
                         );
                       })}
+                    </tbody> */}
+                    <tbody>
+                      {renewalDetails.map((item, index) => {
+                        const originalQty = Number(item.qty) || 0;
+
+                        // 🔹 Check if this machine is found in early return list
+                        const isEarlyReturned =
+                          earlyReturnQtyMap[item.mr_id] > 0;
+
+                        // 🔹 If early returned → Qty becomes 0
+                        const qty = isEarlyReturned ? 0 : originalQty;
+
+                        const cost = Number(item.perday_cost) || 0;
+                        const discount = Number(item.d_percent) || 0;
+
+                        const fromDate = new Date(item.from_date);
+                        const toDate = new Date(item.to_date);
+                        const numberOfDays =
+                          Math.floor((toDate - fromDate) / (1000 * 3600 * 24)) +
+                          1;
+
+                        const gross = qty * cost * numberOfDays;
+                        const discountAmount = (gross * discount) / 100;
+                        const total = gross - discountAmount;
+
+                        return (
+                          <tr
+                            key={index}
+                            style={
+                              isEarlyReturned ? { background: "#ffe8e8" } : {}
+                            }
+                          >
+                            <td>{item.RentMachine?.name}</td>
+                            <td>{item.RentMachine?.serial_no}</td>
+                            <td>{item?.description}</td>
+                            <td>{item.from_date}</td>
+                            <td>{item.to_date}</td>
+
+                            {/* 🔹 Qty is now replaced depending on early return */}
+                            <td>
+                              {qty}
+                              {isEarlyReturned && (
+                                <span
+                                  style={{ color: "red", marginLeft: "5px" }}
+                                >
+                                  (Early Returned)
+                                </span>
+                              )}
+                            </td>
+
+                            <td>{numberOfDays}</td>
+                            <td>{cost.toFixed(2)}</td>
+                            <td>{discount.toFixed(2)}</td>
+                            <td>{discountAmount.toFixed(2)}</td>
+                            <td>{total.toFixed(2)}</td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                   {/* Subtotal calculation */}
@@ -488,7 +592,16 @@ const RenewalPurchaseOrderReportAll = () => {
                     <div style={{ fontWeight: "bold", fontSize: "16px" }}>
                       {(() => {
                         const subtotal = renewalDetails.reduce((acc, item) => {
-                          const qty = Number(item.qty) || 0;
+                          const originalQty = Number(item.qty) || 0;
+
+                          const earlyReturnQty =
+                            earlyReturnQtyMap[item.mr_id] || 0;
+                          const adjustedQty = Math.max(
+                            originalQty - earlyReturnQty,
+                            0
+                          );
+
+                          //const qty = Number(item.qty) || 0;
                           const cost = Number(item.perday_cost) || 0;
                           const discount = Number(item.d_percent) || 0;
 
@@ -500,7 +613,7 @@ const RenewalPurchaseOrderReportAll = () => {
                                 (1000 * 3600 * 24)
                             ) + 1;
 
-                          const gross = qty * cost * numberOfDays;
+                          const gross = adjustedQty * cost * numberOfDays;
                           const discountAmount = (gross * discount) / 100;
                           const total = gross - discountAmount;
 
@@ -526,37 +639,243 @@ const RenewalPurchaseOrderReportAll = () => {
                               <span>Rs. {subtotal.toFixed(2)}</span>
                             </div>
 
-                            {poDetails.is_vat && (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  marginBottom: "5px",
-                                  gap: "20px",
-                                }}
-                              >
-                                <span style={{ minWidth: "150px" }}>
-                                  Tax VAT ({taxRate}%):
-                                </span>
-                                <span>Rs. {taxAmount.toFixed(2)}</span>
-                              </div>
-                            )}
+                            {earlyReturns.length === 0 && (
+                              <>
+                                {poDetails.is_vat && (
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      marginBottom: "5px",
+                                      gap: "20px",
+                                    }}
+                                  >
+                                    <span style={{ minWidth: "150px" }}>
+                                      Tax VAT ({taxRate}%):
+                                    </span>
+                                    <span>Rs. {taxAmount.toFixed(2)}</span>
+                                  </div>
+                                )}
 
-                            {poDetails.is_svat && !poDetails.is_vat && (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  marginBottom: "5px",
-                                  gap: "20px",
-                                }}
-                              >
-                                <span style={{ minWidth: "150px" }}>
-                                  Tax SVAT ({taxRate}%):
-                                </span>
-                                <span>Rs. {taxAmount.toFixed(2)}</span>
-                              </div>
+                                {poDetails.is_svat && !poDetails.is_vat && (
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      marginBottom: "5px",
+                                      gap: "20px",
+                                    }}
+                                  >
+                                    <span style={{ minWidth: "150px" }}>
+                                      Tax SVAT ({taxRate}%):
+                                    </span>
+                                    <span>Rs. {taxAmount.toFixed(2)}</span>
+                                  </div>
+                                )}
+
+                                {/* GRAND TOTAL */}
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    marginTop: "8px",
+                                    fontWeight: "bold",
+                                    borderTop: "1px solid #ccc",
+                                    paddingTop: "5px",
+                                    gap: "20px",
+                                  }}
+                                >
+                                  <span style={{ minWidth: "150px" }}>
+                                    Grand Total:
+                                  </span>
+                                  <span>
+                                    Rs.{" "}
+                                    {(poDetails.is_svat
+                                      ? subtotal // SVAT → subtotal only
+                                      : subtotal +
+                                        (poDetails.is_vat ? taxAmount : 0)
+                                    ) // VAT → subtotal + tax
+                                      .toFixed(2)}
+                                  </span>
+                                </div>
+                              </>
                             )}
+                          </>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {earlyReturns.length > 0 && (
+                <>
+                  <h3 style={{ marginTop: "20px", marginBottom: "10px" }}>
+                    Early Returns
+                  </h3>
+                  <table className="purchase-order-report-all-table">
+                    <thead>
+                      <tr>
+                        <th>Serial No</th>
+                        <th>Rent Machine</th>
+                        <th>Description</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>No Of Days Calculation</th>
+                        <th>Cost / Day</th>
+                        <th>Discount (%)</th>
+                        <th>Total Price</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {earlyReturns.map((item, index) => {
+                        const fromDate = new Date(item.from_date);
+                        const toDate = new Date(item.to_date);
+                        const timeDiff = toDate.getTime() - fromDate.getTime();
+                        let numberOfDays =
+                          Math.floor(timeDiff / (1000 * 3600 * 24)) + 1;
+
+                        const costPerDay = Number(item.per_day_cost) || 0;
+                        const discount = Number(item.d_rate) || 0; // discount percent
+                        let gross = 0;
+
+                        // Check if supplier has monthly payment
+                        if (poDetails.Supplier?.is_monthly_payment) {
+                          if (numberOfDays < 15) {
+                            gross = costPerDay * 15;
+                            numberOfDays = 15; // display as 15 days
+                          } else {
+                            gross = costPerDay * 30;
+                            numberOfDays = 30; // display as 30 days
+                          }
+                        } else {
+                          gross = costPerDay * numberOfDays;
+                        }
+
+                        const discountAmount = (gross * discount) / 100;
+                        const total = gross - discountAmount;
+
+                        return (
+                          <tr key={index}>
+                            <td>{item.RentMachine?.serial_no}</td>
+                            <td>{item.RentMachine?.name}</td>
+                            <td>{item.RentMachine?.description}</td>
+                            <td>{item.from_date}</td>
+                            <td>{item.to_date}</td>
+                            <td>{numberOfDays}</td>
+                            <td>{costPerDay.toFixed(2)}</td>
+                            <td>{discount.toFixed(2)}</td>
+                            <td>{total.toFixed(2)}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+
+                  {/* Subtotal calculation */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <div style={{ fontWeight: "bold", fontSize: "16px" }}>
+                      {(() => {
+                        // ---- Renewal Item ITEMS SUBTOTAL ----
+                        const subtotalRenwalItems = renewalDetails.reduce(
+                          (acc, item) => {
+                            const originalQty = Number(item.qty) || 0;
+
+                            const earlyReturnQty =
+                              earlyReturnQtyMap[item.mr_id] || 0;
+                            const adjustedQty = Math.max(
+                              originalQty - earlyReturnQty,
+                              0
+                            );
+                            const cost = Number(item.perday_cost) || 0;
+                            const discount = Number(item.d_percent) || 0;
+
+                            const fromDate = new Date(item.from_date);
+                            const toDate = new Date(item.to_date);
+                            const numberOfDays =
+                              Math.floor(
+                                (toDate.getTime() - fromDate.getTime()) /
+                                  (1000 * 3600 * 24)
+                              ) + 1;
+
+                            const gross = adjustedQty * cost * numberOfDays;
+                            const discountAmount = (gross * discount) / 100;
+                            const total = gross - discountAmount;
+
+                            return acc + total;
+                          },
+                          0
+                        );
+
+                        // ---- EARLY RETURN SUBTOTAL ----
+                        const subtotalEarlyReturn = earlyReturns.reduce(
+                          (acc, item) => {
+                            const fromDate = new Date(item.from_date);
+                            const toDate = new Date(item.to_date);
+                            let numberOfDays =
+                              Math.floor(
+                                (toDate - fromDate) / (1000 * 3600 * 24)
+                              ) + 1;
+
+                            const cost = Number(item.per_day_cost) || 0;
+                            const discount = Number(item.d_rate) || 0;
+
+                            let gross = 0;
+
+                            if (poDetails.Supplier?.is_monthly_payment) {
+                              if (numberOfDays < 15) {
+                                gross = cost * 15;
+                                numberOfDays = 15;
+                              } else {
+                                gross = cost * 30;
+                                numberOfDays = 30;
+                              }
+                            } else {
+                              gross = cost * numberOfDays;
+                            }
+
+                            const discountAmount = (gross * discount) / 100;
+                            const total = gross - discountAmount;
+
+                            return acc + total;
+                          },
+                          0
+                        );
+
+                        // ---- FINAL TOTALS ----
+                        const combinedTotal =
+                          subtotalRenwalItems + subtotalEarlyReturn;
+
+                        const taxRate = 18;
+                        const taxAmount =
+                          poDetails.is_vat || poDetails.is_svat
+                            ? (combinedTotal * taxRate) / 100
+                            : 0;
+
+                        const grandTotal = combinedTotal + taxAmount;
+
+                        return (
+                          <>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                marginBottom: "5px",
+                                gap: "20px", // ✅ adds gap between label and value
+                              }}
+                            >
+                              <span style={{ minWidth: "150px" }}>
+                                Subtotal:
+                              </span>
+                              {/* <span>Rs. {subtotal.toFixed(2)}</span> */}
+                              <span>Rs. {subtotalEarlyReturn.toFixed(2)}</span>
+                            </div>
 
                             {/* ✅ Grand Total */}
                             <div
@@ -570,18 +889,41 @@ const RenewalPurchaseOrderReportAll = () => {
                                 gap: "20px",
                               }}
                             >
-                              <span style={{ minWidth: "150px" }}>
+                              <div className="po-total-line">
+                                <strong>Combined Total:</strong>
+                                <span>Rs. {combinedTotal.toFixed(2)}</span>
+                              </div>
+
+                              {poDetails.is_vat && (
+                                <div className="po-total-line">
+                                  <strong>VAT ({taxRate}%):</strong>
+                                  <span>Rs. {taxAmount.toFixed(2)}</span>
+                                </div>
+                              )}
+
+                              {poDetails.is_svat && !poDetails.is_vat && (
+                                <div className="po-total-line">
+                                  <strong>SVAT ({taxRate}%):</strong>
+                                  <span>Rs. {taxAmount.toFixed(2)}</span>
+                                </div>
+                              )}
+
+                              <div className="po-total-line grand-total">
+                                <strong>GRAND TOTAL:</strong>
+                                <span>Rs. {grandTotal.toFixed(2)}</span>
+                              </div>
+                              {/* <span style={{ minWidth: "150px" }}>
                                 Grand Total:
                               </span>
                               <span>
                                 Rs.{" "}
-                                {(poDetails.is_svat
-                                  ? subtotal // ✅ SVAT → use subtotal only
-                                  : subtotal +
-                                    (poDetails.is_vat ? taxAmount : 0)
-                                ) // ✅ VAT → add tax
-                                  .toFixed(2)}
-                              </span>
+                                {(
+                                  subtotal +
+                                  (poDetails.is_vat || poDetails.is_svat
+                                    ? taxAmount
+                                    : 0)
+                                ).toFixed(2)}
+                              </span> */}
                             </div>
                           </>
                         );

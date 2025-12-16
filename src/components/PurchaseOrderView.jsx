@@ -4,6 +4,8 @@ import { BRANCHES } from "../utility/common";
 import { usePageTitle } from "../utility/usePageTitle";
 import { getAllPoApprovals } from "../controller/PurchaseOrderController";
 import { useNavigate } from "react-router-dom";
+import { FaEye } from "react-icons/fa";
+import { FaClipboardCheck } from "react-icons/fa";
 
 const PurchaseOrderView = () => {
   const [searchText, setSearchText] = useState("");
@@ -21,9 +23,20 @@ const PurchaseOrderView = () => {
     fetchPoApprovals();
   }, []);
 
+  // useEffect(() => {
+  //   handleSearch();
+  // }, [searchText, selectedBranch, approvalFilter]); // added approvalFilter here
+
   useEffect(() => {
     handleSearch();
-  }, [searchText, selectedBranch, approvalFilter]); // added approvalFilter here
+  }, [searchText, selectedBranch, approvalFilter, originalData]);
+
+  useEffect(() => {
+    const userBranch = localStorage.getItem("userBranch");
+    if (userBranch && userBranch !== "Head Office") {
+      setSelectedBranch(userBranch);
+    }
+  }, []);
 
   const fetchPoApprovals = async () => {
     try {
@@ -62,7 +75,11 @@ const PurchaseOrderView = () => {
         !searchText ||
         item.poNumber.toLowerCase().includes(searchText.toLowerCase());
 
-      const matchesBranch = !selectedBranch || item.branch === selectedBranch;
+      //const matchesBranch = !selectedBranch || item.branch === selectedBranch;
+      const matchesBranch =
+        !selectedBranch ||
+        item.branch.trim().toLowerCase() ===
+          selectedBranch.trim().toLowerCase();
 
       const matchesApproval =
         approvalFilter === "all" ||
@@ -179,7 +196,7 @@ const PurchaseOrderView = () => {
               onChange={(e) => setSearchText(e.target.value)}
             />
           </div>
-          <div className="purchase-order-view-field-group">
+          {/* <div className="purchase-order-view-field-group">
             <label className="purchase-order-view-label">Branch</label>
             <select
               className="purchase-order-view-select"
@@ -192,6 +209,30 @@ const PurchaseOrderView = () => {
                   {branch}
                 </option>
               ))}
+            </select>
+          </div> */}
+          <div className="purchase-order-view-field-group">
+            <label className="purchase-order-view-label">Branch</label>
+            <select
+              className="purchase-order-view-select"
+              value={selectedBranch}
+              onChange={(e) => setSelectedBranch(e.target.value)}
+              disabled={localStorage.getItem("userBranch") !== "Head Office"} // Disable if not Head Office
+            >
+              {localStorage.getItem("userBranch") === "Head Office" ? (
+                <>
+                  <option value="">All Branches</option>
+                  {BRANCHES.map((branch) => (
+                    <option key={branch} value={branch}>
+                      {branch}
+                    </option>
+                  ))}
+                </>
+              ) : (
+                <option value={localStorage.getItem("userBranch")}>
+                  {localStorage.getItem("userBranch")}
+                </option>
+              )}
             </select>
           </div>
         </div>
@@ -237,13 +278,7 @@ const PurchaseOrderView = () => {
                       <button
                         onClick={() => {
                           console.log("Is po renewal chaeck", item.is_renew_po);
-                          // const url = item.is_renew_po
-                          //   ? `/rentmachines/renewalporeportsall/${encodeURIComponent(
-                          //       item.poNumber
-                          //     )}`
-                          //   : `/rentmachines/poreportsall/${encodeURIComponent(
-                          //       item.poNumber
-                          //     )}`;
+
                           const safePoNumber = item.poNumber.replace("/", "-");
                           const url = item.is_renew_po
                             ? `/rentmachines/renewalporeportsall/${safePoNumber}`
@@ -252,7 +287,38 @@ const PurchaseOrderView = () => {
                         }}
                         className="purchase-order-view-action-button"
                       >
-                        View PO
+                        <FaEye /> View
+                      </button>
+
+                      <button
+                        hidden={
+                          item.branch !== localStorage.getItem("userBranch")
+                        }
+                        onClick={() => {
+                          const safePoNumber = item.poNumber.replace("/", "-");
+                          const url = item.is_renew_po
+                            ? `/rentmachines/renwalpoearlyreturn/${safePoNumber}`
+                            : `/rentmachines/poearlyreturn/${safePoNumber}`;
+                          window.open(url, "_blank");
+                        }}
+                        className="purchase-order-view-action-button"
+                      >
+                        Early Return
+                      </button>
+
+                      <button
+                        //disabled={item.branch !== localStorage.getItem("userBranch")}
+                        onClick={() => {
+                          const safePoNumber = item.poNumber.replace("/", "-");
+                          const url = item.is_renew_po
+                            ? `/rentmachines/fullgrnreport/${safePoNumber}`
+                            : `/rentmachines/fullgrnreport/${safePoNumber}`;
+                          window.open(url, "_blank");
+                        }}
+                        className="purchase-order-view-action-button"
+                      >
+                        <FaClipboardCheck />
+                        GRNS
                       </button>
                     </td>
                   </tr>

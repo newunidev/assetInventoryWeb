@@ -71,6 +71,9 @@ import GatePass from "./components/GatePass";
 import GatePassReport from "./components/GatePassReport";
 import GatePassView from "./components/GatePassView";
 import GatePassEdit from "./components/GatePassEdit";
+import RentMachineEarlyReturn from "./components/RentMachineEarlyReturn"
+import RenewalRentMachineEarlyReturn from "./components/RenwalRentMachineEarlyReturn";
+import GrnFullView from "./components/GrnFullReport";
 //test
 import UserCreationForm from "./pages/UserCreationForm";
 import UnderDevelopment from "./pages/UnderMaintanance";
@@ -127,6 +130,11 @@ function App() {
         <Route path="/rentmachines/renewalporeportsall/:poNo" element={<PrivateRoute><Dashboard><RenewalPurchaseOrderReportAll /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/grn/:poNo" element={<PrivateRoute><Dashboard><RentMachineGrn /></Dashboard></PrivateRoute>} />
         <Route path="/rentmachines/printcard" element={<PrivateRoute><Dashboard><RentMachinePrintCard /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/poearlyreturn/:poNo" element={<PrivateRoute><Dashboard><RentMachineEarlyReturn /></Dashboard></PrivateRoute>} />
+        
+
+        <Route path="/rentmachines/renwalpoearlyreturn/:poNo" element={<PrivateRoute><Dashboard><RenewalRentMachineEarlyReturn /></Dashboard></PrivateRoute>} />
+        <Route path="/rentmachines/fullgrnreport/:poNo" element={<PrivateRoute><Dashboard><GrnFullView /></Dashboard></PrivateRoute>} />
 
         <Route path="/usercreationform" element={<PrivateRoute><Dashboard><UserCreationForm /></Dashboard></PrivateRoute>} />
         <Route path="/undermaintanance" element={<PrivateRoute><Dashboard><UnderDevelopment /></Dashboard></PrivateRoute>} />

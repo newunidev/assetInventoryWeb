@@ -25,6 +25,7 @@ import {
   FaRedo,
 } from "react-icons/fa";
 import { getGrnExits } from "../controller/GrnController";
+import { getAllRentMachineEarlyReturnByPoId } from "../controller/RentMachineEarlyReturnController";
 
 const PurchaseOrderReportAll = () => {
   const { poNo } = useParams();
@@ -58,6 +59,43 @@ const PurchaseOrderReportAll = () => {
   const [revisionNotification, setRevisionNotification] = useState(null);
   const [showNotification, setShowNotification] = useState(true);
   const [collapsed, setCollapsed] = useState(false);
+
+  //const for the early return
+  const [earlyReturns, setEarlyReturns] = useState([]);
+  const [earlyReturnQtyMap, setEarlyReturnQtyMap] = useState({});
+
+  useEffect(() => {
+    const fetchEarlyReturns = async () => {
+      if (!poId) return;
+
+      try {
+        const res = await getAllRentMachineEarlyReturnByPoId(poId);
+
+        if (res.success && Array.isArray(res.data)) {
+          setEarlyReturns(res.data);
+
+          // build qty map
+          const qtyMap = {};
+          res.data.forEach((item) => {
+            const id = item.cpo_id;
+            if (!qtyMap[id]) qtyMap[id] = 0;
+            qtyMap[id] += 1; // count each returned rent item
+          });
+
+          setEarlyReturnQtyMap(qtyMap); // store map here ✅
+        } else {
+          setEarlyReturns([]);
+          setEarlyReturnQtyMap({});
+        }
+      } catch (err) {
+        console.error("Error fetching early returns:", err);
+        setEarlyReturns([]);
+        setEarlyReturnQtyMap({});
+      }
+    };
+
+    fetchEarlyReturns();
+  }, [poId]);
 
   useEffect(() => {
     // Show popup on initial page load
@@ -546,8 +584,15 @@ const PurchaseOrderReportAll = () => {
                         <th>Total Price</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    {/* <tbody>
                       {categoryItems.map((item, index) => {
+                        console.log(
+                          "Category Early return →",
+                          "cpo_id:",
+                          item.cpo_id,
+                          "qty:",
+                          earlyReturnQtyMap[item.cpo_id] || 0
+                        );
                         const qty = Number(item.Qty) || 0;
                         const cost = Number(item.PerDay_Cost) || 0;
                         const discount = Number(item.d_percent) || 0;
@@ -579,6 +624,45 @@ const PurchaseOrderReportAll = () => {
                           </tr>
                         );
                       })}
+                    </tbody> */}
+                    <tbody>
+                      {categoryItems.map((item, index) => {
+                        const originalQty = Number(item.Qty) || 0;
+                        const earlyReturnQty =
+                          earlyReturnQtyMap[item.cpo_id] || 0;
+                        const adjustedQty = Math.max(
+                          originalQty - earlyReturnQty,
+                          0
+                        ); // don't go below 0
+
+                        const cost = Number(item.PerDay_Cost) || 0;
+                        const discount = Number(item.d_percent) || 0;
+
+                        const fromDate = new Date(item.from_date);
+                        const toDate = new Date(item.to_date);
+                        const timeDiff = toDate.getTime() - fromDate.getTime();
+                        const numberOfDays =
+                          Math.floor(timeDiff / (1000 * 3600 * 24)) + 1;
+
+                        const gross = adjustedQty * cost * numberOfDays;
+                        const discountAmount = (gross * discount) / 100;
+                        const total = gross - discountAmount;
+
+                        return (
+                          <tr key={index}>
+                            <td>{item.Category?.cat_name}</td>
+                            <td>{item.description}</td>
+                            <td>{item.from_date}</td>
+                            <td>{item.to_date}</td>
+                            <td>{adjustedQty}</td>
+                            <td>{numberOfDays}</td>
+                            <td>{cost.toFixed(2)}</td>
+                            <td>{discount.toFixed(2)}</td>
+                            <td>{discountAmount.toFixed(2)}</td>
+                            <td>{total.toFixed(2)}</td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
 
@@ -593,7 +677,13 @@ const PurchaseOrderReportAll = () => {
                     <div style={{ fontWeight: "bold", fontSize: "16px" }}>
                       {(() => {
                         const subtotal = categoryItems.reduce((acc, item) => {
-                          const qty = Number(item.Qty) || 0;
+                          const originalQty = Number(item.Qty) || 0;
+                          const earlyReturnQty =
+                            earlyReturnQtyMap[item.cpo_id] || 0;
+                          const adjustedQty = Math.max(
+                            originalQty - earlyReturnQty,
+                            0
+                          ); // don't go below 00;
                           const cost = Number(item.PerDay_Cost) || 0;
                           const discount = Number(item.d_percent) || 0;
 
@@ -604,7 +694,7 @@ const PurchaseOrderReportAll = () => {
                           const numberOfDays =
                             Math.floor(timeDiff / (1000 * 60 * 60 * 24)) + 1;
 
-                          const gross = qty * cost * numberOfDays;
+                          const gross = adjustedQty * cost * numberOfDays;
                           const discountAmount = (gross * discount) / 100;
                           const total = gross - discountAmount;
 
@@ -630,37 +720,242 @@ const PurchaseOrderReportAll = () => {
                               <span>Rs. {subtotal.toFixed(2)}</span>
                             </div>
 
-                            {poDetails.is_vat && (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  marginBottom: "5px",
-                                  gap: "20px",
-                                }}
-                              >
-                                <span style={{ minWidth: "150px" }}>
-                                  Tax VAT ({taxRate}%):
-                                </span>
-                                <span>Rs. {taxAmount.toFixed(2)}</span>
-                              </div>
-                            )}
+                            {earlyReturns.length === 0 && (
+                              <>
+                                {poDetails.is_vat && (
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      marginBottom: "5px",
+                                      gap: "20px",
+                                    }}
+                                  >
+                                    <span style={{ minWidth: "150px" }}>
+                                      Tax VAT ({taxRate}%):
+                                    </span>
+                                    <span>Rs. {taxAmount.toFixed(2)}</span>
+                                  </div>
+                                )}
 
-                            {poDetails.is_svat && !poDetails.is_vat && (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  marginBottom: "5px",
-                                  gap: "20px",
-                                }}
-                              >
-                                <span style={{ minWidth: "150px" }}>
-                                  Tax SVAT ({taxRate}%):
-                                </span>
-                                <span>Rs. {taxAmount.toFixed(2)}</span>
-                              </div>
+                                {poDetails.is_svat && !poDetails.is_vat && (
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      marginBottom: "5px",
+                                      gap: "20px",
+                                    }}
+                                  >
+                                    <span style={{ minWidth: "150px" }}>
+                                      Tax SVAT ({taxRate}%):
+                                    </span>
+                                    <span>Rs. {taxAmount.toFixed(2)}</span>
+                                  </div>
+                                )}
+
+                                {/* ✅ Grand Total */}
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    marginTop: "8px",
+                                    fontWeight: "bold",
+                                    borderTop: "1px solid #ccc",
+                                    paddingTop: "5px",
+                                    gap: "20px",
+                                  }}
+                                >
+                                  <span style={{ minWidth: "150px" }}>
+                                    Grand Total:
+                                  </span>
+                                  <span>
+                                    Rs.{" "}
+                                    {(
+                                      subtotal +
+                                      (poDetails.is_vat || poDetails.is_svat
+                                        ? taxAmount
+                                        : 0)
+                                    ).toFixed(2)}
+                                  </span>
+                                </div>
+                              </>
                             )}
+                          </>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {earlyReturns.length > 0 && (
+                <>
+                  <h3 style={{ marginTop: "20px", marginBottom: "10px" }}>
+                    Early Returns
+                  </h3>
+                  <table className="purchase-order-report-all-table">
+                    <thead>
+                      <tr>
+                        <th>Serial No</th>
+                        <th>Rent Machine</th>
+                        <th>Description</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>No Of Days Calculation</th>
+                        <th>Cost / Day</th>
+                        <th>Discount (%)</th>
+                        <th>Total Price</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {earlyReturns.map((item, index) => {
+                        const fromDate = new Date(item.from_date);
+                        const toDate = new Date(item.to_date);
+                        const timeDiff = toDate.getTime() - fromDate.getTime();
+                        let numberOfDays =
+                          Math.floor(timeDiff / (1000 * 3600 * 24)) + 1;
+
+                        const costPerDay = Number(item.per_day_cost) || 0;
+                        const discount = Number(item.d_rate) || 0; // discount percent
+                        let gross = 0;
+
+                        // Check if supplier has monthly payment
+                        if (poDetails.Supplier?.is_monthly_payment) {
+                          if (numberOfDays < 15) {
+                            gross = costPerDay * 15;
+                            numberOfDays = 15; // display as 15 days
+                          } else {
+                            gross = costPerDay * 30;
+                            numberOfDays = 30; // display as 30 days
+                          }
+                        } else {
+                          gross = costPerDay * numberOfDays;
+                        }
+
+                        const discountAmount = (gross * discount) / 100;
+                        const total = gross - discountAmount;
+
+                        return (
+                          <tr key={index}>
+                            <td>{item.RentMachine?.serial_no}</td>
+                            <td>{item.RentMachine?.name}</td>
+                            <td>{item.RentMachine?.description}</td>
+                            <td>{item.from_date}</td>
+                            <td>{item.to_date}</td>
+                            <td>{numberOfDays}</td>
+                            <td>{costPerDay.toFixed(2)}</td>
+                            <td>{discount.toFixed(2)}</td>
+                            <td>{total.toFixed(2)}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+
+                  {/* Subtotal calculation */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <div style={{ fontWeight: "bold", fontSize: "16px" }}>
+                      {(() => {
+                        // ---- CATEGORY ITEMS SUBTOTAL ----
+                        const subtotalCategory = categoryItems.reduce(
+                          (acc, item) => {
+                            const originalQty = Number(item.Qty) || 0;
+                            const earlyReturnQty =
+                              earlyReturnQtyMap[item.cpo_id] || 0;
+                            const adjustedQty = Math.max(
+                              originalQty - earlyReturnQty,
+                              0
+                            );
+
+                            const cost = Number(item.PerDay_Cost) || 0;
+                            const discount = Number(item.d_percent) || 0;
+
+                            const fromDate = new Date(item.from_date);
+                            const toDate = new Date(item.to_date);
+                            const days =
+                              Math.floor(
+                                (toDate - fromDate) / (1000 * 3600 * 24)
+                              ) + 1;
+
+                            const gross = adjustedQty * cost * days;
+                            const discountAmount = (gross * discount) / 100;
+                            const total = gross - discountAmount;
+
+                            return acc + total;
+                          },
+                          0
+                        );
+
+                        // ---- EARLY RETURN SUBTOTAL ----
+                        const subtotalEarlyReturn = earlyReturns.reduce(
+                          (acc, item) => {
+                            const fromDate = new Date(item.from_date);
+                            const toDate = new Date(item.to_date);
+                            let numberOfDays =
+                              Math.floor(
+                                (toDate - fromDate) / (1000 * 3600 * 24)
+                              ) + 1;
+
+                            const cost = Number(item.per_day_cost) || 0;
+                            const discount = Number(item.d_rate) || 0;
+
+                            let gross = 0;
+
+                            if (poDetails.Supplier?.is_monthly_payment) {
+                              if (numberOfDays < 15) {
+                                gross = cost * 15;
+                                numberOfDays = 15;
+                              } else {
+                                gross = cost * 30;
+                                numberOfDays = 30;
+                              }
+                            } else {
+                              gross = cost * numberOfDays;
+                            }
+
+                            const discountAmount = (gross * discount) / 100;
+                            const total = gross - discountAmount;
+
+                            return acc + total;
+                          },
+                          0
+                        );
+
+                        // ---- FINAL TOTALS ----
+                        const combinedTotal =
+                          subtotalCategory + subtotalEarlyReturn;
+
+                        const taxRate = 18;
+                        const taxAmount =
+                          poDetails.is_vat || poDetails.is_svat
+                            ? (combinedTotal * taxRate) / 100
+                            : 0;
+
+                        const grandTotal = combinedTotal + taxAmount;
+
+                        return (
+                          <>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                marginBottom: "5px",
+                                gap: "20px", // ✅ adds gap between label and value
+                              }}
+                            >
+                              <span style={{ minWidth: "150px" }}>
+                                Subtotal:
+                              </span>
+                              {/* <span>Rs. {subtotal.toFixed(2)}</span> */}
+                              <span>Rs. {subtotalEarlyReturn.toFixed(2)}</span>
+                            </div>
 
                             {/* ✅ Grand Total */}
                             <div
@@ -674,7 +969,30 @@ const PurchaseOrderReportAll = () => {
                                 gap: "20px",
                               }}
                             >
-                              <span style={{ minWidth: "150px" }}>
+                              <div className="po-total-line">
+                                <strong>Combined Total:</strong>
+                                <span>Rs. {combinedTotal.toFixed(2)}</span>
+                              </div>
+
+                              {poDetails.is_vat && (
+                                <div className="po-total-line">
+                                  <strong>VAT ({taxRate}%):</strong>
+                                  <span>Rs. {taxAmount.toFixed(2)}</span>
+                                </div>
+                              )}
+
+                              {poDetails.is_svat && !poDetails.is_vat && (
+                                <div className="po-total-line">
+                                  <strong>SVAT ({taxRate}%):</strong>
+                                  <span>Rs. {taxAmount.toFixed(2)}</span>
+                                </div>
+                              )}
+
+                              <div className="po-total-line grand-total">
+                                <strong>GRAND TOTAL:</strong>
+                                <span>Rs. {grandTotal.toFixed(2)}</span>
+                              </div>
+                              {/* <span style={{ minWidth: "150px" }}>
                                 Grand Total:
                               </span>
                               <span>
@@ -685,7 +1003,7 @@ const PurchaseOrderReportAll = () => {
                                     ? taxAmount
                                     : 0)
                                 ).toFixed(2)}
-                              </span>
+                              </span> */}
                             </div>
                           </>
                         );
